@@ -1,11 +1,22 @@
 \documentclass{article}
+
     \usepackage{graphicx}
     \graphicspath{{images/}{../images/}}
-         
+
     \usepackage{subfiles}
-         
+
+    % what is this for???
     \usepackage{blindtext}
-    
+
+    % to make table of contents clickable
+    \usepackage{hyperref}
+    \hypersetup{
+        linktoc=all
+    }
+
+    % make table of contents display up to depth 2
+    \setcounter{tocdepth}{2}
+
     \author{
     Andrei Constantin Scutariu
     \and
@@ -14,39 +25,42 @@
     Sergio Piermario Placanica
     }
     \date{}
-    
+
     \title{RASD Document}
-    
-    
+
+
     \begin{document}
-    
-    
+
+
     \maketitle
-    
+
     \newpage
-    
+
+    \tableofcontents
+
+    \newpage
+
     \section{Introduction}
     \subfile{sections/introduction.tex}
-    
+
     \newpage
-    
+
     \section{Overall description}
     \subfile{sections/overallDescription.tex}
-    
+
     \newpage
-    
+
     \section{Specific requirements}
     \subfile{sections/specificRequirements.tex}
-    
-    
+
+
     \newpage
-    
+
     \section{Formal analysis}
     \subfile{sections/formalAnalysis.tex}
     \newpage
-    
+
     \section{Effort spent}
     \subfile{sections/effortSpent.tex}
-    
+
     \end{document}
-    

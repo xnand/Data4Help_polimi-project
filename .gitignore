@@ -1,6 +1,10 @@
 
-RASD/RASD\.pdf
+RASD/*.pdf
 
-RASD/RASD\.aux
+RASD/*.aux
 
-RASD/RASD\.log
+RASD/*.log
+
+RASD/*.out
+
+RASD/*.toc
