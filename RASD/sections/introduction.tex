@@ -3,6 +3,46 @@
 \begin{document}
 
 \subsection{Purpose}
+
+\subsubsection{Description}
+%TODO - needs revision
+We are designing Data4Help, a software system capable of (sending and?) receiving informations about our customers, collected trough the use of wearable devices, as accurately as the currently widely available technology permits.
+Such information includes current location, in terms of geographical position, and body parameters, such as heartbeat rate, blood pressure, etc.
+
+We believe this data has great value, so we'll make it available for other companies to use for their purposes; they will only need to file a request to our system that, when approved, will guarantee access to our information, currently collected and yet to be, regarding a specific customer or to a group of people satisfying certain criteria.
+
+Moreover, we will offer two other services that will make use of this data base.
+
+The first one is AutomatedSOS, that will target mainly elderly people. Our software will constantly monitor their health status, and in case of emergency will promptly dispatch an ambulance to their current location, notifying the customer (and his/her relative/s?) of its arrival (and ETA?).
+
+The second one is Track4Run, which will allow the organizers of a running event to define the path for it, the athletes to enroll in the event, and the spectators to track the position of the runners on a map in real time.
+
+
+\subsubsection{Goals}
+
+
+{\bf Data4Help}
+\begin{description}
+	\item [G1]  Allow third parties to make requests for accessing customer data.
+	\item [G2]  Deny access to customer data from third parties until a proper request is approved.
+	\item [G3]  Requests for data regarding specific individuals are forwarded to the single customers.
+	\item [G4]  Requests for data regarding large groups of anonymized people are subject to verification process.
+	\item [G5]  Allow third parties to subscribe to new data, for which a request have been approved.
+\end{description}
+
+{\bf AutomatedSOS}
+\begin{description}
+	\item [G6]  From the time a customer's parameters indicate a health emergency status, an ambulance is dispatched to his location in less than 5 seconds.
+	\item [G7]  When an ambulance is dispatched, the customer is notified of its arrival.
+\end{description}
+
+{\bf Track4Run}
+\begin{description}
+	\item [G8]  Allow organizers to define the path for a run.
+	\item [G9]  Allow runners to enroll in a run.
+	\item [G10]  Allow spectators to see the position of the participants on the map during a run.
+\end{description}
+
 \subsection{Scope}
 \subsection{Definitions, acronyms, abbreviations}
 \subsection{Revision history}

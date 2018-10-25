@@ -1,0 +1,39 @@
+GOALS
+G1_d4h. Allow third parties to make requests for accessing customer data.
+Ga_d4h. Deny access to customer data from third parties until a proper request is approved.
+Gb_d4h. Requests for data regarding specific individuals are forwarded to the single customers.
+Gc_d4h. Requests for data regarding large groups of anonymized people are subject to verification process.
+Gd_d4h. Allow third parties to subscribe to new data, for which a request have been approved.
+G4_sos. From the time a customer's parameters indicate a health emergency status, an ambulance is dispatched to his location in less than 5 seconds.
+Ge_sos. When an ambulance is dispatched, the customer is notified of its arrival.
+G5_t4r. Allow organizers to define the path for a run.
+G6_t4r. Allow runners to enroll in a run.
+G7_t4r. Allow spectators to see the position of the participants on the map during a run.
+
+?G2_d4h. Customer has control over his data sharing preferences.
+-G3_d4h. third parties can subscribe to data feed if data request was approved
+?G0_d4h. Data from customers is acquired and saved on regular intervals.
+
+DOMAIN ASSUMPTIONS
+D1_Gc. A group is considered anonymous if is composed by more than 1000 people.
+?D2_G3. Wearable devices compatible with TrackMe gather useful data.
+D3_G3. Third parties are able to identify specific customers by SSN or FC.
+?D4_G3. Third parties correctly uses TrackMe APIs.
+?D5_G4. The dispatched ambulance is always able to arrive ad destination in the shortest time possible.
+D6_G4. Data acquired trough wearable devices is accurate.
+D7_G7. Organizer choice a valid path and run are legally authorized by authority.
+D8_G4. Health emergency status occurs when an customer's parameter falls below or exceeds healthy boundaries.
+
+REQUIREMENTS
+R2_G3. TrackMe should be able to send data requests to specific individuals.
+R3_G3. TrackMe must refuse third parties data request on groups  that cannot guarantee customers anonymity.
+R4_G3. TrackMe should guarantee a topic-subscriber system that permit 3rd parties to receive updated informations on customers groups.
+R5_G3. TrackMe expose a set of APIs to 3rd parties.
+R6_G4. TrackMe should be able to recognize when a certain customer need help.
+R7_G4. TrackMe reaction time should be of at most 5 seconds.
+R8. AutomateSOS and Track4Run exploit Data4Help features.
+R9_G4. Healthy boundaries are determined considering individuals characteristics, such as sex, weight, diseases, etc.
+
+
+DOMANDE
+- il software sui wearables e' nostro, o noi riceviamo solo i dati?
