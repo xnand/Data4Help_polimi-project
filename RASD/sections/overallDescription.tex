@@ -6,5 +6,68 @@
 \subsection{Product functions}
 \subsection{User characteristics}
 \subsection{Assumptions, dependencies, constrains}
+{\bf Domain assumptions}
+
+\begin{description}
+    \item [G1]  Third parties can make requests for accessing single customer data.
+
+        \begin{description}
+            \item [D1]  Third parties are able to identify specific customers by SSN or FC.
+
+        \end{description}
+        
+    \item [G2]  Third parties can make requests for aggregate anonymous data specifying filters.
+        \begin{description}
+            \item [D2]  A group is considered anonymous if is composed by more than 1000 people.
+
+        \end{description}
+
+    \item [G3]	Third parties can subscribe to new data, for which a request have been approved.
+        \begin{description}
+            \item
+
+        \end{description}
+        
+    \item [G4]  Users can accept or refuse requests for their data from third parties.  
+        \begin{description}
+            \item [D3]  A sent request is always received by the targeted user
+
+        \end{description}
+    \item [G5]  Third parties who requests are accepted are not prevented to accessing data.
+        \begin{description}
+            \item
+
+        \end{description}
+    \item [G6]  From the time a customer's parameters indicate a health emergency status, an ambulance is dispatched to his location in less than 5 seconds.
+        \begin{description}
+            \item [D4] Health emergency status occurs when a AutomatedSOS customer parameters falls below or exceeds healthy boundaries.
+            \item [D5] AutomatedSOS customers are always connected to GSM or internet.
+            \item [D6] An ambulance is always available for dispatching and can reach the customer position.
+            
+        \end{description}
+    \item [G7]  When an ambulance is dispatched, the customer is notified of its arrival.
+        \begin{description}
+            \item 
+
+        \end{description}
+
+    \item [G8]  Organizers can define the path for a run.
+        \begin{description}
+            \item [D7] Organizers choice a valid path and run are legally authorized by authority.
+
+        \end{description}
+
+    \item [G9]  Runners can view and enroll in created runs
+        \begin{description}
+            \item []
+
+        \end{description}
+
+    \item [G10] Spectators can see the position of participants on the map during a run.
+        \begin{description}
+            \item
+
+        \end{description}
+\end{description}
 
 \end{document}

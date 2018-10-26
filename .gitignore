@@ -8,3 +8,19 @@ RASD/*.log
 RASD/*.out
 
 RASD/*.toc
+
+RASD/main\.synctex\.gz
+
+RASD/sections/overallDescription\.pdf
+
+RASD/*.pdf
+
+RASD/*.swp
+
+RASD/*.gz
+
+RASD/*.log
+
+RASD/*.*.gz
+
+RASD/sections/*.pdf
