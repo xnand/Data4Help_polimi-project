@@ -1,26 +1,10 @@
-
-RASD/*.pdf
-
-RASD/*.aux
-
-RASD/*.log
-
-RASD/*.out
-
-RASD/*.toc
-
-RASD/main\.synctex\.gz
-
-RASD/sections/overallDescription\.pdf
-
-RASD/*.pdf
-
-RASD/*.swp
-
-RASD/*.gz
-
-RASD/*.log
-
-RASD/*.*.gz
-
-RASD/sections/*.pdf
+# ignore everything
+*
+# except these
+!*.tex
+!*.holder
+!*.jpg
+!*.jpeg
+!*.png
+!RASD/misc/*
+!DeliveryFolder/*
