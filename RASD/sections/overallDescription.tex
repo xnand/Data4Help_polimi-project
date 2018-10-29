@@ -5,14 +5,82 @@
 \subsection{Product perspective}
 \subsection{Product functions}
 
+\vspace{8mm}
+
 Following are the requirements our system has to satisfy in order to provide the main functionalities.
 
+\vspace{8mm}
+
+{\bf Data4Help}
 \begin{description}
-	\item 
+	\item [G1]  Third parties can make requests for accessing single customer data.
+	\begin{description}
+		\item [R1] The system must forward any request from a company to single customer data to the corresponding user.
+	\end{description}
+
+	\item [G2]  Third parties can make requests for accessing aggregate anonymous data specifiying filters.
+	\begin{description}
+		\item [R2] The system must reject any request for data regarding a group of customers when it cannot guarantee the anonimity of its components.
+	\end{description}
+
+	\item [G3]  Third parties can subscribe to new data, for which a request has been approved.
+	\begin{description}
+		\item [R3] The system must periodically update the accessible data with the newly collected one.
+	\end{description}
+
+	\item [G4]  Users can accept or refuse requests for their data from third parties.
+	\begin{description}
+		\item [R4] The system must notify the user of the request and permit him to accept or refuse it.
+		\item [R5] The system must update the request status with the answer provided by the user.
+	\end{description}
+
+	\item [G5]  Third parties whose requests are accepted are not prevented from accessing data.
+	\begin{description}
+		\item [R6] The system must deny access to customer data for companies that don't have an approved request associated to it.
+	\end{description}
 \end{description}
 
+\vspace{8mm}
+
+{\bf AutomatedSOS}
+\begin{description}
+	\item [G6]  From the time a customer's parameters indicate a health emergency status, an ambulance is dispatched to his location in less than 5 seconds.
+	\begin{description}
+		\item [R7] The system must continuously check the incoming data from customers subscribed to AutomatedSOS.
+		\item [R8] In case the data indicate an emergency for a customer, the system must dispatch the closest ambulance to his location.
+	\end{description}
+
+	\item [G7]  When an ambulance is dispatched, the customer is notified of its arrival.
+	\begin{description}
+		\item [R9] After an ambulance is dispatched, the system must notify the customer of its arrival.
+	\end{description}
+\end{description}
+
+\vspace{8mm}
+
+{\bf Track4Run}
+\begin{description}
+	% \item [G8]  Organizers can define the path for a run.
+	% \begin{description}
+	%
+	% \end{description}
+
+	\item [G9]  Runners can view and enroll in available runs.
+	\begin{description}
+		\item [R10] The system must show open events to the users.
+		\item [R11] The system must allow users to sort and filter events by date and location.
+	\end{description}
+
+	\item [G10] Spectators can see the position of participants on the map during a run.
+	\begin{description}
+		\item [R12] The system must collect and provide in real time the position of participants on a map.
+	\end{description}
+\end{description}
+
+\vspace{8mm}
 \subsection{User characteristics}
 \subsection{Assumptions, dependencies, constrains}
+
 {\bf Domain assumptions}
 
 \begin{description}
@@ -22,12 +90,12 @@ Following are the requirements our system has to satisfy in order to provide the
 		\item [D1] Third parties are able to identify specific customers by SSN or FC.
 	\end{description}
 
-	\item [G2] Third parties can make requests for aggregate anonymous data specifying filters.
+	\item [G2] Third parties can make requests for accessing aggregate anonymous data specifiying filters.
 	\begin{description}
 		\item [D2] A group is considered anonymous if is composed by more than 1000 people.
 	\end{description}
 
-	\item [G3] Third parties can subscribe to new data, for which a request have been approved.
+	\item [G3] Third parties can subscribe to new data, for which a request has been approved.
 	\begin{description}
 		\item
 	\end{description}
@@ -56,7 +124,8 @@ Following are the requirements our system has to satisfy in order to provide the
 
 	\item [G8]  Organizers can define the path for a run.
 	\begin{description}
-		\item [D7] Organizers choice a valid path and run are legally authorized by authority.
+		\item [D7] Organizers choose a valid path for the event.
+		\item [D8] The event is legally autorized by authorities.
 	\end{description}
 
 	\item [G9]  Runners can view and enroll in created runs
