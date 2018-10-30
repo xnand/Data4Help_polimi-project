@@ -5,21 +5,19 @@
 We can use "The World \& The Machine" model by M. Jackson and P. Zave to make an initial domain analysis. This allows us to understand which are the entities and the phenomena the machine cannot directly observe ("The World"), which are the ones the external world cannot directly see ("The Machine"), and the ones that are shared, i.e. the mean of interaction between the two.
 
 \begin{figure}[h!]
-  \includegraphics[width=\linewidth]{worldandmachine.jpg}
-  \caption{Program analysis as per "The World \& The Machine" model}
-  \label{fig:worldandmachine}
+	\includegraphics[width=\linewidth]{worldandmachine.jpg}
+	\caption{Program analysis as per "The World \& The Machine" model}
+	\label{fig:worldandmachine}
 \end{figure}
 
 \subsection{Product perspective}
 
 \subsection{Product functions}
 
-\vspace{8mm}
 
 Following are the requirements our system has to satisfy in order to provide the main functionalities.
 
-\vspace{8mm}
-
+\begin{minipage}{\textwidth}
 {\bf Data4Help}
 \begin{description}
 	\item [G1]  Third parties can make requests for accessing single customer data.
@@ -53,9 +51,11 @@ Following are the requirements our system has to satisfy in order to provide the
 		\item [R7] The system must deny access to customer data for companies that don't have an approved request associated to it.
 	\end{description}
 \end{description}
-
+\end{minipage}
 \vspace{8mm}
 
+
+\begin{minipage}{\textwidth}
 {\bf AutomatedSOS}
 \begin{description}
 	\item [G7]  From the time a customer's parameters indicate a health emergency status, an ambulance is dispatched to his location in less than 5 seconds.
@@ -69,9 +69,11 @@ Following are the requirements our system has to satisfy in order to provide the
 		\item [R10] After an ambulance is dispatched, the system must notify the customer of its arrival.
 	\end{description}
 \end{description}
-
+\end{minipage}
 \vspace{8mm}
 
+
+\begin{minipage}{\textwidth}
 {\bf Track4Run}
 \begin{description}
 	% \item [G9]  Organizers can define the path for a run.
@@ -90,8 +92,9 @@ Following are the requirements our system has to satisfy in order to provide the
 		\item [R13] The system must collect and provide in real time the position of participants on a map.
 	\end{description}
 \end{description}
-
+\end{minipage}
 \vspace{8mm}
+
 \subsection{User characteristics}
 \subsection{Assumptions, dependencies, constrains}
 
