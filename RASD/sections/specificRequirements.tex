@@ -31,8 +31,9 @@
 				\linespread{0}\item The user is already registered.
 				\linespread{0}\item The user doesn't fill all mandatory fields.
 				\linespread{0}\item The user enters invalid data.
-				\linespread{0}\item When an exception occurs the user is notified and the application return to previous page.
 			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When an exception occurs the user is notified and the application return to previous page.\\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -44,14 +45,14 @@
 			\hline
 			\textbf{Actor} & User\\
 			\hline
-			\textbf{Entry condition} & The user has installed the application and it is opened on his/her device.\\
+			\textbf{Entry condition} & The user has installed the application and it is open on his/her device.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
 				\linespread{0}\item The user clicks "Log In".
 				\linespread{0}\item The user enters username and password.
-				\linespread{0}\item The user decide if he/she wants to be remembered by the system clicking on the relative checkbox.
+				\linespread{0}\item The user decides if he/she wants to be remembered by the system clicking on the relative checkbox.
 				\linespread{0}\item The user clicks "Confirm".
-				\linespread{0}\item If the user has selected to be remembered, next time the use case ends without asking username and password.
+				\linespread{0}\item If the user chose to be remembered, next time the use case ends without asking username and password.
 			\end{enumerate}\\
 			\hline
 			\textbf{Exit condition} & The user is on the home page of the application.\\
@@ -59,8 +60,9 @@
 			\textbf{Exception} & \begin{enumerate}
 				\linespread{0}\item The user enters invalid data.
 				\linespread{0}\item The user doesn't fill all fields.
-				\linespread{0}\item When an exception occurs the user is notified and the application return to previous page.
 			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When an exception occurs the user is notified and the application return to previous page.\\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -75,19 +77,20 @@
 			\textbf{Entry condition} & The third party company is on TrackMe website.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
-				\linespread{0}\item The third party company go to the registering page.
-				\linespread{0}\item The third party company fill all mandatory fields.
-				\linespread{0}\item The third party company click on "Send" button. An email with the informations is sent to TrackMe.
+				\linespread{0}\item The third party company goes to the registering page.
+				\linespread{0}\item The third party company fills all mandatory fields.
+				\linespread{0}\item The third party company clicks on "Send" button. An email with the informations is sent to TrackMe.
 			\end{enumerate}\\
 			\hline
-			\textbf{Exit condition} & The third party company is registered and it's waiting for the Data4Help API key to be received.\\
+			\textbf{Exit condition} & The third party company is waiting for the Data4Help API key to be received.\\
 			\hline
 			\textbf{Exception} & \begin{enumerate}
 				\linespread{0}\item The third party company enters invalid data.
 				\linespread{0}\item The third party company doesn't fill all fields.
 				\linespread{0}\item Sending the email fails.
-				\linespread{0}\item When an exception occurs the email is not sent and the third party company is notified.
 			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When an exception occurs the email is not sent and the third party company is notified.\\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -103,16 +106,17 @@
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
 				\linespread{0}\item The administrator reads the email.
-				\linespread{0}\item If the third party company is ok the administrator sends the API key.
-				\linespread{0}\item If the third party company isn't ok the administrator sends a rejection email and delete the registration.
+				\linespread{0}\item If the third party company is legit the administrator sends the API key.
+				\linespread{0}\item If the third party company isn't legit the administrator sends a rejection email.
 			\end{enumerate}\\
 			\hline
-			\textbf{Exit condition} & The third party company receives the API key and it's ready to use it.\\
+			\textbf{Exit condition} & The third party company receives the API key.\\
 			\hline
 			\textbf{Exception} & \begin{enumerate}
 				\linespread{0}\item Sending the email fails.
-				\linespread{0}\item When sending the email fails the administrator is notified.
 			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When sending the email fails the administrator is notified.\\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -127,8 +131,8 @@
 			\textbf{Entry condition} & The authenticated user is on the home page of the application.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
-				\linespread{0}\item The authenticated user selects what service he/she wants to activate: Data4Help, AutomatedSOS, Track4Run.
-				\linespread{0}\item The authenticated user can delete the authorization to give data to the third party companies.
+				\linespread{0}\item The authenticated user selects what service he/she wants to activate: AutomatedSOS, Track4Run.
+				\linespread{0}\item The authenticated user can delete the authorizations to give data to the third party companies.
 				\linespread{0}\item The authenticated user can edit personal informations.
 			\end{enumerate}\\
 			\hline
@@ -146,20 +150,21 @@
 			\hline
 			\textbf{Actor} & Authenticated User\\
 			\hline
-			\textbf{Entry condition} & The authenticated user wants to subscribe or unsubscribe to Data4Help, AutomatedSOS and Track4Run.\\
+			\textbf{Entry condition} & The authenticated user wants to subscribe or unsubscribe to AutomatedSOS and Track4Run.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
 				\linespread{0}\item The authenticated user opens the preferences.
 				\linespread{0}\item The authenticated user clicks a box to subscribe himself to a service.
-				\linespread{0}\item If it's required the authenticated user connects his/her wearable device.
+				\linespread{0}\item If it's required, the authenticated user connects his/her wearable device.
 			\end{enumerate}\\
 			\hline
 			\textbf{Exit condition} & The authenticated user is subriscribed to the desired services.\\
 			\hline
 			\textbf{Exception} & \begin{enumerate}
 				\linespread{0}\item The authenticated user doesn't connect the wearable device when requested.
-				\linespread{0}\item When an exception occurs the preferences are not saved.
 			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When an exception occurs the preferences are not saved.\\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -175,7 +180,6 @@
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
 				\linespread{0}\item The authenticated user opens the requests page.
-				\linespread{0}\item The authenticated user shows the requests.
 			\end{enumerate}\\
 			\hline
 			\textbf{Exit condition} & The requests page is opened and all the requets are visible.\\
@@ -195,12 +199,12 @@
 			\textbf{Entry condition} & The authenticated user is on the requests page.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
-				\linespread{0}\item The authenticated user open a request.
-				\linespread{0}\item The authenticated user click on "Approve" or "Don't approve".
-				\linespread{0}\item When the user approve a data request of a third party company all user's data asked become available to it.
+				\linespread{0}\item The authenticated user opens a request.
+				\linespread{0}\item The authenticated user clicks on "Accept" or "Refuse".
+				\linespread{0}\item When the user approves a data request of a third party company all user's data becomes available to it.
 			\end{enumerate}\\
 			\hline
-			\textbf{Exit condition} & The answers are saved. The requests approved make the relative third party company able to take past data and send new data as soon as available.\\
+			\textbf{Exit condition} & The answers are saved. The approved requests make the relative third party company able to access currently stored data and to subscribe to new collected data.\\
 			\hline
 			\textbf{Exception}\\
 			\hline
@@ -210,25 +214,26 @@
 	\begin{center}
 		\begin{tabular}{p{3cm}p{8.28cm}}
 			\hline
-			\textbf{Use Case} & Organize running competition\\
+			\textbf{Use Case} & Organize running event\\
 			\hline
 			\textbf{Actor} & Authenticated User\\
 			\hline
-			\textbf{Entry condition} & The authenticated user is on the home page and wants to organize a running competition.\\
+			\textbf{Entry condition} & The authenticated user is on the home page and wants to organize a running event.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
-				\linespread{0}\item The authenticated user clicks "New competition".
+				\linespread{0}\item The authenticated user clicks "New running event".
 				\linespread{0}\item The authenticated user selects the route, date and time.
 				\linespread{0}\item The authenticated user clicks "Confirm".
 			\end{enumerate}\\
 			\hline
-			\textbf{Exit condition} & The running competition is organized and now users can show it and enroll to it.\\
+			\textbf{Exit condition} & The running event is organized and now users can view it and enroll to it.\\
 			\hline
 			\textbf{Exception} & \begin{enumerate}
-				\linespread{0}\item There is another running competition in the same place, date and time.
+				\linespread{0}\item There is another running event in the same place, date and time.
 				\linespread{0}\item The route, date or time selected are not valid.
-				\linespread{0}\item When an exception occurs the running competition is not saved and the user is notified.
 			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When an exception occurs the running event is not saved and the user is notified.\\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -236,18 +241,17 @@
 	\begin{center}
 		\begin{tabular}{p{3cm}p{8.28cm}}
 			\hline
-			\textbf{Use Case} & Show competition\\
+			\textbf{Use Case} & Show running events\\
 			\hline
 			\textbf{Actor} & Authenticated User\\
 			\hline
-			\textbf{Entry condition} & The authenticated user is on the home page and wants to show the running competitions.\\
+			\textbf{Entry condition} & The authenticated user is on the home page and wants to view the running events.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
-				\linespread{0}\item The authenticated user clicks "Show competition".
-				\linespread{0}\item The authenticated user shows the competitions.
+				\linespread{0}\item The authenticated user clicks "Show running events".
 			\end{enumerate}\\
 			\hline
-			\textbf{Exit condition} & All competitions are visible to user.\\
+			\textbf{Exit condition} & All running events are visible to the user.\\
 			\hline
 			\textbf{Exception}\\
 			\hline
@@ -257,18 +261,18 @@
 	\begin{center}
 		\begin{tabular}{p{3cm}p{8.28cm}}
 			\hline
-			\textbf{Use Case} & Open competition\\
+			\textbf{Use Case} & Open running event\\
 			\hline
 			\textbf{Actor} & Authenticated User\\
 			\hline
-			\textbf{Entry condition} & The authenticated user is on the competitions page.\\
+			\textbf{Entry condition} & The authenticated user is on the running events page.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
-				\linespread{0}\item The authenticated user select a competition.
-				\linespread{0}\item The authenticated user shows all details of the competition.
+				\linespread{0}\item The authenticated user select a running event.
+				\linespread{0}\item The authenticated user views all details of the running event.
 			\end{enumerate}\\
 			\hline
-			\textbf{Exit condition} & The competition page is opened.\\
+			\textbf{Exit condition} & The running event page is shown to the user.\\
 			\hline
 			\textbf{Exception}\\
 			\hline
@@ -278,11 +282,11 @@
 	\begin{center}
 		\begin{tabular}{p{3cm}p{8.28cm}}
 			\hline
-			\textbf{Use Case} & Edit run competition\\
+			\textbf{Use Case} & Edit running event\\
 			\hline
 			\textbf{Actor} & Authenticated User\\
 			\hline
-			\textbf{Entry condition} & The authenticated user is the creator of the running competition and he/she is on the competition page.\\
+			\textbf{Entry condition} & The authenticated user is the creator of the running event and he/she is on the running event page.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
 				\linespread{0}\item The authenticated user clicks on "Edit".
@@ -293,10 +297,11 @@
 			\textbf{Exit condition} & The changes are saved\\
 			\hline
 			\textbf{Exception}& \begin{enumerate}
-				\linespread{0}\item There is another running competition in the same place, date and time.
+				\linespread{0}\item There is another running event in the same place, date and time.
 				\linespread{0}\item The route, date or time selected are not valid.
-				\linespread{0}\item When an exception occurs the changes are not saved and the user is notified.
 			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When an exception occurs the changes are not saved and the user is notified.\\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -304,22 +309,23 @@
 	\begin{center}
 		\begin{tabular}{p{3cm}p{8.28cm}}
 			\hline
-			\textbf{Use Case} & Delete run competition\\
+			\textbf{Use Case} & Delete running event\\
 			\hline
 			\textbf{Actor} & Authenticated User\\
 			\hline
-			\textbf{Entry condition} & The authenticated user is the creator of the running competition and he/she is on the competition page.\\
+			\textbf{Entry condition} & The authenticated user is the creator of the running event and he/she is on the running event page.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
 				\linespread{0}\item The authenticated user clicks on "Delete".
 			\end{enumerate}\\
 			\hline
-			\textbf{Exit condition} & The running competition is deleted and people who were enrolled are notified.\\
+			\textbf{Exit condition} & The running event is deleted and people who were enrolled are notified.\\
 			\hline
 			\textbf{Exception}& \begin{enumerate}
-				\linespread{0}\item The user try to delete a running competition that is in progress.
-				\linespread{0}\item When an exception occurs the running competition is not deleted and the user is notified.
+				\linespread{0}\item The user tries to delete a running event that is in progress.
 			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When an exception occurs the running event is not deleted and the user is notified.\\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -327,17 +333,17 @@
 	\begin{center}
 		\begin{tabular}{p{3cm}p{8.28cm}}
 			\hline
-			\textbf{Use Case} & Enroll to a competition\\
+			\textbf{Use Case} & Enroll in a running event\\
 			\hline
 			\textbf{Actor} & Authenticated User\\
 			\hline
-			\textbf{Entry condition} & The authenticated user is on specific competition page.\\
+			\textbf{Entry condition} & The authenticated user is on the specific running event page and he/she isn't the creator of it.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
 				\linespread{0}\item The authenticated user clicks on "Enroll".
 			\end{enumerate}\\
 			\hline
-			\textbf{Exit condition} & The user is enrolled to the competition selected.\\
+			\textbf{Exit condition} & The user is enrolled to the running event selected.\\
 			\hline
 			\textbf{Exception}\\
 			\hline
@@ -351,13 +357,13 @@
 			\hline
 			\textbf{Actor} & Authenticated User\\
 			\hline
-			\textbf{Entry condition} & The authenticated user is on specific competition page.\\
+			\textbf{Entry condition} & The authenticated user is on the specific event page.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
 				\linespread{0}\item The authenticated user clicks on "Map".
 			\end{enumerate}\\
 			\hline
-			\textbf{Exit condition} & The user shows the map of the competition and if it's already start he/she can see the participants location.\\
+			\textbf{Exit condition} & The user views the map of the running event and if it's already started he/she can see the participants location.\\
 			\hline
 			\textbf{Exception}\\
 			\hline
@@ -367,23 +373,24 @@
 	\begin{center}
 		\begin{tabular}{p{3cm}p{8.28cm}}
 			\hline
-			\textbf{Use Case} & Make data request\\
+			\textbf{Use Case} & Send group data request\\
 			\hline
 			\textbf{Actor} & Registered Third party company\\
 			\hline
 			\textbf{Entry condition} & Third party company has already received the API key.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
-				\linespread{0}\item Registered third party company makes an html request with some parameters.
+				\linespread{0}\item Registered third party company makes an html request with the proper parameters through TrackMe's web API.
 			\end{enumerate}\\
 			\hline
 			\textbf{Exit condition} & Registered third party company received the requested data.\\
 			\hline
 			\textbf{Exception} & \begin{enumerate}
 				\linespread{0}\item Some parameters are not valid.
-				\linespread{0}\item The request is rejected because it concerns more than a thousand people. 
-				\linespread{0}\item When an error occurs third party company is notified and it doesn't receive requested data. 
+				\linespread{0}\item The request is rejected because it concerns less then a thousand people. 
 			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When an exception occurs the third party company is notified and it doesn't receive requested data. \\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -391,26 +398,71 @@
 	\begin{center}
 		\begin{tabular}{p{3cm}p{8.28cm}}
 			\hline
-			\textbf{Use Case} & Send individual request\\
+			\textbf{Use Case} & Send individual data request\\
 			\hline
 			\textbf{Actor} & Registered Third party company\\
 			\hline
-			\textbf{Entry condition} & Third party company has already received the API key and it knows fiscal code of the person to whom it's asking for data.\\
+			\textbf{Entry condition} & Third party company has already received the API key and it knows the fiscal code or the social security number of the person to whom it's asking for data.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
-				\linespread{0}\item Registered third party company make an html request with some patameters and the fiscal code of the person.
+				\linespread{0}\item Registered third party company make an html request with the proper parameters and the fiscal code of the person through TrackMe's web API.
 			\end{enumerate}\\
 			\hline
 			\textbf{Exit condition} & The request was sent.\\
 			\hline
 			\textbf{Exception} & \begin{enumerate}
 				\linespread{0}\item Some parameters or the fiscal code are not valid.
-				\linespread{0}\item When an error occurs third party company is notified and the request is not sent.
 			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When an exception occurs third party company is notified and the request is not sent.\\
 			\hline
 		\end{tabular}
 	\end{center}
-\subsection{Performance requirements}
+
+	\subsubsection{Scenarios and Sequence Diagrams}
+		\begin{minipage}{\textwidth}
+			{\bf Scenario 1a}
+			\vspace{3mm}
+
+			HealthyResearch is a company which makes medical research. It's making a project so it needs some data. It request these data thanks to Data4Help service specifing that it wants people who live in Italy, 25 to 50 years old who regularly do some sports and not. The sample is bigger that 10000 so HealthyResearch receives immediatly the requested data.
+			\vspace{5mm}
+		\end{minipage}
+		\begin{minipage}{\textwidth}
+			{\bf Scenario 1b}
+			\vspace{3mm}
+
+			HealthyResearch wants the same data of the scenario 1a but referring to the people who are participating to the running event in Milan today. Now the sample is smaller than 10000 so the request is rejected.
+			\vspace{5mm}
+		\end{minipage}
+		\begin{minipage}{\textwidth}
+			{\bf Scenario 2}
+			\vspace{3mm}
+
+			Mrs. Jane is 75 years old. She always forgot to drink water and she eats very little. His son buy to her a smartwatch and install the TrackMe's application subscribing Jane to AutomatedSOS service. One day Jane feels bad due to an hypovolemia so her blood pressure drops dramatically. The smartwatch recognize that the value is under the minimum then an ambulance is called automatcally. Jane arrives to the hospital in time.
+			\vspace{5mm}
+		\end{minipage}
+		\begin{minipage}{\textwidth}
+			{\bf Scenario 3a}
+			\vspace{3mm}
+
+			Mario wants to organize a running event in his city, he is subscribed to Track4Run so he opens the events page and creates a new one. He selects the route, date and time. The operation ends successfully so the event is organized.
+			\vspace{5mm}
+		\end{minipage}
+		\begin{minipage}{\textwidth}
+			{\bf Scenario 3b}
+			\vspace{3mm}
+
+			Mario realizes that he can't be present at the event created as specified in scenario 3a. He edits the day of the event but due to another event already organized in the same place, date and time the editing operation fails. Mario finally decides to delete the event.
+			\vspace{5mm}
+		\end{minipage}
+		\begin{minipage}{\textwidth}
+			{\bf Scenario 4}
+			\vspace{3mm}
+
+			Anne runs for hobbies, she decides to subribe to Track4Run. She open the events page and she see one that interests her so she enrolls to it. She unfortunately breaks her foot so she can't participate but thanks to the option to see the map with the position of the participants she will at least be able to see the event progress. 
+			\vspace{5mm}
+		\end{minipage}
+	\subsection{Performance requirements}
 \subsection{Design constraints}
 \subsection{Software system attributes}
 
