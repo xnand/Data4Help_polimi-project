@@ -379,11 +379,12 @@ m2=1,,n</panel_attributes>
       <x>498</x>
       <y>324</y>
       <w>120</w>
-      <h>42</h>
+      <h>48</h>
     </coordinates>
     <panel_attributes>Notification
 --
 +Text
++Priority
 --</panel_attributes>
     <additional_attributes/>
   </element>
@@ -391,15 +392,15 @@ m2=1,,n</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>468</x>
-      <y>360</y>
+      <y>366</y>
       <w>108</w>
-      <h>192</h>
+      <h>186</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1
 m2=1
 sends</panel_attributes>
-    <additional_attributes>10.0;290.0;150.0;290.0;150.0;10.0</additional_attributes>
+    <additional_attributes>10.0;280.0;150.0;280.0;150.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
