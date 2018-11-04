@@ -3,6 +3,29 @@
 \begin{document}
 
 \subsection{External interfaces requirements}
+
+\subsubsection{User interfaces}
+
+todo app and website mockups
+
+\subsubsection{Hardware requirements}
+
+For using our services, the end customer will need a WearOS device with appropriate sensors and interfaces (GPS, heart rate \& pressure, etc.) to capture the location and body parameters to our system. A smartphone will also be needed to be paired with such wearable device.
+
+The third party company on the other hand won't need any particular interface, any device capable of communicating data through HTTPS protocol will be fine.
+
+\subsubsection{Software interfaces}
+
+todo qualche api che usiamo??
+
+
+\subsubsection{Communication interfaces}
+
+Communication between the customer's wearable device and his/her smartphone will take place through Bluetooth Low Energy protocol, and the one between such smartphone and our system through HTTPS, using a Wi-Fi or 3G/4G internet connection.
+
+Communication between a third party company and our system will go through HTTPS procotol.
+
+
 \subsection{Functional requirements}
 	\subsubsection{Use Cases}
 	\begin{figure}[htbp]
@@ -22,6 +45,7 @@
 			\textbf{Flow of events} & \begin{enumerate}
 				\linespread{0}\item The user clicks "Sign Up".
 				\linespread{0}\item The user fills all mandatory fields.
+				\linespread{0}\item The user accepts the privacy policies.
 				\linespread{0}\item The user clicks "Confirm".
 			\end{enumerate}\\
 			\hline
@@ -387,7 +411,7 @@
 			\hline
 			\textbf{Exception} & \begin{enumerate}
 				\linespread{0}\item Some parameters are not valid.
-				\linespread{0}\item The request is rejected because it concerns less then a thousand people. 
+				\linespread{0}\item The request is rejected because it concerns less then a thousand people.
 			\end{enumerate}\\
 			\hline
 			\textbf{Note} & When an exception occurs the third party company is notified and it doesn't receive requested data. \\
@@ -459,11 +483,75 @@
 			{\bf Scenario 4}
 			\vspace{3mm}
 
-			Anne runs for hobbies, she decides to subribe to Track4Run. She open the events page and she see one that interests her so she enrolls to it. She unfortunately breaks her foot so she can't participate but thanks to the option to see the map with the position of the participants she will at least be able to see the event progress. 
+			Anne runs for hobbies, she decides to subribe to Track4Run. She open the events page and she see one that interests her so she enrolls to it. She unfortunately breaks her foot so she can't participate but thanks to the option to see the map with the position of the participants she will at least be able to see the event progress.
 			\vspace{5mm}
 		\end{minipage}
-	\subsection{Performance requirements}
+
+
+\subsection{Performance requirements}
+
+Our system needs to permit a large number of third party companies to always operate on our services, and in the same way must promptly operate the incoming data from a large number of customers. It must therefore be scalable on the increasing number of users over time, and ready to serve at least 10.000 customers and 200 companies at launch.
+
+The software on customer's device must be reactive, and must take into account communication protocols unreliability, transmitting all the data that wasn't succesfully sent after an occasional internet or bluetooth connection disservice.
+
 \subsection{Design constraints}
+
+\subsubsection{Standard compliance}
+
+As per privacy policies, the system must ask appropriate permissions to be installed on the respective device, and must ask the customer to accept a statement that describes the use of the information we collect about him/her, at the moment of registering to our services.
+
+\subsubsection{Hardware limitations}
+
+Following are the hardware limitations required by the end customer for using our services.
+
+\vspace*{8mm}
+\begin{minipage}{\textwidth}
+{\bf Wearable Device}
+\begin{itemize}
+	\item WearOS platform
+	\item GPS
+	\item Bluetooth Low Energy
+	\item Heart rate sensor
+	\item Blood pressure sensor
+\end{itemize}
+\end{minipage}
+
+\vspace*{8mm}
+\begin{minipage}{\textwidth}
+{\bf Smartphone}
+\begin{itemize}
+	\item Android or iOS platform
+	\item Bluetooth Low Energy
+	\item Wi-Fi or 3G/4G technology
+\end{itemize}
+\end{minipage}
+
 \subsection{Software system attributes}
+
+\subsubsection{Reliability}
+
+Since we do not have control on the functioning state of sensors that are inside a wearable device, our software must carefully process the data and discard any impossible or highly implausible parameter, also taking into account that customer's movements and actions may interfere with such parameters making them invalid for a certain period.
+
+\subsubsection{Availability}
+
+The back-end system must always be capable of collecting data from customers and letting companies access it. Moreover, it must always be capable of promptly responding to a customer's emergency, and always capable to communicate with the ambulances, as it is a critical situation; for this same reason, no down time must occur.
+
+\subsubsection{Security}
+
+In order to guarantee the protection of customer's sensible data, all internet traffic must be encrypted with SSL and sent through HTTPS protocol; also every end point of such data transfer that's in our control must verify the other side's certificate and reject any transmission if invalid.
+
+All Bluetooth communication must be encrypted too.
+
+\subsubsection{Mantainability}
+
+The back-end system must be capable of sustaining maintenance operations on a copy, to be then deployed after being tested on all its functions, in order to guarantee no down-time for the critical functions.
+
+Software that's on devices will be updated through the appropriate app store, as needed.
+
+\subsubsection{Portability}
+
+Our smartphone application must be available for Android and iOS platforms. Cross platform developed tools can be used to achieve this.
+
+The wearable application must be available for the WearOS platform.
 
 \end{document}
