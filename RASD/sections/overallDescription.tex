@@ -124,26 +124,34 @@ Following are the requirements our system has to satisfy in order to provide the
 \begin{minipage}{\textwidth}
 {\bf Track4Run}
 \begin{description}
-	% \item [G9]  Organizers can define the path for a run.
-	% \begin{description}
-	%
-	% \end{description}
+	\item [G9]  Organizers can create a new running event, providing the required information.
+	\begin{description}
+		\item [R11] The system must allow users to define the route, the date and the time of the event.
+		\item [R12] Two events can't overlap in the same place, date and time.
+		%\item [R13] When an event is deleted the participants will be notified.
+	\end{description}
 
 	\item [G10]  Runners can view and enroll in available runs.
 	\begin{description}
-		\item [R11] The system must show open events to the users.
-		\item [R12] The system must allow users to sort and filter events by date and location.
+		\item [R13] The system must show open events to the users.
+		\item [R14] The system must allow users to sort and filter events by date and location.
 	\end{description}
 
 	\item [G11] Spectators can see the position of participants on the map during a run.
 	\begin{description}
-		\item [R13] The system must collect and provide in real time the position of participants on a map.
+		\item [R15] The system must collect and provide in real time the position of participants on a map.
 	\end{description}
 \end{description}
 \end{minipage}
 \vspace{8mm}
 
 \subsection{User characteristics}
+The service is addressed to two type of costumers:
+\begin{itemize}
+	\item Third party companies that need data for their own purpose and they can't do it by theirselves or they don't want to do it.
+	\item People that want help in case of emergency with autaomatically calling an ambulance and people that want to organize, paricipate or being spectators of run events.	
+\end{itemize}
+
 \subsection{Assumptions, dependencies, constrains}
 
 {\bf Domain assumptions}
@@ -192,7 +200,7 @@ Following are the requirements our system has to satisfy in order to provide the
 		\item
 	\end{description}
 
-	\item [G9]  Organizers can create a new running event, prividing the required information.
+	\item [G9]  Organizers can create a new running event, providing the required information.
 	\begin{description}
 		\item [D7] Organizers choose a valid path for the event.
 		\item [D8] The event is legally autorized by authorities.
