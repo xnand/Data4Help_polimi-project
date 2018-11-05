@@ -375,7 +375,7 @@
 			\hline
 			\textbf{Use Case} & Send group data request\\
 			\hline
-			\textbf{Actor} & Registered Third party company\\
+			\textbf{Actor} & Registered Third Party Company\\
 			\hline
 			\textbf{Entry condition} & Third party company has already received the API key.\\
 			\hline
@@ -400,7 +400,7 @@
 			\hline
 			\textbf{Use Case} & Send individual data request\\
 			\hline
-			\textbf{Actor} & Registered Third party company\\
+			\textbf{Actor} & Registered Third Party Company\\
 			\hline
 			\textbf{Entry condition} & Third party company has already received the API key and it knows the fiscal code or the social security number of the person to whom it's asking for data.\\
 			\hline
@@ -434,12 +434,28 @@
 			HealthyResearch wants the same data of the scenario 1a but referring to the people who are participating to the running event in Milan today. Now the sample is smaller than 10000 so the request is rejected.
 			\vspace{5mm}
 		\end{minipage}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=.08]{images/sequenceDiagram1.png}
+			\caption{Sequence Diagram Scenario 1 \label{fig:Sequence Diagram Scenario 1}}
+		\end{figure}
 		\begin{minipage}{\textwidth}
+			. 
+		\end{minipage}
+		\begin{minipage}[t]{\textwidth}
 			{\bf Scenario 2}
 			\vspace{3mm}
 
 			Mrs. Jane is 75 years old. She always forgot to drink water and she eats very little. His son buy to her a smartwatch and install the TrackMe's application subscribing Jane to AutomatedSOS service. One day Jane feels bad due to an hypovolemia so her blood pressure drops dramatically. The smartwatch recognize that the value is under the minimum then an ambulance is called automatcally. Jane arrives to the hospital in time.
 			\vspace{5mm}
+		\end{minipage}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=.05]{images/sequenceDiagram2.png}
+			\caption{Sequence Diagram Scenario 2 \label{fig:Sequence Diagram Scenario 2}}
+		\end{figure}
+		\begin{minipage}{\textwidth}
+			. 
 		\end{minipage}
 		\begin{minipage}{\textwidth}
 			{\bf Scenario 3a}
@@ -455,6 +471,14 @@
 			Mario realizes that he can't be present at the event created as specified in scenario 3a. He edits the day of the event but due to another event already organized in the same place, date and time the editing operation fails. Mario finally decides to delete the event.
 			\vspace{5mm}
 		\end{minipage}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=.08]{images/sequenceDiagram3.png}
+			\caption{Sequence Diagram Scenario 3 \label{fig:Sequence Diagram Scenario 3}}
+		\end{figure}
+		\begin{minipage}{\textwidth}
+			 .
+		\end{minipage}
 		\begin{minipage}{\textwidth}
 			{\bf Scenario 4}
 			\vspace{3mm}
@@ -462,6 +486,12 @@
 			Anne runs for hobbies, she decides to subribe to Track4Run. She open the events page and she see one that interests her so she enrolls to it. She unfortunately breaks her foot so she can't participate but thanks to the option to see the map with the position of the participants she will at least be able to see the event progress. 
 			\vspace{5mm}
 		\end{minipage}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=.08]{images/sequenceDiagram4.png}
+			\caption{Sequence Diagram Scenario 4 \label{fig:Sequence Diagram Scenario 4}}
+		\end{figure}
+		
 	\subsection{Performance requirements}
 \subsection{Design constraints}
 \subsection{Software system attributes}
