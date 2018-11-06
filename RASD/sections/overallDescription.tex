@@ -146,10 +146,12 @@ Following are the requirements our system has to satisfy in order to provide the
 \vspace{8mm}
 
 \subsection{User characteristics}
-The service is addressed to two type of costumers:
+Following are the actors of the application:
 \begin{itemize}
-	\item Third party companies that need data for their own purpose and they can't do it by theirselves or they don't want to do it.
-	\item People that want help in case of emergency with autaomatically calling an ambulance and people that want to organize, paricipate or being spectators of run events.
+	\item Companies such as life insurances, hospitals and clinics, universities for research purposes or companies that focus on data analysis.
+	\item People of any age in need for a potentially life saving system. They may have diseases, disabilities, or just be elder.
+	\item Runners who want to organize running events or enroll in them, or people who want to track participants in real time.
+	\item TrackMe's service staff, that will handle third parties registration and assist them in case of need, among other service activities.
 \end{itemize}
 
 \subsection{Assumptions, dependencies, constrains}
@@ -160,12 +162,12 @@ The service is addressed to two type of costumers:
 
 	\item [D1] Third parties are able to identify specific customers by SSN or FC.
 	\item [D2] A group is considered anonymous if is composed by more than 1000 people.
-	\item [D3]  A sent request is always received by the targeted user
-	\item [D4] Health emergency status occurs when a AutomatedSOS customer parameters falls below or exceeds healthy boundaries.
-	\item [D5] AutomatedSOS customers are always connected to GSM or internet.
+	\item [D3] A sent request for customer's data is always received by the user.
+	\item [D4] Health emergency status occurs when a AutomatedSOS customer parameters falls below of or exceeds healthy boundaries.
+	\item [D5] AutomatedSOS customers always have an active and working internet connection.
 	\item [D6] An ambulance is always available for dispatching and can reach the customer position.
-	\item [D7] Organizers choose a valid path for the event.
-	\item [D8] The event is legally autorized by authorities.
+	\item [D7] Organizers choose a valid path for a running event.
+	\item [D8] A running event is legally autorized by the authorities.
 
 \end{description}
 
