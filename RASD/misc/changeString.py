@@ -24,6 +24,8 @@ for f in os.listdir(scriptDir + '/../sections'):
 	if '.tex' in f:
 		with open(scriptDir + '/../sections/' + f, 'rb') as fd:
 			content = fd.read()
-		content.replace(toRepl, repl)
-		with open(scriptDir + '/../sections/' + f, 'wb') as fd:
-			fd.write(content)
+		if toRepl in content:
+			content = content.replace(toRepl, repl)
+			with open(scriptDir + '/../sections/' + f, 'wb') as fd:
+				fd.write(content)
+			print('replaced content in {}'.format(f))
