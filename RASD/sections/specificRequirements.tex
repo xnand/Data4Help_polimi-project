@@ -27,13 +27,21 @@
 
 \subsubsection{Hardware requirements}
 
-For using our services, the end customer will need a WearOS device with appropriate sensors and interfaces (GPS, heart rate \& pressure, etc.) to capture the location and body parameters to our system. A smartphone will also be needed to be paired with such wearable device.
+For using our services, the end customer will need a wearable device with appropriate sensors and interfaces (GPS, heart rate \& pressure, etc.) to capture the location and body parameters to our system. A smartphone will also be needed to be paired with such wearable device.
 
 The third party company on the other hand won't need any particular interface, any device capable of communicating data through HTTPS protocol will be fine.
 
 \subsubsection{Software interfaces}
 
-todo qualche api che usiamo??
+The application makes use of the following externally developed services:
+
+\begin{description}
+
+	\item [Google Maps] For the Track4Run service, we use Google's maps service in order to let the spectators view the position of the runners; also, for a running event organizer, we give the possibility of defining and vieweing the path for the run on the interactive map.
+
+	\item [Ambulance dispatching system] For the AutomatedSOS service, we use external software in order to be able to communicate with the ambulances and to track their position.
+
+\end{description}
 
 
 \subsubsection{Communication interfaces}
@@ -45,7 +53,7 @@ Communication between a third party company and our system will go through HTTPS
 
 \subsection{Functional requirements}
 	\subsubsection{Use Cases}
-	\begin{figure}[htbp]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=.052]{images/useCaseTrackMe.png}
 		\caption{Use Case Diagram \label{fig:Use Case Diagram}}
@@ -481,7 +489,7 @@ Communication between a third party company and our system will go through HTTPS
 			\caption{Sequence Diagram Scenario 1 \label{fig:Sequence Diagram Scenario 1}}
 		\end{figure}
 		\begin{minipage}{\textwidth}
-			. 
+			.
 		\end{minipage}
 		\begin{minipage}[t]{\textwidth}
 			{\bf Scenario 2}
@@ -496,7 +504,7 @@ Communication between a third party company and our system will go through HTTPS
 			\caption{Sequence Diagram Scenario 2 \label{fig:Sequence Diagram Scenario 2}}
 		\end{figure}
 		\begin{minipage}{\textwidth}
-			. 
+			.
 		\end{minipage}
 		\begin{minipage}{\textwidth}
 			{\bf Scenario 3a}
@@ -532,7 +540,7 @@ Communication between a third party company and our system will go through HTTPS
 			\includegraphics[scale=.08]{images/sequenceDiagram4.png}
 			\caption{Sequence Diagram Scenario 4 \label{fig:Sequence Diagram Scenario 4}}
 		\end{figure}
-		
+
 
 \subsection{Performance requirements}
 
@@ -596,8 +604,8 @@ Software that's on devices will be updated through the appropriate app store, as
 
 \subsubsection{Portability}
 
-Our smartphone application must be available for Android and iOS platforms. Cross platform developed tools can be used to achieve this.
+Our smartphone application must be available for Android and iOS platforms. Cross platform developing tools can be used to achieve this.
 
-The wearable application must be available for the WearOS platform.
+The wearable application must be available for the Android Wear/WearOS and watchOS platforms, as they currently are, and in the following years will probably be, the leading platforms for wearable devices.
 
 \end{document}

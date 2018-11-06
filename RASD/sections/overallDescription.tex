@@ -5,9 +5,9 @@
 We can use "The World \& The Machine" model by M. Jackson and P. Zave to make an initial domain analysis. This allows us to understand which are the entities and the phenomena the machine cannot directly observe ("The World"), which are the ones the external world cannot directly see ("The Machine"), and the ones that are shared, i.e. the mean of interaction between the two.
 
 \begin{figure}[h!]
-	\includegraphics[width=\linewidth]{worldandmachine.jpg}
+	\includegraphics[width=\linewidth]{rasd_worldmachine.jpg}
 	\caption{Program analysis as per "The World \& The Machine" model}
-	\label{fig:worldandmachine}
+	\label{fig:rasd_worldmachine}
 \end{figure}
 
 \subsection{Product perspective}
@@ -62,41 +62,41 @@ Through the use of the state machine UML model, we desribe the evolution of the 
 
 \subsection{Product functions}
 
-Following are the requirements our system has to satisfy in order to provide the main functionalities.
+Following are the requirements our system has to satisfy in order to provide the main functionalities, each associated with its proper goal.
 
 \begin{minipage}{\textwidth}
 \vspace{4mm}
 {\bf Data4Help}
 \begin{description}
-	\item [G1]  Third parties can make requests for accessing single customer data.
+	\item [G1]  Third parties shall be able to make requests for accessing single customer data.
 	\begin{description}
 		\item [R1] The system must forward any request from a company to single customer's data to the corresponding user.
 	\end{description}
 
-	\item [G2]  Third parties can make requests for accessing aggregate anonymous data specifiying filters.
+	\item [G2]  Third parties shall be able to make requests for accessing aggregate anonymous data specifiying filters.
 	\begin{description}
 		\item [R2] The system must reject any request for data regarding a group of customers when it cannot guarantee the anonimity of its components.
 	\end{description}
 
-	\item [G3]  Third parties can access stored data, for which a request has been approved.
+	\item [G3]  Third parties shall be able to access stored data, for which a request has been approved.
 	\begin{description}
 		\item [R3] The system must periodically collect and store customer's data.
 	\end{description}
 
-	\item [G4]  Third parties can subscribe to new data, for which a request has been approved.
+	\item [G4]  Third parties shall be able to subscribe to new data, for which a request has been approved.
 	\begin{description}
 		\item [R4] The system must periodically update the accessible data with the newly collected one.
 	\end{description}
 
-	\item [G5]  Users can accept or refuse requests for their data from third parties.
+	\item [G5]  Users shall be able to accept or refuse requests for their data from third parties.
 	\begin{description}
 		\item [R5] The system must notify the user of the request and permit him to accept or refuse it.
 		\item [R6] The system must update the request status with the answer provided by the user.
 	\end{description}
 
-	\item [G6]  Third parties whose requests are accepted are not prevented from accessing data.
+	\item [G6]  Access to customers data from a third party, for which a request does not exist, or has been rejected, shall be denied.
 	\begin{description}
-		\item [R7] The system must deny access to customer data for companies that don't have an approved request associated to it.
+		\item [R7] The system must be able to identify which data can be accessed for each third party company.
 	\end{description}
 \end{description}
 \end{minipage}
@@ -106,13 +106,13 @@ Following are the requirements our system has to satisfy in order to provide the
 \begin{minipage}{\textwidth}
 {\bf AutomatedSOS}
 \begin{description}
-	\item [G7]  From the time a customer's parameters indicate a health emergency status, an ambulance is dispatched to his location in less than 5 seconds.
+	\item [G7]  From the time a customer's parameters indicate a health emergency status, an ambulance shall be dispatched to his location in less than 5 seconds.
 	\begin{description}
 		\item [R8] The system must continuously check the data read from customers subscribed to AutomatedSOS.
 		\item [R9] In case the data indicate an emergency for a customer, the system must dispatch the closest ambulance to his location.
 	\end{description}
 
-	\item [G8]  When an ambulance is dispatched, the customer is notified of its arrival.
+	\item [G8]  When an ambulance is dispatched, the customer shall be notified of its arrival.
 	\begin{description}
 		\item [R10] After an ambulance is dispatched, the system must notify the customer of its arrival.
 	\end{description}
@@ -124,89 +124,51 @@ Following are the requirements our system has to satisfy in order to provide the
 \begin{minipage}{\textwidth}
 {\bf Track4Run}
 \begin{description}
-	% \item [G9]  Organizers can define the path for a run.
-	% \begin{description}
-	%
-	% \end{description}
-
-	\item [G10]  Runners can view and enroll in available runs.
+	\item [G9]  Organizers shall be able to create a new running event.
 	\begin{description}
-		\item [R11] The system must show open events to the users.
-		\item [R12] The system must allow users to sort and filter events by date and location.
+		\item [R11] The system must allow users to define the route, the date and the time of the event.
+		\item [R12] Two events can't overlap in the same place, date and time.
+		%\item [R13] When an event is deleted the participants will be notified.
 	\end{description}
 
-	\item [G11] Spectators can see the position of participants on the map during a run.
+	\item [G10]  Runners shall be able to view and enroll in available runs.
 	\begin{description}
-		\item [R13] The system must collect and provide in real time the position of participants on a map.
+		\item [R13] The system must show open events to the users.
+		\item [R14] The system must allow users to sort and filter events by date and location.
+	\end{description}
+
+	\item [G11] Spectators shall be able to see the position of participants on the map during a run.
+	\begin{description}
+		\item [R15] The system must collect and provide in real time the position of participants on a map.
 	\end{description}
 \end{description}
 \end{minipage}
 \vspace{8mm}
 
 \subsection{User characteristics}
+Following are the actors of the application:
+\begin{itemize}
+	\item Companies such as life insurances, hospitals and clinics, universities for research purposes or companies that focus on data analysis.
+	\item People of any age in need for a potentially life saving system. They may have diseases, disabilities, or just be elder.
+	\item Runners who want to organize running events or enroll in them, or people who want to track participants in real time.
+	\item TrackMe's service staff, that will handle third parties registration and assist them in case of need, among other service activities.
+\end{itemize}
+
 \subsection{Assumptions, dependencies, constrains}
 
 {\bf Domain assumptions}
 
 \begin{description}
 
-	\item [G1] Third parties can make requests for accessing single customer data.
-	\begin{description}
-		\item [D1] Third parties are able to identify specific customers by SSN or FC.
-	\end{description}
+	\item [D1] Third parties are able to identify specific customers by SSN or FC.
+	\item [D2] A group is considered anonymous if is composed by more than 1000 people.
+	\item [D3] A sent request for customer's data is always received by the user.
+	\item [D4] Health emergency status occurs when a AutomatedSOS customer parameters falls below of or exceeds healthy boundaries.
+	\item [D5] AutomatedSOS customers always have an active and working internet connection.
+	\item [D6] An ambulance is always available for dispatching and can reach the customer position.
+	\item [D7] Organizers choose a valid path for a running event.
+	\item [D8] A running event is legally autorized by the authorities.
 
-	\item [G2] Third parties can make requests for accessing aggregate anonymous data specifiying filters.
-	\begin{description}
-		\item [D2] A group is considered anonymous if is composed by more than 1000 people.
-	\end{description}
-
-	\item [G3] Third parties can subscribe to new data, for which a request has been approved.
-	\begin{description}
-		\item %TODO how are requests approved???
-	\end{description}
-
-	\item [G4] Third parties can subscribe to new data, for which a request has been approved.
-	\begin{description}
-		\item
-	\end{description}
-
-	\item [G5]  Users can accept or refuse requests for their data from third parties.
-	\begin{description}
-		\item [D3]  A sent request is always received by the targeted user
-	\end{description}
-
-	\item [G6]  Third parties whose requests are accepted are not prevented from accessing data.
-	\begin{description}
-		\item
-	\end{description}
-
-	\item [G7]  From the time a customer's parameters indicate a health emergency status, an ambulance is dispatched to his location in less than 5 seconds.
-	\begin{description}
-		\item [D4] Health emergency status occurs when a AutomatedSOS customer parameters falls below or exceeds healthy boundaries.
-		\item [D5] AutomatedSOS customers are always connected to GSM or internet.
-		\item [D6] An ambulance is always available for dispatching and can reach the customer position.
-	\end{description}
-
-	\item [G8]  When an ambulance is dispatched, the customer is notified of its arrival.
-	\begin{description}
-		\item
-	\end{description}
-
-	\item [G9]  Organizers can create a new running event, prividing the required information.
-	\begin{description}
-		\item [D7] Organizers choose a valid path for the event.
-		\item [D8] The event is legally autorized by authorities.
-	\end{description}
-
-	\item [G10]  Runners can view and enroll in available runs.
-	\begin{description}
-		\item []
-	\end{description}
-
-	\item [G11] Spectators can see the position of participants on the map during a run.
-	\begin{description}
-		\item
-	\end{description}
 \end{description}
 
 \end{document}
