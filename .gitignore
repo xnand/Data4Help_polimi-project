@@ -7,3 +7,5 @@
 !*.jpeg
 !*.png
 !*.uxf
+!*.sty
+!*.als
