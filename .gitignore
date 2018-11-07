@@ -1,12 +1,9 @@
 # ignore everything
 *
 # except these
-!**/*.tex
-!**/*.holder
-!**/*.jpg
-!**/*.jpeg
-!**/*.png
-!images
-!RASD/misc/*
-!DeliveryFolder/*
-!RASD/images/mockup/*
+!*.tex
+!*.holder
+!*.jpg
+!*.jpeg
+!*.png
+!*.uxf
