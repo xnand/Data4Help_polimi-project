@@ -482,35 +482,50 @@ Communication between a third party company and our system will go through HTTPS
 			\hline
 		\end{tabular}
 	\end{center}
-
+	\begin{center}
+		\begin{tabular}{p{3cm}p{8.28cm}}
+			\hline
+			\textbf{Use Case} & Subscribe to new data\\
+			\hline
+			\textbf{Actor} & Registered Third Party Company\\
+			\hline
+			\textbf{Entry condition} & Third party company has already received the API key and it's sending a group or individual data request.\\
+			\hline
+			\textbf{Flow of events} & \begin{enumerate}
+				\linespread{0}\item Registered third party company makes an html request through TrackMe's web API including a parameter to subriscribe to receving new data as soon as thay are available.
+			\end{enumerate}\\
+			\hline
+			\textbf{Exit condition} & The request was sent and if it will be accepted new data will be sent to the company as soon as they are available.\\
+			\hline
+			\textbf{Exception} & \begin{enumerate}
+				\linespread{0}\item Some parameters are not valid.
+			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When an exception occurs third party company is notified and the request is not sent.\\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{1cm}
 	\subsubsection{Scenarios and Sequence Diagrams}
 		\begin{minipage}{\textwidth}
-			{\bf Scenario 1a}
+			{\bf Scenario 1}
 			\vspace{3mm}
 
 			HealthyResearch is a company which makes medical research. It's making a project so it needs some data. It request these data thanks to Data4Help service specifing that it wants people who live in Italy, 25 to 50 years old who regularly do some sports and not. The sample is bigger that 10000 so HealthyResearch receives immediatly the requested data.
-			\vspace{5mm}
-		\end{minipage}
-		\begin{minipage}{\textwidth}
-			{\bf Scenario 1b}
-			\vspace{3mm}
+			Then HealthyResearch wants the same data but referring to the people who are participating to the running event in Milan today. Now the sample is smaller than 10000 so the request is rejected.
 
-			HealthyResearch wants the same data of the scenario 1a but referring to the people who are participating to the running event in Milan today. Now the sample is smaller than 10000 so the request is rejected.
 			\vspace{5mm}
 		\end{minipage}
 		\begin{figure}[H]
 			\centering
-			\includegraphics[scale=.08]{images/sequenceDiagram1.png}
+			\includegraphics[scale=.3]{images/sequenceDiagram1.png}
 			\caption{Sequence Diagram Scenario 1 \label{fig:Sequence Diagram Scenario 1}}
 		\end{figure}
 		\begin{minipage}{\textwidth}
-			.
-		\end{minipage}
-		\begin{minipage}[t]{\textwidth}
 			{\bf Scenario 2}
 			\vspace{3mm}
 
-			Mrs. Jane is 75 years old. She always forgot to drink water and she eats very little. His son buy to her a smartwatch and install the TrackMe's application subscribing Jane to AutomatedSOS service. One day Jane feels bad due to an hypovolemia so her blood pressure drops dramatically. The smartwatch recognize that the value is under the minimum then an ambulance is called automatcally. Jane arrives to the hospital in time.
+			A hospital wants to monitor a convalescing patient who has been relesed. The patient has installed TrackMe, the ospital Using TrackMe's API sends to him a individual request data with the option of receiving new data as soon as the are available. The patient accepts the request so the ospital can monitor him.
 			\vspace{5mm}
 		\end{minipage}
 		\begin{figure}[H]
@@ -521,30 +536,40 @@ Communication between a third party company and our system will go through HTTPS
 		\begin{minipage}{\textwidth}
 			.
 		\end{minipage}
-		\begin{minipage}{\textwidth}
-			{\bf Scenario 3a}
+		\begin{minipage}[t]{\textwidth}
+			{\bf Scenario 3}
 			\vspace{3mm}
 
-			Mario wants to organize a running event in his city, he is subscribed to Track4Run so he opens the events page and creates a new one. He selects the route, date and time. The operation ends successfully so the event is organized.
-			\vspace{5mm}
-		\end{minipage}
-		\begin{minipage}{\textwidth}
-			{\bf Scenario 3b}
-			\vspace{3mm}
-
-			Mario realizes that he can't be present at the event created as specified in scenario 3a. He edits the day of the event but due to another event already organized in the same place, date and time the editing operation fails. Mario finally decides to delete the event.
+			Mrs. Jane is 75 years old. She always forgot to drink water and she eats very little. His son buy to her a smartwatch and install the TrackMe's application subscribing Jane to AutomatedSOS service. One day Jane feels bad due to an hypovolemia so her blood pressure drops dramatically. The smartwatch recognize that the value is under the minimum then an ambulance is called automatcally. Jane arrives to the hospital in time.
+			
 			\vspace{5mm}
 		\end{minipage}
 		\begin{figure}[H]
 			\centering
-			\includegraphics[scale=.08]{images/sequenceDiagram3.png}
+			\includegraphics[scale=.05]{images/sequenceDiagram3.png}
 			\caption{Sequence Diagram Scenario 3 \label{fig:Sequence Diagram Scenario 3}}
+		\end{figure}
+		\begin{minipage}{\textwidth}
+			.
+		\end{minipage}
+		\begin{minipage}{\textwidth}
+			{\bf Scenario 4}
+			\vspace{3mm}
+
+			Mario wants to organize a running event in his city, he is subscribed to Track4Run so he opens the events page and creates a new one. He selects the route, date and time. The operation ends successfully so the event is organized but Mario realizes that he can't be present at the event. He edits the day of the event but due to another event already organized in the same place, date and time the editing operation fails. Mario finally decides to delete the event.
+			
+			\vspace{5mm}
+		\end{minipage}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=.07]{images/sequenceDiagram4.png}
+			\caption{Sequence Diagram Scenario 4 \label{fig:Sequence Diagram Scenario 4}}
 		\end{figure}
 		\begin{minipage}{\textwidth}
 			 .
 		\end{minipage}
 		\begin{minipage}{\textwidth}
-			{\bf Scenario 4}
+			{\bf Scenario 5}
 			\vspace{3mm}
 
 			Anne runs for hobbies, she decides to subribe to Track4Run. She open the events page and she see one that interests her so she enrolls to it. She unfortunately breaks her foot so she can't participate but thanks to the option to see the map with the position of the participants she will at least be able to see the event progress.
@@ -552,8 +577,8 @@ Communication between a third party company and our system will go through HTTPS
 		\end{minipage}
 		\begin{figure}[H]
 			\centering
-			\includegraphics[scale=.08]{images/sequenceDiagram4.png}
-			\caption{Sequence Diagram Scenario 4 \label{fig:Sequence Diagram Scenario 4}}
+			\includegraphics[scale=.08]{images/sequenceDiagram5.png}
+			\caption{Sequence Diagram Scenario 5 \label{fig:Sequence Diagram Scenario 5}}
 		\end{figure}
 
 
