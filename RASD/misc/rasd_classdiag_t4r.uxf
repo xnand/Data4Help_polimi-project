@@ -28,12 +28,12 @@ fontsize=16
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>162</x>
-      <y>108</y>
+      <x>192</x>
+      <y>186</y>
       <w>114</w>
       <h>66</h>
     </coordinates>
-    <panel_attributes>Customer
+    <panel_attributes>User
 --
 +SSN
 +Name
@@ -46,8 +46,8 @@ fontsize=16
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>618</x>
-      <y>114</y>
+      <x>648</x>
+      <y>192</y>
       <w>144</w>
       <h>96</h>
     </coordinates>
@@ -65,9 +65,9 @@ fontsize=16
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>768</x>
-      <y>288</y>
-      <w>78</w>
+      <x>798</x>
+      <y>366</y>
+      <w>90</w>
       <h>48</h>
     </coordinates>
     <panel_attributes>Location
@@ -80,22 +80,20 @@ fontsize=16
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>756</x>
-      <y>174</y>
+      <x>786</x>
+      <y>258</y>
       <w>78</w>
-      <h>126</h>
+      <h>120</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=0..n
-m2=1
-contains</panel_attributes>
-    <additional_attributes>10.0;20.0;100.0;20.0;100.0;190.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;100.0;10.0;100.0;180.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>876</x>
-      <y>126</y>
+      <x>906</x>
+      <y>204</y>
       <w>90</w>
       <h>42</h>
     </coordinates>
@@ -108,22 +106,22 @@ contains</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>756</x>
-      <y>138</y>
+      <x>786</x>
+      <y>216</y>
       <w>132</w>
       <h>30</h>
     </coordinates>
-    <panel_attributes>lt=-&gt;
+    <panel_attributes>lt=-
 m1=0..n
 m2=1
-stored</panel_attributes>
+stored &gt;</panel_attributes>
     <additional_attributes>10.0;20.0;200.0;20.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>480</x>
-      <y>18</y>
+      <x>510</x>
+      <y>96</y>
       <w>78</w>
       <h>48</h>
     </coordinates>
@@ -137,57 +135,61 @@ stored</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>270</x>
-      <y>138</y>
+      <x>300</x>
+      <y>216</y>
       <w>360</w>
       <h>30</h>
     </coordinates>
     <panel_attributes>lt=-
+associated
 m1=1
 m2=0..n
-has associated</panel_attributes>
+</panel_attributes>
     <additional_attributes>10.0;20.0;580.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>270</x>
-      <y>60</y>
+      <x>300</x>
+      <y>138</y>
       <w>252</w>
       <h>78</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=1
-m2=1..n
-has</panel_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=    1
+m2=1..n</panel_attributes>
     <additional_attributes>10.0;100.0;370.0;100.0;370.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>534</x>
-      <y>60</y>
+      <x>564</x>
+      <y>138</y>
       <w>96</w>
       <h>78</h>
     </coordinates>
     <panel_attributes>lt=-
-m1=0..n
-m2=0..1
-sends</panel_attributes>
+m1=1
+m2=0..n
+
+
+
+sends &gt;</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;100.0;140.0;100.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>240</x>
-      <y>390</y>
+      <x>288</x>
+      <y>468</y>
       <w>96</w>
       <h>66</h>
     </coordinates>
     <panel_attributes>RunningEvent
 --
 +Date
-
++TimeStart
++Duration
 --</panel_attributes>
     <additional_attributes/>
   </element>
@@ -195,7 +197,7 @@ sends</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>600</x>
-      <y>390</y>
+      <y>468</y>
       <w>96</w>
       <h>66</h>
     </coordinates>
@@ -209,91 +211,87 @@ sends</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>690</x>
-      <y>330</y>
-      <w>168</w>
-      <h>132</h>
+      <y>408</y>
+      <w>204</w>
+      <h>126</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=0..n
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m2=1
 start point</panel_attributes>
-    <additional_attributes>10.0;190.0;250.0;190.0;250.0;10.0</additional_attributes>
+    <additional_attributes>10.0;190.0;310.0;190.0;310.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>690</x>
-      <y>330</y>
-      <w>150</w>
-      <h>114</h>
+      <y>408</y>
+      <w>180</w>
+      <h>108</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=0..n
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m2=1
 end point</panel_attributes>
-    <additional_attributes>10.0;160.0;220.0;160.0;220.0;10.0</additional_attributes>
+    <additional_attributes>10.0;160.0;270.0;160.0;270.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>690</x>
-      <y>330</y>
-      <w>132</w>
-      <h>96</h>
+      <y>408</y>
+      <w>162</w>
+      <h>90</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=0..n
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m2=0..n
 middle point</panel_attributes>
-    <additional_attributes>10.0;130.0;170.0;130.0;170.0;10.0</additional_attributes>
+    <additional_attributes>10.0;130.0;220.0;130.0;220.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>330</x>
-      <y>426</y>
-      <w>282</w>
+      <x>378</x>
+      <y>504</y>
+      <w>234</w>
       <h>30</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=1..n
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1
-has</panel_attributes>
-    <additional_attributes>10.0;20.0;450.0;20.0</additional_attributes>
+</panel_attributes>
+    <additional_attributes>10.0;20.0;370.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>162</x>
-      <y>168</y>
-      <w>90</w>
+      <x>192</x>
+      <y>246</y>
+      <w>108</w>
       <h>294</h>
     </coordinates>
-    <panel_attributes>lt=&lt;-
+    <panel_attributes>lt=-
 m2=1
 m1=0..n
-create</panel_attributes>
-    <additional_attributes>130.0;460.0;10.0;460.0;10.0;10.0</additional_attributes>
+create &gt;</panel_attributes>
+    <additional_attributes>160.0;460.0;10.0;460.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>186</x>
-      <y>168</y>
-      <w>66</w>
+      <x>216</x>
+      <y>246</y>
+      <w>84</w>
       <h>270</h>
     </coordinates>
-    <panel_attributes>lt=&lt;-
+    <panel_attributes>lt=-
 m2=0..n
 m1=0..n
-enroll</panel_attributes>
-    <additional_attributes>90.0;420.0;10.0;420.0;10.0;10.0</additional_attributes>
+enroll &gt;</panel_attributes>
+    <additional_attributes>120.0;420.0;10.0;420.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>366</x>
-      <y>246</y>
+      <x>396</x>
+      <y>324</y>
       <w>114</w>
       <h>66</h>
     </coordinates>
@@ -306,29 +304,28 @@ enroll</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>282</x>
-      <y>276</y>
-      <w>96</w>
+      <x>330</x>
+      <y>354</y>
+      <w>78</w>
       <h>126</h>
     </coordinates>
-    <panel_attributes>lt=-
-m1=1
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1
 </panel_attributes>
-    <additional_attributes>10.0;190.0;10.0;10.0;140.0;10.0</additional_attributes>
+    <additional_attributes>10.0;190.0;10.0;10.0;110.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>474</x>
-      <y>276</y>
-      <w>306</w>
-      <h>54</h>
+      <x>504</x>
+      <y>282</y>
+      <w>282</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=0..n
 m2=0..n
-runner position</panel_attributes>
-    <additional_attributes>490.0;60.0;330.0;60.0;330.0;10.0;10.0;10.0</additional_attributes>
+runner position ^</panel_attributes>
+    <additional_attributes>330.0;10.0;330.0;130.0;10.0;130.0</additional_attributes>
   </element>
 </diagram>
