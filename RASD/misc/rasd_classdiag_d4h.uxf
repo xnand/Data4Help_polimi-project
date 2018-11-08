@@ -478,7 +478,7 @@ m2=0..n
     </coordinates>
     <panel_attributes>DataBroker
 --
-
++AuthorizedAPIKeys
 --</panel_attributes>
     <additional_attributes/>
   </element>
