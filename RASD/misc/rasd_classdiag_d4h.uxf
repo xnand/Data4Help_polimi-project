@@ -208,10 +208,10 @@ m2=1</panel_attributes>
       <w>120</w>
       <h>78</h>
     </coordinates>
-    <panel_attributes>RequestFilter
+    <panel_attributes>GroupRequestFilter
 --
 +Disease : Disease
-+Zone : Address
++Address : Address
 +BodyParams ; BodyInfo
 +DateTime
 --</panel_attributes>
