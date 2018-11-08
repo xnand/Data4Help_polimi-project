@@ -106,16 +106,12 @@ fact { all company: Company | all s1, s2 : Subscription |
 fact {all subscription: Subscription | one company: Company | subscription in company.subscriptions}
 
 //dataBroker authRequest and pendignRequests are two disjointed subset of company requests
-fact {one dB: DataBroker | all req: DataAccessRequest | one company: Company|
-	  req in dB.authRequests iff req in company.requests}
-
-fact {one dB:DataBroker | all req: DataAccessRequest | one company: Company |
-	  req in dB.pendingRequests iff req in company.requests}
-
-fact{one dB: DataBroker | all req1,req2 : DataAccessRequest |
+fact{one dB: DataBroker | all req1,req2 : DataAccessRequest | 
      (req1 in dB.pendingRequests && req2 in dB.authRequests) => (req1 != req2)}
 
+fact{all req: DataAccessRequest | one dB: DataBroker |
+     req in dB.authRequests or req in dB.pendingRequests}
+
+
 pred show() {}
-
-
 run show for 3 but exactly 3 User, exactly 1 Company, 7 Int, exactly 3 DataAccessRequest
