@@ -7,7 +7,7 @@ open util/integer
 
 sig User {
 	ssn : one SSN,
-	address : one Address,
+	city : one City,
 	age: one Int,  // age instead of birthdate
 	devices: some WearableDevice,
 	acceptedRequests: set SpecificRequest
@@ -25,10 +25,6 @@ sig WearableDevice {
 sig SSN {}
 
 sig City{}
-
-sig Address {
-	city: one City
-}
 
 
 // company signatures --------------------------------------------------
@@ -51,13 +47,13 @@ sig GroupRequest extends DataAccessRequest {
 sig GroupRequestFilter {
 	ageStart : lone Int,
 	ageEnd : lone Int,
-	address: lone Address
+	city: lone City
 } {
 	// consistent with User data
 	(ageStart >= 18 and ageStart < 30
 	and ageEnd >= 18 and ageEnd >= 18) and
-	// it either has one address or one ageStart or one ageEnd
-	(one ageStart or one address or one ageEnd)
+	// it either has one city or one ageStart or one ageEnd
+	(one ageStart or one city or one ageEnd)
 }
 
 one sig DataBroker {
@@ -72,41 +68,44 @@ sig InfoPacket {}
 
 // facts -----------------------------------------------------------
 
-// every user has a different SSN
-fact { all disj user1, user2 : User | user1.ssn != user2.ssn }
+fact userConstraints {
+	// every user has a different SSN
+	all disj user1, user2 : User | user1.ssn != user2.ssn
 
-// every WearableDevice is owned by one user
-fact { all device : WearableDevice | one user : User | device in user.devices }
-
-// all requests are made by one company
-fact { all req : DataAccessRequest | some company : Company | req in company.requests }
-
-// no DataAccessRequest is neither in authorizedRequests nor pendingRequests but it has to be in one of the two
-fact { all req: DataAccessRequest | one dB : DataBroker | (req in dB.pendingRequests and req not in dB.authorizedRequests) 
-	or (req in dB.authorizedRequests and req not in dB.pendingRequests)
+	// every WearableDevice is owned by one user
+	all device : WearableDevice | one user : User | device in user.devices
 }
 
-// no pending SpecificRequest is in any User's acceptedRequests
-fact { one dB : DataBroker | all req : SpecificRequest | 
-	req in dB.pendingRequests implies all user : User | req not in user.acceptedRequests }
+fact requestConstaints {
+	// all requests are made by one company
+	all req : DataAccessRequest | some company : Company | req in company.requests
 
-// a SpecificRequest can be accepted only by the proper user, and then it goes in authorizedRequests
-fact { one dB : DataBroker | all req : SpecificRequest | all user : User |
-	req in user.acceptedRequests <=> (req in dB.authorizedRequests and req.ssn = user.ssn) }
+	// no DataAccessRequest is neither in authorizedRequests nor pendingRequests but it has to be in one of the two
+	all req: DataAccessRequest | one dB : DataBroker | (req in dB.pendingRequests and req not in dB.authorizedRequests) 
+	or (req in dB.authorizedRequests and req not in dB.pendingRequests)
 
-// a company can not make two SpecificRequests for the same SSN
-fact { all company : Company | all disj req1, req2 : SpecificRequest |
-	(req1 in company.requests and req2 in company.requests) implies req1.ssn != req2.ssn }
+	// no pending SpecificRequest is in any User's acceptedRequests
+	one dB : DataBroker | all req : SpecificRequest | 
+	req in dB.pendingRequests implies all user : User | req not in user.acceptedRequests
 
-// every GroupRequestFilter is owned by a GroupRequest
-fact { all grf : GroupRequestFilter | one gr : GroupRequest | grf in gr.filters }
+	// a SpecificRequest can be accepted only by the proper user, and then it goes in authorizedRequests
+	one dB : DataBroker | all req : SpecificRequest | all user : User |
+	req in user.acceptedRequests <=> (req in dB.authorizedRequests and req.ssn = user.ssn)
 
-// every InfoPacket is only sent by one WearableDevice
-fact { all data : InfoPacket | one dev : WearableDevice | data in dev.sentData }
+	// a company can not make two SpecificRequests for the same SSN
+	all company : Company | all disj req1, req2 : SpecificRequest |
+	(req1 in company.requests and req2 in company.requests) implies req1.ssn != req2.ssn
+
+	// every GroupRequestFilter is owned by a GroupRequest
+	all grf : GroupRequestFilter | one gr : GroupRequest | grf in gr.filters
+
+	// every InfoPacket is only sent by one WearableDevice
+	all data : InfoPacket | one dev : WearableDevice | data in dev.sentData
+}
 
 // data of customers is available if and only if there exists an authorized GroupRequest or SpecificRequest
 // the company made
-fact { all company : Company |  all user : User | one dB : DataBroker |
+fact dataAccess { all company : Company |  all user : User | one dB : DataBroker |
 	(user.devices.sentData in company.accessibleData) iff (
 		( // specific request
 			some specReq : SpecificRequest | specReq in user.acceptedRequests and
@@ -116,18 +115,20 @@ fact { all company : Company |  all user : User | one dB : DataBroker |
 			 groupReq in dB.authorizedRequests and groupReqFilter in groupReq.filters and
 			(one groupReqFilter.ageStart implies user.age >= groupReqFilter.ageStart) and
 			(one groupReqFilter.ageEnd implies user.age <= groupReqFilter.ageEnd) and
-			(one groupReqFilter.address implies groupReqFilter.address.city = user.address.city)
+			(one groupReqFilter.city implies groupReqFilter.city = user.city)
 		)
 	)
 }
 
-
-pred access [ company : Company, dB : DataBroker] {
-	#company.accessibleData > 2 and #dB.authorizedRequests >= 1
+assert noRequestNoDataAccess {
+	some company : Company | one dB : DataBroker |
+	(#company.requests = 0 or 
+		all request : DataAccessRequest | 
+		request in company.requests and request not in dB.authorizedRequests)
+	implies #company.accessibleData = 0
 }
 
-run access for 3 but exactly 3 User, exactly 3 SSN, 7 Int, 1 DataBroker, 1 Company, exactly 3 DataAccessRequest, exactly 2 GroupRequest
-
+check noRequestNoDataAccess for 10 but exactly 13 DataAccessRequest
 
 pred show() {}
-run show for 3 but exactly 3 User, exactly 3 SSN, 7 Int, 1 DataBroker, 1 Company, exactly 3 SpecificRequest
+run show for 3 but exactly 3 User, 7 Int, 1 DataBroker, 1 Company
