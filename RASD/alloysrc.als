@@ -122,13 +122,35 @@ fact dataAccess { all company : Company |  all user : User | one dB : DataBroker
 
 assert noRequestNoDataAccess {
 	some company : Company | one dB : DataBroker |
+	#dB.availableData > 0 and
 	(#company.requests = 0 or 
 		all request : DataAccessRequest | 
 		request in company.requests and request not in dB.authorizedRequests)
 	implies #company.accessibleData = 0
 }
 
-check noRequestNoDataAccess for 10 but exactly 13 DataAccessRequest
+assert authorizedRequestGrantsDataAccess {
+	some company : Company | one dB : DataBroker | 
+	#dB.availableData > 0 and
+	(company.requests in dB.authorizedRequests and
+	// there is data available for that request
+		some user : User | user.devices.sentData in dB.availableData and
+		( // specific request
+			some specReq : SpecificRequest | specReq in user.acceptedRequests
+		) or ( // group request
+			some groupReq : GroupRequest | some groupReqFilter : GroupRequestFilter |
+			 groupReq in dB.authorizedRequests and groupReqFilter in groupReq.filters and
+			(one groupReqFilter.ageStart implies user.age >= groupReqFilter.ageStart) and
+			(one groupReqFilter.ageEnd implies user.age <= groupReqFilter.ageEnd) and
+			(one groupReqFilter.city implies groupReqFilter.city = user.city)
+		)
+	) implies #company.accessibleData > 0
+}
+
+assert thereIsAlwaysAGroupReqFilterForAUser {}
+
+check noRequestNoDataAccess for 10 but exactly 15 DataAccessRequest, 20 InfoPacket
+check authorizedRequestGrantsDataAccess for 10 but exactly 13 DataAccessRequest, 20 InfoPacket
 
 pred show() {}
 run show for 3 but exactly 3 User, 7 Int, 1 DataBroker, 1 Company
