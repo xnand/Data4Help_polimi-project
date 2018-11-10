@@ -154,4 +154,4 @@ run bo for 5 but 7 Int
 
 
 pred show {}
-run show for 3 but 7 Int, exactly 3 User, exactly 0 GroupRequest, 3 Subscription, 2 SpecificRequest
+run show for 3 but 7 Int, exactly 3 User, exactly  GroupRequest, 3 Subscription, 2 SpecificRequest
