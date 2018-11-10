@@ -67,37 +67,34 @@ Following are the requirements our system has to satisfy in order to provide the
 \begin{minipage}{\textwidth}
 \vspace{4mm}
 {\bf Data4Help}
+
+\vspace{0.5cm}
+
 \begin{description}
-	\item [G1]  Third parties shall be able to make requests for accessing single customer data.
-	\begin{description}
-		\item [R1] The system must forward any request from a company to single customer's data to the corresponding user.
-	\end{description}
+	\item [R1] The system must forward any request from a company to single customer's data to the corresponding user.
+	\item \begin{flushright}{\bf{G1}}\end{flushright}
 
-	\item [G2]  Third parties shall be able to make requests for accessing aggregate anonymous data specifiying filters.
-	\begin{description}
-		\item [R2] The system must reject any request for data regarding a group of customers when it cannot guarantee the anonimity of its components.
-	\end{description}
+	\item [R2] The system must reject any request for data regarding a group of customers when it cannot guarantee the anonimity of its components.
+	\item \begin{flushright}{\bf{G2}}\end{flushright}
 
-	\item [G3]  Third parties shall be able to access stored data, for which a request has been approved.
-	\begin{description}
-		\item [R3] The system must periodically collect and store customer's data.
-	\end{description}
+	\item [R3] The system must periodically collect and store customer's data.
+	\item \begin{flushright}{\bf{G3}}\end{flushright}
 
-	\item [G4]  Third parties shall be able to subscribe to new data, for which a request has been approved.
-	\begin{description}
-		\item [R4] The system must periodically update the accessible data with the newly collected one.
-	\end{description}
+	\item [R3] The system must periodically collect and store customer's data.
+	\item \begin{flushright}{\bf{G3}}\end{flushright}
 
-	\item [G5]  Users shall be able to accept or refuse requests for their data from third parties.
-	\begin{description}
-		\item [R5] The system must notify the user of the request and permit him to accept or refuse it.
-		\item [R6] The system must update the request status with the answer provided by the user.
-	\end{description}
+	\item [R4] The system must periodically update the accessible data with the newly collected one
+	\item \begin{flushright}{\bf{G4}}\end{flushright}
 
-	\item [G6]  Access to customers data from a third party, for which a request does not exist, or has been rejected, shall be denied.
-	\begin{description}
-		\item [R7] The system must be able to identify which data can be accessed for each third party company.
-	\end{description}
+	\item [R5] The system must notify the user of the request and permit him to accept or refuse it.
+	\item \begin{flushright}{\bf{G5}}\end{flushright}
+
+	\item [R6] The system must update the request status with the answer provided by the user.
+	\item \begin{flushright}{\bf{G5}}\end{flushright}
+
+	\item [R7] The system must be able to identify which data can be accessed for each third party company.
+	\item \begin{flushright}{\bf{G6}}\end{flushright}
+
 \end{description}
 \end{minipage}
 \vspace{8mm}
@@ -106,16 +103,15 @@ Following are the requirements our system has to satisfy in order to provide the
 \begin{minipage}{\textwidth}
 {\bf AutomatedSOS}
 \begin{description}
-	\item [G7]  From the time a customer's parameters indicate a health emergency status, an ambulance shall be dispatched to his location in less than 5 seconds.
-	\begin{description}
-		\item [R8] The system must continuously check the data read from customers subscribed to AutomatedSOS.
-		\item [R9] In case the data indicate an emergency for a customer, the system must dispatch the closest ambulance to his location.
-	\end{description}
+	\item [R8] The system must continuously check the data read from customers subscribed to AutomatedSOS.
+	\item \begin{flushright}{\bf{G7}}\end{flushright}
 
-	\item [G8]  When an ambulance is dispatched, the customer shall be notified of its arrival.
-	\begin{description}
-		\item [R10] After an ambulance is dispatched, the system must notify the customer of its arrival.
-	\end{description}
+	\item [R9] In case the data indicate an emergency for a customer, the system must dispatch the closest ambulance to his location.
+	\item \begin{flushright}{\bf{G7}}\end{flushright}
+
+	\item [R10] After an ambulance is dispatched, the system must notify the customer of its arrival.
+	\item \begin{flushright}{\bf{G8}}\end{flushright}
+
 \end{description}
 \end{minipage}
 \vspace{8mm}
@@ -124,23 +120,21 @@ Following are the requirements our system has to satisfy in order to provide the
 \begin{minipage}{\textwidth}
 {\bf Track4Run}
 \begin{description}
-	\item [G9]  Organizers shall be able to create a new running event.
-	\begin{description}
-		\item [R11] The system must allow users to define the route, the date and the time of the event.
-		\item [R12] Two events can't overlap in the same place, date and time.
-		%\item [R13] When an event is deleted the participants will be notified.
-	\end{description}
+	\item [R11] The system must allow users to define the route, the date and the time of the event.
+	\item \begin{flushright}{\bf{G9}}\end{flushright}
 
-	\item [G10]  Runners shall be able to view and enroll in available runs.
-	\begin{description}
-		\item [R13] The system must show open events to the users.
-		\item [R14] The system must allow users to sort and filter events by date and location.
-	\end{description}
+	\item [R12] Two events can't overlap in the same place, date and time.
+	\item \begin{flushright}{\bf{G9}}\end{flushright}
 
-	\item [G11] Spectators shall be able to see the position of participants on the map during a run.
-	\begin{description}
-		\item [R15] The system must collect and provide in real time the position of participants on a map.
-	\end{description}
+	\item [R13] The system must show open events to the users.
+	\item \begin{flushright}{\bf{G10}}\end{flushright}
+
+	\item [R14] The system must allow users to sort and filter events by date and location.
+	\item \begin{flushright}{\bf{G10}}\end{flushright}
+
+	\item [R15] The system must collect and provide in real time the position of participants on a map.
+	\item \begin{flushright}{\bf{G11}}\end{flushright}
+
 \end{description}
 \end{minipage}
 \vspace{8mm}
