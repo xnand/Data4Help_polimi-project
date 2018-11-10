@@ -29,7 +29,9 @@ sig City{}
 
 sig Company {
 	requests: set DataAccessRequest,
-	accessibleData: set InfoPacket
+	accessibleData: set InfoPacket,
+	subscriptions: set Subscription,
+	fromSubscription: set InfoPacket
 }
 
 abstract sig DataAccessRequest {}
@@ -56,6 +58,13 @@ sig GroupRequestFilter {
 		ageEnd >= ageStart)
 }
 
+sig Subscription {
+	request : one DataAccessRequest,
+	company : one Company
+} {
+	one dB : DataBroker | request in dB.authorizedRequests
+}
+
 // general signatures -----------------------------------------------------------
 
 sig InfoPacket {}
@@ -76,19 +85,19 @@ fact userConstraints {
 	all data : InfoPacket | one dev : WearableDevice | data in dev.sentData
 }
 
-fact requestConstaints {
+fact requestConstraints {
 	// all requests are made by one company
 	all req : DataAccessRequest | some company : Company | req in company.requests
 
 	// no DataAccessRequest is neither in authorizedRequests nor pendingRequests but it has to be in one of the two
-	all req: DataAccessRequest | one dB : DataBroker |
-		(req in dB.pendingRequests and req not in dB.authorizedRequests) or
+	all req: DataAccessRequest | one dB : DataBroker | 
+		(req in dB.pendingRequests and req not in dB.authorizedRequests) or 
 		(req in dB.authorizedRequests and req not in dB.pendingRequests)
 
 	// no pending SpecificRequest is in any User's acceptedRequests
-	one dB : DataBroker | all req : SpecificRequest |
+	one dB : DataBroker | all req : SpecificRequest | 
 		req in dB.pendingRequests implies all user : User | req not in user.acceptedRequests
-
+		
 	// a SpecificRequest can be accepted only by the proper user, and then it goes in authorizedRequests
 	one dB : DataBroker | all req : SpecificRequest | all u : User |
 		req in u.acceptedRequests iff (req in dB.authorizedRequests and req.user = u)
@@ -101,15 +110,27 @@ fact requestConstaints {
 	all grf : GroupRequestFilter | one gr : GroupRequest | grf in gr.filters
 }
 
+fact subscriptionConstraints {
+	// every subscription is generated from a company
+	all sub : Subscription | sub in sub.company.subscriptions
+
+	// a company can not have two subscriptions for the same data (no 2 subscriptions with same request)
+	all c : Company | all disj s1, s2 : Subscription | 
+		(s1 in c.subscriptions and s2 in c.subscriptions) implies (s1.request != s2.request)
+
+//	all c : Company | #c.fromSubscription != 0 <=> #c.subscriptions != 0
+
+}
+
 fact dataAccessConstraints {
 	one dB : DataBroker | all company : Company |
-	( some u : User | all data : InfoPacket |
+	( some u : User | all data : InfoPacket | 
 	(data in u.devices.sentData and data in company.accessibleData) iff (
 			(
 				some sr : SpecificRequest | sr in company.requests
 				and sr in u.acceptedRequests
 			) or (
-				some gr : GroupRequest | some grf : GroupRequestFilter |
+				some gr : GroupRequest | some grf : GroupRequestFilter | 
 				grf in gr.filters and gr in dB.authorizedRequests and gr in company.requests and
 				(one grf.ageStart implies u.age >= grf.ageStart) and
 				(one grf.ageEnd implies u.age <= grf.ageEnd) and
@@ -119,16 +140,31 @@ fact dataAccessConstraints {
 	)
 }
 
-assert noRequestNoDataAccess {
+assert noAuthorizedRequestMeansNoDataAccess {
 	some company : Company | one dB : DataBroker |
 	#dB.availableData > 0 and
-	(#company.requests = 0 or
-		all request : DataAccessRequest |
+	(#company.requests = 0 or 
+		all request : DataAccessRequest | 
 		request in company.requests and request not in dB.authorizedRequests)
 	implies #company.accessibleData = 0
 }
 
-check noRequestNoDataAccess for 2 but 7 Int, exactly 1 SpecificRequest, 1 GroupRequest, exactly 3 User
+check noAuthorizedRequestMeansNoDataAccess for 5 but 7 Int, exactly 5 SpecificRequest, 5 GroupRequest, 5 InfoPacket, exactly 5 User
 
-pred show() {}
-run show for 3 but 7 Int, exactly 3 User, exactly 3 GroupRequest
+assert noDataFromSubscriptionIfTheresNoSubscription {
+	all c : Company |
+	#c.subscriptions = 0 implies #c.fromSubscription = 0
+}
+
+check noDataFromSubscriptionIfTheresNoSubscription for 2 but 7 Int, 1 Subscription
+
+pred sub [c : Company, u1, u2 : User] {
+//	#c.subscriptions > 0 and #c.fromSubscription > 0 and
+	#u1.devices.sentData > 1 and #u2.devices.sentData > 1 and u1 != u2 and
+	#c.accessibleData > 0
+}
+
+run sub for 4 but 7 Int,  exactly 1 Company, exactly 5 User, exactly 4 InfoPacket
+
+pred show {}
+run show for 3 but 7 Int, exactly 3 User, exactly 1 GroupRequest, 3 Subscription, 2 SpecificRequest
