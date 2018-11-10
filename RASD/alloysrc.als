@@ -118,8 +118,15 @@ fact subscriptionConstraints {
 	all c : Company | all disj s1, s2 : Subscription | 
 		(s1 in c.subscriptions and s2 in c.subscriptions) implies (s1.request != s2.request)
 
-//	all c : Company | #c.fromSubscription != 0 <=> #c.subscriptions != 0
+	// if a user has accepted a SpecificRequest and there is a subscription
+	// linked to it, all his data is sent to the proper company
+	all u : User | all sr : SpecificRequest | sr in u.acceptedRequests implies
+	(all c : Company | all sub : Subscription | sr in sub.request and sub in c.subscriptions  and all data : InfoPacket | 
+	data in u.devices.sentData and data in c.fromSubscription)
 
+	all c : Company | some sub : Subscription | sub in c.subscriptions iff
+		(one sr : SpecificRequest | sr in sub.request and sr in c.requests and one u : User | sr in u.acceptedRequests and
+		all data : InfoPacket | data in u.devices.sentData and data in c.fromSubscription)
 }
 
 fact dataAccessConstraints {
