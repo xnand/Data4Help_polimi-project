@@ -678,18 +678,32 @@ Following are the hardware limitations required by the end customer for using ou
 \subsection{Software system attributes}
 
 \subsubsection{Reliability}
+   AutomatedSOS it the critical component of the application, thus it's infrastracture should be characterized by the lowest MTTR possible.\\
+   A larger MTTR is acceptable for our business to business components, however it's mandatory to prevent "data loss" (ie : using RAID configurations for servers)   
 
-Since we do not have control on the functioning state of sensors that are inside a wearable device, our software must carefully process the data and discard any impossible or highly implausible parameter, also taking into account that customer's movements and actions may interfere with such parameters making them invalid for a certain period.
 
 \subsubsection{Availability}
 
-The back-end system must always be capable of collecting data from customers and letting companies access it. Moreover, it must always be capable of promptly responding to a customer's emergency, and always capable to communicate with the ambulances, as it is a critical situation; for this same reason, no down time must occur.
+
+	AutomatedSOS service must be up and running 24/7, the user must be quickly notified of 
+	any communication issues between smartphone and AutomatedSOS smartdevices or with Track4Help servers.\\
+	Track4Run service should be operative only during day hours, we expect a low utilization of the service during night hours as shown
+	in the histogram (Fig. 19).\\
+	Companies and devices should be able to communicate with Track4Help servers 24/7.
+	 
+\begin{figure}[H]
+	\center
+	\includegraphics[scale=0.35]{images/runhours.png}
+	\caption{preferred time of day for running}
+\end{figure}	
+		
+
 
 \subsubsection{Security}
 
-In order to guarantee the protection of customer's sensible data, all internet traffic must be encrypted with SSL and sent through HTTPS protocol; also every end point of such data transfer that's in our control must verify the other side's certificate and reject any transmission if invalid.
+In order to guarantee the protection of customer's sensible data, all internet traffic must be encrypted with SSL and sent through HTTPS protocol; also every end point of such data transfer that's in our control must verify the other side's certificate and reject any transmission if invalid.\\
+All Bluetooth communication must be encrypted too.\\
 
-All Bluetooth communication must be encrypted too.
 
 \subsubsection{Mantainability}
 
