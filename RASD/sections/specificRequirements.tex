@@ -6,7 +6,20 @@
 
 \subsubsection{User interfaces}
 
-Following are some mockups on how the mobile application will look like.
+The mobile application was designed taking into account that users can utilize only the core functionality of the app (Track4Help) or all services offered (track4Run \& AutomatedSOS).\\ 
+Opening the application, user is presented with the login page (Fig. 8.a), if not already registered, he can sign in.\\
+ Once logged in the user is presented with his "Main Feed" (Fig. 8.b), in this page all important information (upcoming runs, smartdevices status and company requests) are presented in a scroll page with clickable panels,
+  the objective is to aggregate all three services informations in one screen to simplify the UX. 
+ At the bottom of the screen a navigation bar makes possible to navigate application's pages.\\ 
+ The user devices page (Fig 9.a) show all user devices, the user can remove a device clicking on the "X" next to the device or add one clicking on the "+" button. 
+ It's impossible to remove a device if it is associated with AutomatedSOS, the user need to disable AutomatedSOS on that device first.\\
+ The AutomatedSOS page (Fig. 9.b) show the status of the devices and lifesign readings. In the example one device is offline and marked with a warning red color. 
+ Here user can add or disable AutomatedSOS on his owned devices.\\
+By clicking on Sharing in the settings screen (Fig 10.a) the user is presented with the sharing page (Fig 10.b), here he can visualize approved and pending requests from companies.\\ 
+ The run page (Fig 11.a) shows all available runs in the users vicinity. It also shows the subscribed runs. The user can click on a specific run and visualize details about it (Fig 11.b). 
+ In the Running page the user can visualizes all the informations about the run and enroll himself to the run by clicking "Run It!".
+
+
 
 \begin{figure}[H]
 	\centering
@@ -19,8 +32,9 @@ Following are some mockups on how the mobile application will look like.
 	\begin{subfigure}[b]{0.45\linewidth}
 		\includegraphics[width=\linewidth]{images/mockup/MainFeed.png}
 		\caption{Main feed}
-		\label{mock_runpage}
+		\label{mock_mainfeed}
 	\end{subfigure}
+	\caption{}
 \end{figure}
 
 \begin{figure}[H]
@@ -28,29 +42,31 @@ Following are some mockups on how the mobile application will look like.
 	\begin{subfigure}[b]{0.45\linewidth}
 		\includegraphics[width=\linewidth]{images/mockup/UserDevices.png}
 		\caption{User's devices}
-		\label{mock_userdevices}
+		\label{mock_userDevices}
 	\end{subfigure}
 	%
 	\begin{subfigure}[b]{0.45\linewidth}
-		\includegraphics[width=\linewidth]{images/mockup/Settings.png}
-		\caption{Preferences}
-		\label{mock_settings}
+		\includegraphics[width=\linewidth]{images/mockup/AutomaticSOS.png}
+		\caption{automatedSOS}
+		\label{mock_automatedSOS}
 	\end{subfigure}
+	\caption{}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}[b]{0.45\linewidth}
-		\includegraphics[width=\linewidth]{images/mockup/SharingCenter.png}
-		\caption{Sharing center}
-		\label{mock_sharingcenter}
+		\includegraphics[width=\linewidth]{images/mockup/Settings.png}
+		\caption{settings}
+		\label{mock_settings}
 	\end{subfigure}
 	%
 	\begin{subfigure}[b]{0.45\linewidth}
-		\includegraphics[width=\linewidth]{images/mockup/AutomaticSOS.png}
-		\caption{AutomaticSOS}
-		\label{mock_automaticsos}
+		\includegraphics[width=\linewidth]{images/mockup/SharingCenter.png}
+		\caption{sharing center}
+		\label{mock_sharingCenter}
 	\end{subfigure}
+	\caption{}
 \end{figure}
 
 \begin{figure}[H]
@@ -58,17 +74,25 @@ Following are some mockups on how the mobile application will look like.
 	\begin{subfigure}[b]{0.45\linewidth}
 		\includegraphics[width=\linewidth]{images/mockup/Track4Run.png}
 		\caption{Running events}
-		\label{mock_sharingcenter}
+		\label{mock_track4Run}
 	\end{subfigure}
 	%
 	\begin{subfigure}[b]{0.45\linewidth}
 		\includegraphics[width=\linewidth]{images/mockup/RunPage.png}
 		\caption{Running event details}
-		\label{mock_automaticsos}
+		\label{mock_runPage}
 	\end{subfigure}
+	\caption{}
 \end{figure}
 
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{images/mockup/webpage.png}
+	\caption{sign in forms for Track4Help}
+	\label{mockup_webpage}
+\end{figure}
+The website of Track4Help will offer a simple form to register a company and the API documentations for developers.
 
 \subsubsection{Hardware requirements}
 
