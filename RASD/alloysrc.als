@@ -31,7 +31,6 @@ sig Company {
 	requests: set DataAccessRequest,
 	accessibleData: set InfoPacket,
 	subscriptions: set Subscription,
-	fromSubscription: set InfoPacket
 }
 
 abstract sig DataAccessRequest {}
@@ -117,33 +116,20 @@ fact subscriptionConstraints {
 	// a company can not have two subscriptions for the same data (no 2 subscriptions with same request)
 	all c : Company | all disj s1, s2 : Subscription | 
 		(s1 in c.subscriptions and s2 in c.subscriptions) implies (s1.request != s2.request)
-
-	// if a user has accepted a SpecificRequest and there is a subscription
-	// linked to it, all his data is sent to the proper company
-	all u : User | all sr : SpecificRequest | sr in u.acceptedRequests implies
-	(all c : Company | all sub : Subscription | sr in sub.request and sub in c.subscriptions  and all data : InfoPacket | 
-	data in u.devices.sentData and data in c.fromSubscription)
-
-	all c : Company | some sub : Subscription | sub in c.subscriptions iff
-		(one sr : SpecificRequest | sr in sub.request and sr in c.requests and one u : User | sr in u.acceptedRequests and
-		all data : InfoPacket | data in u.devices.sentData and data in c.fromSubscription)
 }
 
 fact dataAccessConstraints {
-	one dB : DataBroker | all company : Company |
-	( some u : User | all data : InfoPacket | 
-	(data in u.devices.sentData and data in company.accessibleData) iff (
-			(
-				some sr : SpecificRequest | sr in company.requests
-				and sr in u.acceptedRequests
-			) or (
-				some gr : GroupRequest | some grf : GroupRequestFilter | 
-				grf in gr.filters and gr in dB.authorizedRequests and gr in company.requests and
-				(one grf.ageStart implies u.age >= grf.ageStart) and
-				(one grf.ageEnd implies u.age <= grf.ageEnd) and
-				(one grf.city implies grf.city = u.city)
-			)
-		)
+	one dB : DataBroker | all c : Company | all u : User | 
+	u.devices.sentData in c.accessibleData iff 
+	(
+		all data : InfoPacket | data in u.devices.sentData and
+		(some sr : SpecificRequest | sr in u.acceptedRequests and sr in c.requests)
+		or
+		(some gr : GroupRequest, grf : GroupRequestFilter |
+		grf in gr.filters and gr in c.requests and gr in dB.authorizedRequests and
+		(one grf.ageStart implies u.age >= grf.ageStart) and
+		(one grf.ageEnd implies u.age <= grf.ageEnd) and
+		(one grf.city implies grf.city = u.city))
 	)
 }
 
@@ -158,20 +144,14 @@ assert noAuthorizedRequestMeansNoDataAccess {
 
 check noAuthorizedRequestMeansNoDataAccess for 5 but 7 Int, exactly 5 SpecificRequest, 5 GroupRequest, 5 InfoPacket, exactly 5 User
 
-assert noDataFromSubscriptionIfTheresNoSubscription {
-	all c : Company |
-	#c.subscriptions = 0 implies #c.fromSubscription = 0
+
+pred bo [c : Company, u1, u2 : User] {
+	#c.accessibleData > 0 and
+	#u1.devices.sentData > 0 and #u2.devices.sentData > 0 and u1 != u2
 }
 
-check noDataFromSubscriptionIfTheresNoSubscription for 2 but 7 Int, 1 Subscription
+run bo for 5 but 7 Int
 
-pred sub [c : Company, u1, u2 : User] {
-//	#c.subscriptions > 0 and #c.fromSubscription > 0 and
-	#u1.devices.sentData > 1 and #u2.devices.sentData > 1 and u1 != u2 and
-	#c.accessibleData > 0
-}
-
-run sub for 4 but 7 Int,  exactly 1 Company, exactly 5 User, exactly 4 InfoPacket
 
 pred show {}
-run show for 3 but 7 Int, exactly 3 User, exactly 1 GroupRequest, 3 Subscription, 2 SpecificRequest
+run show for 3 but 7 Int, exactly 3 User, exactly 0 GroupRequest, 3 Subscription, 2 SpecificRequest
