@@ -123,9 +123,9 @@ fact subscriptionConstraints {
 fact dataAccessConstraints {
 	// all data from a user is accessible to the company
 	// if it has access to even a single packet
-	all c : Company | some u : User |
+	all c : Company | all u : User |
 	(some data : InfoPacket | data in u.devices.sentData and data in c.accessibleData) implies
-	(all data : InfoPacket | data in u.devices.sentData and data in c.accessibleData)
+	not (some data : InfoPacket | data in u.devices.sentData and u.devices.sentData not in c.accessibleData)
 
 	// data sent from users device is accessible from a company if and only if
 	// the company made a SpecificRequest that the user accepted
@@ -137,7 +137,7 @@ fact dataAccessConstraints {
 		(some sr : SpecificRequest | sr in c.requests and sr in u.acceptedRequests)
 		or
 		(some gr : GroupRequest | some grf : GroupRequestFilter | grf in gr.filters and
-		gr in dB.authorizedRequests and
+		gr in dB.authorizedRequests and gr in c.requests and
 		(one grf.ageStart implies u.age >= grf.ageStart) and
 		(one grf.ageEnd implies u.age <= grf.ageEnd) and
 		(one grf.city implies grf.city = u.city))
@@ -189,3 +189,12 @@ assert noAuthorizedRequestMeansNoDataAccess {
 }
 
 check noAuthorizedRequestMeansNoDataAccess for 10 but 7 Int, exactly 10 DataAccessRequest
+
+
+assert accessibleDataMeansSomeAuthorizedRequest {
+	all c : Company | one dB : DataBroker |
+	#c.accessibleData > 0 implies 
+	some req : DataAccessRequest | req in c.requests and req in dB.authorizedRequests
+}
+
+check accessibleDataMeansSomeAuthorizedRequest for 10 but 7 Int
