@@ -699,8 +699,7 @@ Following are the hardware limitations required by the end customer for using ou
 
 \subsubsection{Security}
 
-In order to guarantee the protection of customer's sensible data, all internet traffic must be encrypted with SSL and sent through HTTPS protocol; also every end point of such data transfer that's in our control must verify the other side's certificate and reject any transmission if invalid.\\
-All Bluetooth communication must be encrypted too.\\
+In order to guarantee the protection of customer's sensible data, all internet traffic must be encrypted with SSL and sent through HTTPS protocol;
 
 
 \subsubsection{Mantainability}
@@ -712,8 +711,14 @@ Software that's on devices will be updated through the appropriate app store, as
 \subsubsection{Portability}
 
 Our smartphone application must be available for Android and iOS platforms. Cross platform developing tools can be used to achieve this.
-
-The wearable application must be available for the Android Wear/WearOS and watchOS platforms, as they currently are, and in the following years will probably be, the leading platforms for wearable devices.
+As shown in the figure below, android market is characterized by a great fragmentation in OS versions. The application will targets the Lollipop API (android lollipop 5.0) to ensure compatibility with most devices.\\
+Communication between the application and the wearable device will be held by the Google Fit API for Android and Wear OS API for iOS (see reference in introduction).\\
+Using Google Fit API will ensure compatibility with smart devices running different OS than Android (ie: TizenOS)
+\begin{figure}[H]
+	\center
+	\includegraphics[scale=0.35]{images/androidFragmentation.jpg}
+	\caption{Android OS versions distribution (statista.com)}
+\end{figure}
 
 \begin{figure}[H]
 	\center
