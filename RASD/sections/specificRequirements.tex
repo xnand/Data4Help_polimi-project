@@ -9,7 +9,7 @@
 The mobile application was designed taking into account that users can utilize only the core functionality of the app (Track4Help) or all services offered (track4Run \& AutomatedSOS).\\
 Opening the application, user is presented with the login page (Fig. 8.a), if not already registered, he can sign in.\\
  Once logged in the user is presented with his "Main Feed" (Fig. 8.b), in this page all important information (upcoming runs, smartdevices status and company requests) are presented in a scroll page with clickable panels,
-  the objective is to aggregate all three services informations in one screen to simplify the UX.
+ the objective is to aggregate all three services informations in one screen to simplify the UX.
  At the bottom of the screen a navigation bar makes possible to navigate application's pages.\\
  The user devices page (Fig 9.a) show all user devices, the user can remove a device clicking on the "X" next to the device or add one clicking on the "+" button.
  It's impossible to remove a device if it is associated with AutomatedSOS, the user need to disable AutomatedSOS on that device first.\\
@@ -566,8 +566,8 @@ Communication between a third party company and our system will go through HTTPS
 			{\bf Scenario 1}
 			\vspace{3mm}
 
-			HealthyResearch is a company which makes medical research. It's making a project so it needs some data. It request these data thanks to Data4Help service specifing that it wants people who live in Italy, 25 to 50 years old who regularly do some sports and not. The sample is bigger that 1000 so HealthyResearch receives immediatly the requested data.
-			Then HealthyResearch wants the same data but referring to the people who are participating to the running event in Milan today. Now the sample is smaller than 1000 so the request is rejected.
+			HealthyResearch is a company who works in the medical research field. It's making a project for which it needs people's data. It accesses this data thanks to TrackMe's Data4Help service specifying for people who live in Italy, 25 to 50 years old and who regularly do some sports and not. The sample is bigger that 1000 users so HealthyResearch receives the requested data shortly after TrackMe's system approved the request.
+			Then HealthyResearch wants the same data but this time referring to the people who are participating to the running event in Milan today. In this case the sample is smaller than 1000 users so the request is rejected.
 
 			\vspace{5mm}
 		\end{minipage}
@@ -580,7 +580,7 @@ Communication between a third party company and our system will go through HTTPS
 			{\bf Scenario 2}
 			\vspace{3mm}
 
-			A hospital wants to monitor a convalescing patient who has been relesed. The patient has installed TrackMe, the ospital Using TrackMe's API sends to him a individual request data with the option of receiving new data as soon as the are available. The patient accepts the request so the ospital can monitor him.
+			A hospital wants to monitor a convalescing patient who has been relesed. The patient has signed up on TrackMe's services; the hospital using TrackMe's APIs sends him an individual request for data, and subscribes to it, so it can monitor the patient's parameters and check his status in real time.
 			\vspace{5mm}
 		\end{minipage}
 		\begin{figure}[H]
@@ -595,7 +595,7 @@ Communication between a third party company and our system will go through HTTPS
 			{\bf Scenario 3}
 			\vspace{3mm}
 
-			Mrs. Jane is 75 years old. She always forgot to drink water and she eats very little. His son buy to her a smartwatch and install the TrackMe's application subscribing Jane to AutomatedSOS service. One day Jane feels bad due to an hypovolemia so her blood pressure drops dramatically. The smartwatch recognize that the value is under the minimum then an ambulance is called automatcally. Jane arrives to the hospital in time.
+			Mrs. Jane is 75 years old. She always forget to drink water and she eats very poorly. His son buys her a smartwatch and installs the TrackMe's application on the phone subscribing Jane to AutomatedSOS service. One day Jane feels bad due to an hypovolemia so her blood pressure drops dramatically. The smartwatch recognizes that the value is under the minimum, so it automatically calls an ambulance. Jane arrives to the hospital in time.
 
 			\vspace{5mm}
 		\end{minipage}
@@ -611,7 +611,7 @@ Communication between a third party company and our system will go through HTTPS
 			{\bf Scenario 4}
 			\vspace{3mm}
 
-			Mario wants to organize a running event in his city, he is subscribed to Track4Run so he opens the events page and creates a new one. He selects the route, date and time. The operation ends successfully so the event is organized but Mario realizes that he can't be present at the event. He edits the day of the event but due to another event already organized in the same place, date and time the editing operation fails. Mario finally decides to delete the event.
+			Mario wants to organize a running event in his city; he is subscribed to Track4Run so he opens the events page and creates a new one. He then selects the route, date and time. The operation ends successfully so the event is organized but Mario realizes that he can't be present at the event. He edits the day of the event but due to another event being already organized in the same place, date and time the editing operation fails. Mario finally decides to delete the event.
 
 			\vspace{5mm}
 		\end{minipage}
@@ -627,7 +627,7 @@ Communication between a third party company and our system will go through HTTPS
 			{\bf Scenario 5}
 			\vspace{3mm}
 
-			Anne runs for hobbies, she decides to subribe to Track4Run. She open the events page and she see one that interests her so she enrolls to it. She unfortunately breaks her foot so she can't participate but thanks to the option to see the map with the position of the participants she will at least be able to see the event progress.
+			Anne is a hobbyist runner, she decides to subscribe to Track4Run. She open the events page and she sees one that interests her and her friends so she enrolls into it. She unfortunately breaks her foot before the event date, so she can't participate anymore, but thanks to the possibility of seeing the live map with the position of the participants she will at least be able to see the event progress as a spectator and cheer for her friends.
 			\vspace{5mm}
 		\end{minipage}
 		\begin{figure}[H]
