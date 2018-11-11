@@ -1,9 +1,6 @@
-// The company ask for specific data about 3 users, 2 of the users
-// accept company request, one user refuses.
-
 open util/integer
 
-// user signatures --------------------------------------------------
+// user signatures ------------------------------------------------------------
 
 sig User {
 	city : one City,
@@ -25,7 +22,7 @@ sig WearableDevice {
 sig City{}
 
 
-// company signatures --------------------------------------------------
+// company signatures ---------------------------------------------------------
 
 sig Company {
 	requests: set DataAccessRequest,
@@ -64,7 +61,8 @@ sig Subscription {
 	one dB : DataBroker | request in dB.authorizedRequests
 }
 
-// general signatures -----------------------------------------------------------
+
+// general signatures ---------------------------------------------------------
 
 sig InfoPacket {}
 
@@ -74,7 +72,8 @@ one sig DataBroker {
 	availableData: set InfoPacket
 }
 
-// facts -----------------------------------------------------------
+
+// facts ----------------------------------------------------------------------
 
 fact userConstraints {
 	// every WearableDevice is owned by one user
@@ -89,14 +88,14 @@ fact requestConstraints {
 	all req : DataAccessRequest | some company : Company | req in company.requests
 
 	// no DataAccessRequest is neither in authorizedRequests nor pendingRequests but it has to be in one of the two
-	all req: DataAccessRequest | one dB : DataBroker | 
-		(req in dB.pendingRequests and req not in dB.authorizedRequests) or 
+	all req: DataAccessRequest | one dB : DataBroker |
+		(req in dB.pendingRequests and req not in dB.authorizedRequests) or
 		(req in dB.authorizedRequests and req not in dB.pendingRequests)
 
 	// no pending SpecificRequest is in any User's acceptedRequests
-	one dB : DataBroker | all req : SpecificRequest | 
+	one dB : DataBroker | all req : SpecificRequest |
 		req in dB.pendingRequests implies all user : User | req not in user.acceptedRequests
-		
+
 	// a SpecificRequest can be accepted only by the proper user, and then it goes in authorizedRequests
 	one dB : DataBroker | all req : SpecificRequest | all u : User |
 		req in u.acceptedRequests iff (req in dB.authorizedRequests and req.user = u)
@@ -114,44 +113,79 @@ fact subscriptionConstraints {
 	all sub : Subscription | sub in sub.company.subscriptions
 
 	// a company can not have two subscriptions for the same data (no 2 subscriptions with same request)
-	all c : Company | all disj s1, s2 : Subscription | 
+	all c : Company | all disj s1, s2 : Subscription |
 		(s1 in c.subscriptions and s2 in c.subscriptions) implies (s1.request != s2.request)
+
+	// a company has a subscription only if it made the request it is linked to
+	all c : Company | all sub : Subscription | sub.request in c.requests
 }
 
 fact dataAccessConstraints {
-	one dB : DataBroker | all c : Company | all u : User | 
-	u.devices.sentData in c.accessibleData iff 
+	// all data from a user is accessible to the company
+	// if it has access to even a single packet
+	all c : Company | some u : User |
+	(some data : InfoPacket | data in u.devices.sentData and data in c.accessibleData) implies
+	(all data : InfoPacket | data in u.devices.sentData and data in c.accessibleData)
+
+	// data sent from users device is accessible from a company if and only if
+	// the company made a SpecificRequest that the user accepted
+	// or it made a GroupRequest that was authorized and the user
+	// satifies the criteria in GroupRequest's filters
+	all c : Company | all u : User | one dB : DataBroker |
+	(some data : InfoPacket | data in u.devices.sentData and data in c.accessibleData) iff
 	(
-		all data : InfoPacket | data in u.devices.sentData and
-		(some sr : SpecificRequest | sr in u.acceptedRequests and sr in c.requests)
+		(some sr : SpecificRequest | sr in c.requests and sr in u.acceptedRequests)
 		or
-		(some gr : GroupRequest, grf : GroupRequestFilter |
-		grf in gr.filters and gr in c.requests and gr in dB.authorizedRequests and
+		(some gr : GroupRequest | some grf : GroupRequestFilter | grf in gr.filters and
+		gr in dB.authorizedRequests and
 		(one grf.ageStart implies u.age >= grf.ageStart) and
 		(one grf.ageEnd implies u.age <= grf.ageEnd) and
 		(one grf.city implies grf.city = u.city))
 	)
 }
 
+// predicates and assertions --------------------------------------------------
+
+
+pred companyMakeSpecificRequest [disj c1, c2 : Company, u : User] {
+	one sr : SpecificRequest | sr not in c1.requests and sr not in u.acceptedRequests
+	implies c2.requests = c1.requests + sr
+}
+
+run companyMakeSpecificRequest for 2 but 7 Int, exactly 0 GroupRequest,
+	exactly 1 InfoPacket, exactly 1 SpecificRequest
+
+
+pred userAcceptsSpecificRequest [disj u : User, disj sr1, sr2 : SpecificRequest, c : Company] {
+	sr1 in c.requests and sr1 not in u.acceptedRequests implies
+	sr2 in c.requests and sr2 in u.acceptedRequests
+}
+
+run userAcceptsSpecificRequest for 2 but 7 Int, exactly 0 GroupRequest, exactly 2 InfoPacket,
+	exactly 2 SpecificRequest, exactly 2 Company, exactly 1 User
+
+
+pred groupRequestOverview[c : Company, dB : DataBroker] {
+	some gr : GroupRequest | gr in c.requests and gr in dB.authorizedRequests
+}
+
+run groupRequestOverview for 2 but 7 Int, exactly 1 GroupRequest
+
+
+pred overview [disj d1, d2 : InfoPacket, c : Company] {
+	d1 in c.accessibleData and d2 not in c.accessibleData
+}
+
+run overview for 2 but 7 Int, exactly 1 SpecificRequest, exactly 1 GroupRequest
+
+
 assert noAuthorizedRequestMeansNoDataAccess {
 	some company : Company | one dB : DataBroker |
 	#dB.availableData > 0 and
-	(#company.requests = 0 or 
-		all request : DataAccessRequest | 
+	(#company.requests = 0 or
+		all request : DataAccessRequest |
 		request in company.requests and request not in dB.authorizedRequests)
 	implies #company.accessibleData = 0
 }
 
-check noAuthorizedRequestMeansNoDataAccess for 5 but 7 Int, exactly 5 SpecificRequest, 5 GroupRequest, 5 InfoPacket, exactly 5 User
-
-
-pred bo [c : Company, u1, u2 : User] {
-	#c.accessibleData > 0 and
-	#u1.devices.sentData > 0 and #u2.devices.sentData > 0 and u1 != u2
-}
-
-run bo for 5 but 7 Int
-
-
-pred show {}
-run show for 3 but 7 Int, exactly 3 User, exactly  GroupRequest, 3 Subscription, 2 SpecificRequest
+check noAuthorizedRequestMeansNoDataAccess for 10 but 7 Int, exactly 10 DataAccessRequest

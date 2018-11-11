@@ -6,17 +6,17 @@
 
 \subsubsection{User interfaces}
 
-The mobile application was designed taking into account that users can utilize only the core functionality of the app (Track4Help) or all services offered (track4Run \& AutomatedSOS).\\ 
+The mobile application was designed taking into account that users can utilize only the core functionality of the app (Track4Help) or all services offered (track4Run \& AutomatedSOS).\\
 Opening the application, user is presented with the login page (Fig. 8.a), if not already registered, he can sign in.\\
  Once logged in the user is presented with his "Main Feed" (Fig. 8.b), in this page all important information (upcoming runs, smartdevices status and company requests) are presented in a scroll page with clickable panels,
-  the objective is to aggregate all three services informations in one screen to simplify the UX. 
- At the bottom of the screen a navigation bar makes possible to navigate application's pages.\\ 
- The user devices page (Fig 9.a) show all user devices, the user can remove a device clicking on the "X" next to the device or add one clicking on the "+" button. 
+  the objective is to aggregate all three services informations in one screen to simplify the UX.
+ At the bottom of the screen a navigation bar makes possible to navigate application's pages.\\
+ The user devices page (Fig 9.a) show all user devices, the user can remove a device clicking on the "X" next to the device or add one clicking on the "+" button.
  It's impossible to remove a device if it is associated with AutomatedSOS, the user need to disable AutomatedSOS on that device first.\\
- The AutomatedSOS page (Fig. 9.b) show the status of the devices and lifesign readings. In the example one device is offline and marked with a warning red color. 
+ The AutomatedSOS page (Fig. 9.b) show the status of the devices and lifesign readings. In the example one device is offline and marked with a warning red color.
  Here user can add or disable AutomatedSOS on his owned devices.\\
-By clicking on Sharing in the settings screen (Fig 10.a) the user is presented with the sharing page (Fig 10.b), here he can visualize approved and pending requests from companies.\\ 
- The run page (Fig 11.a) shows all available runs in the users vicinity. It also shows the subscribed runs. The user can click on a specific run and visualize details about it (Fig 11.b). 
+By clicking on Sharing in the settings screen (Fig 10.a) the user is presented with the sharing page (Fig 10.b), here he can visualize approved and pending requests from companies.\\
+ The run page (Fig 11.a) shows all available runs in the users vicinity. It also shows the subscribed runs. The user can click on a specific run and visualize details about it (Fig 11.b).
  In the Running page the user can visualizes all the informations about the run and enroll himself to the run by clicking "Run It!".
 
 
@@ -566,8 +566,8 @@ Communication between a third party company and our system will go through HTTPS
 			{\bf Scenario 1}
 			\vspace{3mm}
 
-			HealthyResearch is a company which makes medical research. It's making a project so it needs some data. It request these data thanks to Data4Help service specifing that it wants people who live in Italy, 25 to 50 years old who regularly do some sports and not. The sample is bigger that 10000 so HealthyResearch receives immediatly the requested data.
-			Then HealthyResearch wants the same data but referring to the people who are participating to the running event in Milan today. Now the sample is smaller than 10000 so the request is rejected.
+			HealthyResearch is a company which makes medical research. It's making a project so it needs some data. It request these data thanks to Data4Help service specifing that it wants people who live in Italy, 25 to 50 years old who regularly do some sports and not. The sample is bigger that 1000 so HealthyResearch receives immediatly the requested data.
+			Then HealthyResearch wants the same data but referring to the people who are participating to the running event in Milan today. Now the sample is smaller than 1000 so the request is rejected.
 
 			\vspace{5mm}
 		\end{minipage}
@@ -621,7 +621,7 @@ Communication between a third party company and our system will go through HTTPS
 			\caption{Sequence Diagram Scenario 4 \label{fig:Sequence Diagram Scenario 4}}
 		\end{figure}
 		\begin{minipage}{\textwidth}
-			 
+
 		\end{minipage}
 		\begin{minipage}{\textwidth}
 			{\bf Scenario 5}
@@ -679,25 +679,23 @@ Following are the hardware limitations required by the end customer for using ou
 
 \subsubsection{Reliability}
    AutomatedSOS it the critical component of the application, thus it's infrastracture should be characterized by the lowest MTTR possible.\\
-   A larger MTTR is acceptable for our business to business components, however it's mandatory to prevent "data loss" (ie : using RAID configurations for servers)   
+   A larger MTTR is acceptable for our business to business components, however it's mandatory to prevent "data loss" (ie : using RAID configurations for servers)
 
 
 \subsubsection{Availability}
 
 
-	AutomatedSOS service must be up and running 24/7, the user must be quickly notified of 
+	AutomatedSOS service must be up and running 24/7, the user must be quickly notified of
 	any communication issues between smartphone and AutomatedSOS smartdevices or with Track4Help servers.\\
 	Track4Run service should be operative only during day hours, we expect a low utilization of the service during night hours as shown
 	in the histogram (Fig. 19).\\
 	Companies and devices should be able to communicate with Track4Help servers 24/7.
-	 
+
 \begin{figure}[H]
 	\center
-	\includegraphics[scale=0.35]{images/runhours.png}
-	\caption{preferred time of day for running}
-\end{figure}	
-		
-
+	\includegraphics[scale=0.35]{images/statista_runhours.png}
+	\caption{Preferred time of day for running (statista.com)}
+\end{figure}
 
 \subsubsection{Security}
 
@@ -716,5 +714,11 @@ Software that's on devices will be updated through the appropriate app store, as
 Our smartphone application must be available for Android and iOS platforms. Cross platform developing tools can be used to achieve this.
 
 The wearable application must be available for the Android Wear/WearOS and watchOS platforms, as they currently are, and in the following years will probably be, the leading platforms for wearable devices.
+
+\begin{figure}[H]
+	\center
+	\includegraphics[scale=0.35]{images/statista_wearableOs.jpg}
+	\caption{Leading operating systems for wearable devices (statista.com)}
+\end{figure}
 
 \end{document}
