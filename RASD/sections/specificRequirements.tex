@@ -348,12 +348,12 @@ Communication between a third party company and our system will go through HTTPS
 			\hline
 			\textbf{Actor} & Authenticated User\\
 			\hline
-			\textbf{Entry condition} & The authenticated user is on the home page and wants to organize a running event.\\
+			\textbf{Entry condition} & The authenticated user is on the events page and wants to organize a running event.\\
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
 				\linespread{0}\item The authenticated user clicks "New running event".
-				\linespread{0}\item The authenticated user selects the route, date and time.
-				\linespread{0}\item The authenticated user clicks "Confirm".
+				\linespread{0}\item The authenticated user selects the route, date, time and fills all mandatory fields.
+				\linespread{0}\item The authenticated user clicks "Done".
 			\end{enumerate}\\
 			\hline
 			\textbf{Exit condition} & The running event is organized and now users can view it and enroll to it.\\
@@ -420,7 +420,7 @@ Communication between a third party company and our system will go through HTTPS
 			\hline
 			\textbf{Flow of events} & \begin{enumerate}
 				\linespread{0}\item The authenticated user clicks on "Edit".
-				\linespread{0}\item The authenticated user changes route, date and time.
+				\linespread{0}\item The authenticated user changes route, date and time or any other field.
 				\linespread{0}\item The authenticated user clicks "Save".
 			\end{enumerate}\\
 			\hline
@@ -475,7 +475,11 @@ Communication between a third party company and our system will go through HTTPS
 			\hline
 			\textbf{Exit condition} & The user is enrolled to the running event selected.\\
 			\hline
-			\textbf{Exception}\\
+			\textbf{Exception} & \begin{enumerate}
+				\linespread{0}\item No more participants are allowed in the run.
+			\end{enumerate}\\
+			\hline
+			\textbf{Note} & When an exception occurs the user is not enrolled to the event.\\
 			\hline
 		\end{tabular}
 	\end{center}
