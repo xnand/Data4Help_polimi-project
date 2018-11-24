@@ -1,0 +1,110 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\graphicspath{{images/}{../images/}}
+
+\usepackage{float}
+\usepackage{subfiles}
+\usepackage{subcaption} % used to align images in rows and columns
+\usepackage{titlesec}
+
+% spacing for commands
+% \titlespacing*{\command}
+% {left}{before}{after}
+\titlespacing*{\section}
+{0pt}{5.5ex}{4.3ex}
+\titlespacing*{\subsection}
+{0pt}{5.5ex}{4.3ex}
+\titlespacing*{\subsubsection}
+{0pt}{5.5ex}{4.3ex}
+
+% what is this for???
+\usepackage{blindtext}
+
+% to make table of contents clickable
+\usepackage{hyperref}
+\hypersetup{
+	linktoc=all
+}
+
+% make table of contents display up to depth 3
+\setcounter{tocdepth}{3}
+
+\date{}
+
+\title{}
+
+
+\begin{document}
+
+%\maketitle
+
+\thispagestyle{empty} % to hide pagenum
+\begin{center}
+	\includegraphics[scale=0.8]{images/mockup/logo2.png}
+
+
+
+	\vspace{3cm}
+
+	\large $\bf \large Software$ $\bf Engineering$ $\bf 2$
+
+	\vspace{3mm}
+
+	\LARGE $\bf Design$  $\bf Document$
+
+	\vspace{2mm}
+	\small Version 1.0
+
+	\vspace{1cm}
+
+	\begin{tabular}{r|l}
+		\large Andrei Constantin Scutariu & \large 833370\\
+		\large Carlo Pulvirenti & \large 828459\\
+		\large Sergio Piermario Placanica & \large 916702\\
+	\end{tabular}
+
+	\vspace{3cm}
+
+	\includegraphics[scale=0.15]{images/logoPolimi.jpg}
+
+	\vspace{3mm}
+	Academic Year 2018-2019
+
+
+	\end{center}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+\subfile{sections/introduction.tex}
+
+\newpage
+
+\section{Architecturalo design}
+\subfile{sections/architecturalDesign.tex}
+
+\newpage
+
+\section{User interface design}
+\subfile{sections/userInterfaceDesign.tex}
+
+
+\newpage
+
+\section{Requirements traceability}
+\subfile{sections/requirementsTraceability.tex}
+\newpage
+
+\section{Implementation, integration and test plan}
+\subfile{sections/implementationIntegrationTestPlan.tex}
+\newpage
+
+\section{Effort spent}
+\subfile{sections/effortSpent.tex}
+
+\end{document}

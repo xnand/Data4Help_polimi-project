@@ -1,20 +1,11 @@
-# ignore everything
-*
-# except these
-!*.tex
-!*.holder
-!*.jpg
-!*.jpeg
-!*.png
-!*.uxf
-!*.sty
-!*.als
-!/DeliveryFolder/
-
-# backend server stuff
-!ITD/BackendServer/TrackMeServer/*.*
-ITD/BackendServer/TrackMeServer/.idea/*
-!ITD/BackendServer/TrackMeServer/public/*
-!ITD/BackendServer/TrackMeServer/routes/*
-!ITD/BackendServer/TrackMeServer/support/*
+.vscode
+main.pdf
+*.log
+*.aux
+*.toc
+*.idea
+*.out
+node_modules
+bin
+venv
 *.iml
