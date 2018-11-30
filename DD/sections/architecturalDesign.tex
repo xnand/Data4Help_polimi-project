@@ -3,9 +3,9 @@
 \begin{document}
 
 \subsection{Overview: High-level components and their interaction}
- TrackMe will be developed on a 3-tier architecture \textit(Fig. 1), the rationale behind application servers separation 
- is to mantain Data4Help service aimed at companies, indipendent from AutomatedSOS and Track4Run functionalities, aimed at users. 
- Application servers will interact with a database server. 
+ TrackMe will be developed on a 3-tier architecture \textit(Fig. 1), the rationale behind application servers separation
+ is to mantain Data4Help service aimed at companies, indipendent from AutomatedSOS and Track4Run functionalities, aimed at users.
+ Application servers will interact with a database server.
  Adding a layer of complexity with servers separation will  make possible to handle failures and updates without the whole system going down.
 
 
@@ -24,7 +24,6 @@
 \end{figure}
 
 \newpage
-\thispagestyle{empty} %TODO why not working?!?!?%
 \subsection{Component view}
 \begin{figure}[H]
 	\includegraphics[width=\paperwidth, angle=90, scale = 0.85]{uml_component_view.jpg}
@@ -32,6 +31,38 @@
 	\label{fig:uml_component_view}
 \end{figure}
 \newpage
+
+\subsubsection{Mobile client} This is the mobile application. It will be built on top of the mobile platform's specific API, not represented in this diagram, and dependent on the wearable device's API (Google Fit or watchOS) and on the maps service provider's API for Track4Run functionalities. Moreover, it will communicate with the REST server, the Application server mobile client component, through HTTP protocol, using the REST API the component will provide.
+
+\begin{description}
+
+	\item{\bf Profile manager} This component will handle all functionalities regarding the user, such as registration, login, registering a new wearable device or removing a registereed one, changing the preferences, accepting or refusing specific data requests sent from a company, and the activation or deactivation of AutomatedSOS and Track4Run services.
+
+	\item{\bf InfoPacket manager} This is the component in charge of periodically getting the body parameters from a wearable device and location coordinates, and sending them to the Application server mobile client component.
+
+	\item{\bf Emergency manager} This component is part of the AutomatedSOS service: it will handle an emergency situation, displaying useful information on the screen.
+
+	\item{\bf Running event manager} This component is part of the Track4Run service: it will allow the user to create a new event, view the open event near his/her position, and enroll into them. It will also let the user view informations about an event in progress, like the position of the runners on a map.
+
+	\item{\bf Notification manager} This component will simply display notification to the user when such is received from the server, such as a new specific request for data.
+
+\end{description}
+
+\subsubsection{Application server mobile client} This is the REST server thath will interact with the mobile client, and will forward every information received from it to the Database server component to store them. It will expose various REST endpoints to handle every action received from the mobile client; for this reason, its composition is very similar to the one found in the mobile client component. However the implementation of the interfaces used will be different: for example, the Emergency handler component, in this case, will interact with the external Ambulance dispatcher system through its API to dispatch and ambulance to the user's location.
+
+\subsubsection{Application server Data4Help} This is the REST server aimed to be used from companies. It will let them make requests for data, for a group of users or for a specific user, and subscribe for new informations.
+
+\begin{description}
+
+	\item{\bf Request manager} This component will handle the data requests received from companies: though the help of the Data access manager component, will determine if the company can have access to such user's data, in case of a group request, or will register the request in case it's a specific one, and then eventually will send the data to the company as a response.
+
+	\item{\bf Subscription manager} This component will handle the subscriptions a company may have, sending the data from the users to the company as soon as it's received.
+
+	\item{\bf Data access manager} This component will determine if a company can have access to some data, after it has made a request for it. In particular, will count how many users satisfy a group request and authorize or reject it based on this number, and will also regulate the access to users data every request grants.
+
+\end{description}
+
+\subsubsection{Database server} This is server is the only component that have access to the DBMS. Every other component will interact with the API this component makes available to read and write on the database. This allows the other components to be independent from the specific implementation of the functions that will directly interact with the databse, providing the ability to change how the system interfaces to the DBMS without altering all the components mentioned above.
 
 \subsection{Deployment view}
 
