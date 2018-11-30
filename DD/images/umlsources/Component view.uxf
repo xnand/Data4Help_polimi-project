@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.3.0">
   <help_text>// Uncomment the following line to change the fontsize and font:
-fontsize=18
+fontsize=25
 // fontfamily=SansSerif //possible: SansSerif,Serif,Monospaced
 
 
@@ -62,6 +62,7 @@ Application server Data4Help
       <h>120</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 Database
 server
 </panel_attributes>
@@ -73,9 +74,10 @@ server
       <x>1112</x>
       <y>232</y>
       <w>160</w>
-      <h>104</h>
+      <h>112</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 Profile
 manager</panel_attributes>
     <additional_attributes/>
@@ -86,9 +88,10 @@ manager</panel_attributes>
       <x>832</x>
       <y>232</y>
       <w>144</w>
-      <h>104</h>
+      <h>112</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 InfoPacket
 manager</panel_attributes>
     <additional_attributes/>
@@ -99,9 +102,10 @@ manager</panel_attributes>
       <x>1744</x>
       <y>232</y>
       <w>144</w>
-      <h>104</h>
+      <h>112</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 Notification
 manager</panel_attributes>
     <additional_attributes/>
@@ -112,9 +116,10 @@ manager</panel_attributes>
       <x>2064</x>
       <y>232</y>
       <w>136</w>
-      <h>104</h>
+      <h>112</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 Running
 event
 manager</panel_attributes>
@@ -126,9 +131,10 @@ manager</panel_attributes>
       <x>1440</x>
       <y>232</y>
       <w>152</w>
-      <h>104</h>
+      <h>112</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 Emergency
 manager</panel_attributes>
     <additional_attributes/>
@@ -139,9 +145,10 @@ manager</panel_attributes>
       <x>1936</x>
       <y>952</y>
       <w>144</w>
-      <h>80</h>
+      <h>96</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 Request
 manager</panel_attributes>
     <additional_attributes/>
@@ -152,9 +159,10 @@ manager</panel_attributes>
       <x>2248</x>
       <y>952</y>
       <w>160</w>
-      <h>80</h>
+      <h>104</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 Subscription
 manager</panel_attributes>
     <additional_attributes/>
@@ -165,10 +173,11 @@ manager</panel_attributes>
       <x>1928</x>
       <y>1184</y>
       <w>152</w>
-      <h>72</h>
+      <h>88</h>
     </coordinates>
     <panel_attributes>symbol=component
-Data access
+Data
+access
 manager
 </panel_attributes>
     <additional_attributes/>
@@ -255,12 +264,12 @@ manager
     <id>Relation</id>
     <coordinates>
       <x>2048</x>
-      <y>1024</y>
+      <y>1040</y>
       <w>184</w>
-      <h>104</h>
+      <h>88</h>
     </coordinates>
     <panel_attributes>lt=)-[]</panel_attributes>
-    <additional_attributes>200.0;100.0;10.0;100.0;10.0;10.0</additional_attributes>
+    <additional_attributes>200.0;80.0;10.0;80.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -324,12 +333,12 @@ manager
     <id>Relation</id>
     <coordinates>
       <x>1984</x>
-      <y>1024</y>
+      <y>1040</y>
       <w>24</w>
-      <h>96</h>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=()-[]</panel_attributes>
-    <additional_attributes>10.0;100.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
@@ -354,6 +363,7 @@ Application server mobile client
       <h>104</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 Profile
 manager</panel_attributes>
     <additional_attributes/>
@@ -367,6 +377,7 @@ manager</panel_attributes>
       <h>88</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 InfoPacket
 manager</panel_attributes>
     <additional_attributes/>
@@ -377,9 +388,10 @@ manager</panel_attributes>
       <x>784</x>
       <y>1504</y>
       <w>160</w>
-      <h>80</h>
+      <h>96</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 Notification
 manager</panel_attributes>
     <additional_attributes/>
@@ -404,9 +416,10 @@ manager</panel_attributes>
       <x>784</x>
       <y>1672</y>
       <w>160</w>
-      <h>80</h>
+      <h>96</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 Emergency
 manager</panel_attributes>
     <additional_attributes/>
@@ -542,7 +555,7 @@ manager</panel_attributes>
       <x>1352</x>
       <y>1680</y>
       <w>128</w>
-      <h>96</h>
+      <h>104</h>
     </coordinates>
     <panel_attributes>bg=#dddddd
 
@@ -796,7 +809,7 @@ layer=2</panel_attributes>
       <x>352</x>
       <y>240</y>
       <w>128</w>
-      <h>96</h>
+      <h>104</h>
     </coordinates>
     <panel_attributes>bg=#dddddd
 
@@ -822,7 +835,7 @@ layer=2</panel_attributes>
       <x>2520</x>
       <y>232</y>
       <w>128</w>
-      <h>96</h>
+      <h>104</h>
     </coordinates>
     <panel_attributes>bg=#dddddd
 
@@ -892,34 +905,34 @@ layer=2</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>888</x>
-      <y>328</y>
+      <y>336</y>
       <w>40</w>
-      <h>144</h>
+      <h>136</h>
     </coordinates>
     <panel_attributes>lt=[]-(</panel_attributes>
-    <additional_attributes>20.0;10.0;20.0;150.0</additional_attributes>
+    <additional_attributes>20.0;10.0;20.0;140.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>1176</x>
-      <y>328</y>
+      <y>336</y>
       <w>40</w>
-      <h>144</h>
+      <h>136</h>
     </coordinates>
     <panel_attributes>lt=[]-(</panel_attributes>
-    <additional_attributes>20.0;10.0;20.0;150.0</additional_attributes>
+    <additional_attributes>20.0;10.0;20.0;140.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>1504</x>
-      <y>328</y>
+      <y>336</y>
       <w>40</w>
-      <h>144</h>
+      <h>136</h>
     </coordinates>
     <panel_attributes>lt=[]-(</panel_attributes>
-    <additional_attributes>20.0;10.0;20.0;150.0</additional_attributes>
+    <additional_attributes>20.0;10.0;20.0;140.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -936,23 +949,23 @@ layer=2</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1800</x>
-      <y>328</y>
+      <y>336</y>
       <w>40</w>
-      <h>144</h>
+      <h>136</h>
     </coordinates>
     <panel_attributes>lt=[]-(</panel_attributes>
-    <additional_attributes>20.0;10.0;20.0;150.0</additional_attributes>
+    <additional_attributes>20.0;10.0;20.0;140.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>2120</x>
-      <y>328</y>
+      <y>336</y>
       <w>40</w>
-      <h>144</h>
+      <h>136</h>
     </coordinates>
     <panel_attributes>lt=[]-(</panel_attributes>
-    <additional_attributes>20.0;10.0;20.0;150.0</additional_attributes>
+    <additional_attributes>20.0;10.0;20.0;140.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -1080,6 +1093,7 @@ layer=2</panel_attributes>
       <h>88</h>
     </coordinates>
     <panel_attributes>symbol=component
+
 DBMS</panel_attributes>
     <additional_attributes/>
   </element>
