@@ -5,6 +5,7 @@ main.pdf
 *.toc
 *.idea
 *.out
+*.gz
 node_modules
 bin
 venv
