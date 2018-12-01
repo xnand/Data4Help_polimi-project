@@ -2,4 +2,123 @@
 
 \begin{document}
 
+The following requirements were described in the RASD:
+
+\begin{description}
+
+  \item {\bf Data4Help}
+
+  \begin{description}
+
+  	\item [R1] The system must forward any request from a company to single customer's data to the corresponding user.
+
+  	\item [R2] The system must reject any request for data regarding a group of customers when it cannot guarantee the anonimity of its components.
+
+  	\item [R3] The system must periodically collect and store customer's data.
+
+  	\item [R4] The system must periodically update the accessible data with the newly collected one
+
+  	\item [R5] The system must notify the user of the request and permit him to accept or refuse it.
+
+  	\item [R6] The system must update the request status with the answer provided by the user.
+
+  	\item [R7] The system must be able to identify which data can be accessed for each third party company.
+
+  \end{description}
+
+  \item {\bf AutomatedSOS}
+
+  \begin{description}
+
+    \item [R8] The system must continuously check the data read from customers subscribed to AutomatedSOS.
+
+    \item [R9] In case the data indicate an emergency for a customer, the system must dispatch the closest ambulance to his location.
+
+    \item [R10] After an ambulance is dispatched, the system must notify the customer of its arrival.
+
+  \end{description}
+
+  \item {\bf Track4Run}
+
+  \begin{description}
+
+    \item [R11] The system must allow users to define the route, the date and the time of the event.
+
+    \item [R12] Two events can't overlap in the same place, date and time.
+
+    \item [R13] The system must show open events to the users.
+
+    \item [R14] The system must allow users to sort and filter events by date and location.
+
+    \item [R15] The system must collect and provide in real time the position of participants on a map.
+
+    \item [R16] The system must allow the creator of a running event to cancel the event before it started.
+
+  \end{description}
+
+\end{description}
+
+\newpage
+
+Following there is a table where each requirement is mapped to the components that fulfill it.\\
+
+\begin{center}
+\begin{tabular}{p{3cm}|p{6.7cm}}
+
+  \hline
+  \bf Requirement & \bf \makebox[6.7cm][c]{Component(s)} \\
+  \hline
+  R1 & \makebox[6.7cm][c]{Request manager }\\
+    & \makebox[6.7cm][c]{Database server}\\
+    & \makebox[6.7cm][c]{Profile manager}\\
+  \hline
+  R2 & \makebox[6.7cm][c]{Request manager}\\
+    & \makebox[6.7cm][c]{Data access manager}\\
+    & \makebox[6.7cm][c]{Database manager}\\
+  \hline
+  R3 & \makebox[6.7cm][c]{InfoPacket manager}\\
+    & \makebox[6.7cm][c]{Database server}\\
+  \hline
+  R4 & \makebox[6.7cm][c]{Done when storing data in database}\\
+  \hline
+  R5 & \makebox[6.7cm][c]{Profile manager }\\
+    & \makebox[6.7cm][c]{Notification manager}\\
+    & \makebox[6.7cm][c]{Database server}\\
+  \hline
+  R6 & \makebox[6.7cm][c]{Profile manager }\\
+    & \makebox[6.7cm][c]{Database server}\\
+  \hline
+  R7 & \makebox[6.7cm][c]{Data access manager }\\
+    & \makebox[6.7cm][c]{Database server}\\
+  \hline
+  R8 & \makebox[6.7cm][c]{InfoPacket manager }\\
+  \hline
+  R9 & \makebox[6.7cm][c]{InfoPacket manager }\\
+    & \makebox[6.7cm][c]{Emergency manager}\\
+  \hline
+  R10 & \makebox[6.7cm][c]{Emergency manager }\\
+    & \makebox[6.7cm][c]{Notification manager}\\
+  \hline
+  R11 & \makebox[6.7cm][c]{Running event manager }\\
+  \hline
+  R12 & \makebox[6.7cm][c]{Running event manager }\\
+    & \makebox[6.7cm][c]{Database server}\\
+  \hline
+  R13 & \makebox[6.7cm][c]{Running event manager }\\
+  & \makebox[6.7cm][c]{Database server}\\
+  \hline
+  R14 & \makebox[6.7cm][c]{Running event manager }\\
+    & \makebox[6.7cm][c]{Database server}\\
+  \hline
+  R15 & \makebox[6.7cm][c]{Running event manager }\\
+  & \makebox[6.7cm][c]{InfoPacket manager}\\
+    & \makebox[6.7cm][c]{Database server}\\
+  \hline
+  R16 & \makebox[6.7cm][c]{Running event manager }\\
+    & \makebox[6.7cm][c]{Database server}\\
+
+
+\end{tabular}
+\end{center}
+
 \end{document}
