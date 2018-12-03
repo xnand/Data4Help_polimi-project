@@ -1,5 +1,30 @@
 \documentclass[../main.tex]{subfiles}
 
 \begin{document}
+\subsection{Implementation Plan}
+TrackMe system is composed of five macro components (\textit{fig. 2}) that can be developed independently and simultanously
+after interfaces and communications standards are properly choosen.\\
+
+
+
+\subsection{Integration Plan}
+Although macro components will be developed indipendently, is strongly suggested a top-down approach oriented to functionality
+implementation
+ \subsubsection{Mobile Client, Applications Servers and Database Server}
+    The first things to be developed will be the "core functionality of the system" and Data4Help as shown in figure. Then it will be possible
+    to test the backbone of the system (servers communication and APIs). Following the same approach, the development will focus consequently on
+    AutomatedSOS and Track4Run.
+ \subsubsection{Web Server}
+    Being a totally independent part of the system, the Web Server will be developed by a different team or after the development of the other components.\\
+    The APIs documentation to be hosted on the Web Server will be produced by the Data4Help Application server developers. 
+\subsection{Test Plan}
+    Following the top-down approach, each module should be tested as soon as it is completed.
+\subsection{Programming Standard}
+\subsection{Software Development Tools}
+\subsubsection{Servers and Database}
+Servers will be implemented using \textit{Node.js} a popular Javascript run-time environment with the \textit{Express.js} framework and \textit{Knex.js} as SQL query builder.\\
+The database will use \textit{PostgresSQL} relational database system.
+\subsubsection{Mobile Application}
+Mobile Application will be developed on \textit{Flutter}, an open-source mobile application development SDK created by Google.
 
 \end{document}
