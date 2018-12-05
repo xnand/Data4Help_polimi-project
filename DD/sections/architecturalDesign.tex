@@ -26,7 +26,7 @@
 \newpage
 \subsection{Component view}
 \begin{figure}[H]
-	\includegraphics[width=\paperwidth, angle=90, scale = 0.85]{uml_component_view.jpg}
+	\includegraphics[width=\paperwidth, angle=90]{uml_component_view.jpg}
 	\caption{Component view}
 	\label{fig:uml_component_view}
 \end{figure}
@@ -133,6 +133,18 @@ In this section are shown the sequence diagrams of some features. They are usefu
 
 \subsection{Selected architectural styles and patterns}
 
+A client-server model will be followed the mobile application, while the part of the system that is oriented towards third party companies will be composed only by a server exposing them the useful APIs. All servers will be RESTful:
+\begin{itemize}
+	\item The endpoints, i.e. the APIs they expose, will have meaningful URIs, pertient to the function they serve.
+	\item The communication will rely on HTTP status codes and, when needed, error messages in the HTTP body for informing a successfull or unsuccessful operation.
+	\item The interaction with them will follow the CRUD paradign to perform any operation.
+\end{itemize}
+
+
 \subsection{Other design decisions}
+
+todo api keys? stored data locally on client?
+
+Registration and login functionality for end users will make use of HTTP basic authentication.
 
 \end{document}
