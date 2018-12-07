@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var knex = require('../knex');
+var knex = require('../DatabaseServer/knex');
 
 router.post('/register', function(req, res) {
     registerUser(req.body)

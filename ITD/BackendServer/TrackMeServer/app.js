@@ -3,10 +3,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user');
-var knex = require('./knex');
+var knex = require('./DatabaseServer/knex');
 
 function createUserTable() {
     return knex.schema.createTable('user', function(table) {
