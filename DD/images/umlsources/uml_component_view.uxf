@@ -1117,10 +1117,11 @@ server</panel_attributes>
     <coordinates>
       <x>2345</x>
       <y>980</y>
-      <w>21</w>
+      <w>63</w>
       <h>98</h>
     </coordinates>
-    <panel_attributes>lt=()-[]</panel_attributes>
+    <panel_attributes>lt=()-[]
+HTTP</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
   </element>
   <element>
