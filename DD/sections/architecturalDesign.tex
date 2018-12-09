@@ -146,6 +146,8 @@ In this chapter are listed all interfaces that permit to the various components 
 
 In the Application server components, the APIs exposed are composed of various interfaces that handle the appropriate functions.
 
+Not represented here is the DB Server API, exposed by the Database server component, which is composed of all the functions necessary for the other components to interact with the DBMS.
+
 \begin{figure}[H]
         \centering
              \includegraphics[width=0.75\textwidth]{componentInterfacesMobileClient.png}
@@ -186,8 +188,8 @@ A client-server model will be followed the mobile application, while the part of
 
 \subsection{Other design decisions}
 
-todo api keys? stored data locally on client?
-
-Registration and login functionality for end users will make use of HTTP basic authentication.
+\begin{description}
+	\item Registration and login functionality for end users will make use of HTTP basic authentication.
+\end{description}
 
 \end{document}
