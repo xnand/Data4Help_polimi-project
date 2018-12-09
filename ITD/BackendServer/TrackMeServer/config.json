@@ -1,0 +1,14 @@
+{
+  "port": {
+    "databaseServer": "3000",
+    "applicationServerMobileClient": "3001",
+    "applicationServerData4Help": "3002",
+    "dbms": "23773"
+  },
+  "address": {
+    "databaseServer": "127.0.0.1",
+    "applicationServerMobileClient": "127.0.0.1",
+    "applicationServerData4Help": "127.0.0.1",
+    "dbms": "127.0.0.1"
+  }
+}
