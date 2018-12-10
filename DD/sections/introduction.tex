@@ -19,14 +19,25 @@ The document will focus on illustrating the following components of the applicat
 \end{itemize}
 
 \subsection{Definitions, Acronyms, Abbreviations}
-\begin{description}
-	\item {UX} User experience
-	\item {RASD} Requirements Analysis and Specification Document
-	\item {CIA triad} Confidentiality, Integrity, Availability; a model designed to guide policies for information security within an organization
-	\item {API} Application Programming Interface
-	\item {CRUD} Create, Read, Update, Delete; basic functions of persistent storage, also translates to proper HTTP verbs
-	\item {REST} Representational State Transfer
-\end{description}
+	
+
+	\subsubsection{Definitions}
+		\begin{description}
+			\item[Gated Commit] a software integration pattern that reduces the chances for breaking a build (and often its associated tests) by committing changes into the main branch of version control.
+			\item[Verigreen] Verigreen is a lightweight, server side solution for verification of git commits. It is a gated check-in process which will not allow any failed CI commit to go into an integration/release/any protected branch.
+			\item[Jenkins]  Jenkins is an open source automation server written in Java. Jenkins helps to automate the non-human part of the software development process, with continuous integration and facilitating technical aspects of continuous delivery
+		\end{description}
+	
+	\subsubsection{Acronyms}
+		\begin{description}
+			\item[UX] User experience
+			\item [RASD] Requirements Analysis and Specification Document
+			\item [CIA triad] Confidentiality, Integrity, Availability; a model designed to guide policies for information security within an organization
+			\item [API] Application Programming Interface
+			\item [CI] Continous Integration
+		    \item [CRUD] Create, Read, Update, Delete; basic functions of persistent storage, also translates to proper HTTP verbs
+			\item [REST] Representational State Transfer
+		\end{description}
 
 \subsection{Revision history}
 \begin{tabular}{p{1.2cm}|p{2.1cm}|p{2.6cm}}
