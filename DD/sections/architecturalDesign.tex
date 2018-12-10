@@ -191,7 +191,8 @@ This design allows for an event driven and resource centric system that is espec
 \subsection{Other design decisions}
 
 \begin{description}
-	\item Registration and login functionality for end users will make use of HTTP basic authentication. Also for this reason, all HTTP communications must make use of SSL encapsulation.
+	\item Registration and login functionality for end users will make use of HTTP basic authentication. The passwords shall be stored as hashes on the database following security best practices.
+	\item All HTTP traffic shall be encapsulated through SSL to preserve confidentiality.
 \end{description}
 
 \end{document}
