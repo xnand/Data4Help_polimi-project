@@ -32,7 +32,7 @@
 \end{figure}
 \newpage
 
-\subsubsection{Mobile client} This is the mobile application. It will be built on top of the mobile platform's specific API, not represented in this diagram, and dependent on the wearable device's API (Google Fit or watchOS) and on the maps service provider's API for Track4Run functionalities. Moreover, it will communicate with the REST server, the Application server mobile client component, through HTTP protocol, using the REST API the component will provide.
+\subsubsection{Mobile client} This is the mobile application. It will be built on top of the mobile platform's specific API, not represented in this diagram, and dependent on the wearable device's API (Google Fit or watchOS) and on the maps service provider's API for Track4Run functionalities. Moreover, it will communicate with the REST server, the Application server mobile client component, through HTTPS protocol, using the REST API the component will provide.
 
 \begin{description}
 
@@ -186,11 +186,12 @@ A client-server model will be followed the mobile application, while the part of
 	\item The interaction with them will follow the CRUD paradign to perform any operation.
 \end{itemize}
 
+This design allows for an event driven and resource centric system that is especially performant in managing a large number of customer interactions simultaneously (eg. frequently collected user's parameters).
 
 \subsection{Other design decisions}
 
 \begin{description}
-	\item Registration and login functionality for end users will make use of HTTP basic authentication.
+	\item Registration and login functionality for end users will make use of HTTP basic authentication. Also for this reason, all HTTP communications must make use of SSL encapsulation.
 \end{description}
 
 \end{document}
