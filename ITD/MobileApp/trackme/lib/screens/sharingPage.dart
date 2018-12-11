@@ -193,6 +193,7 @@ class _SharingPageState extends State<SharingPage> {
                   final item = pendingRequestList[index];
                   return Dismissible(
                       // Show a red background as the item is swiped away
+                      movementDuration: Duration(seconds: 1),
                       secondaryBackground: Padding(
                         padding: EdgeInsets.only(top: 15, bottom: 5),
                         child: Container(
@@ -239,18 +240,27 @@ class _SharingPageState extends State<SharingPage> {
 
                       onDismissed: (direction) {
                         setState(() {
-                          if(direction == DismissDirection.endToStart) {
 
+                          //accepted request
+                          if(direction == DismissDirection.endToStart) {
+                            item.accept();
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content:
+                                Text("${item.companyName} following request accepted")));
                           }
                           //delete request
-                          item.refuse(); //this function modify the database
+                          else if(direction == DismissDirection.startToEnd) {
+                            item.refuse();
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content:
+                                Text("${item.companyName} following request refused")));
+
+                          }
                           pendingRequestList.removeAt(index);
-                          
+
                         });
 
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                            content:
-                                Text("${item.companyName} request dismissed")));
+
                       },
                       child: pendingRequestList[index]);
                 }),
@@ -271,6 +281,7 @@ class _SharingPageState extends State<SharingPage> {
                   final item = activeRequestList[index];
                   return Dismissible(
                       // Show a red background as the item is swiped away
+                      movementDuration: Duration(seconds: 1),
                       background: Padding(
                         padding: EdgeInsets.only(top: 15, bottom: 5),
                         child: Container(
@@ -303,7 +314,7 @@ class _SharingPageState extends State<SharingPage> {
 
                         Scaffold.of(context).showSnackBar(SnackBar(
                             content:
-                                Text("${item.companyName} request dismissed")));
+                                Text("${item.companyName} subscription deleted")));
                       },
                       child: activeRequestList[index]);
                 })

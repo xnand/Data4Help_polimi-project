@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:track_me/styles/colors.dart';
 import 'package:track_me/screens/feed.dart';
-import 'PageNavigator.dart';
-class LoginPage extends StatefulWidget {
+import 'package:track_me/styles/colors.dart';
 
+import 'PageNavigator.dart';
+
+class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
   @override
-
   _LoginPageState createState() => new _LoginPageState();
 }
 
@@ -27,7 +27,8 @@ class _LoginPageState extends State<LoginPage> {
       autofocus: false,
       initialValue: null,
       decoration: InputDecoration(
-          hintText: 'Email',
+
+          hintText: 'EMAIL',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
           border: UnderlineInputBorder()),
     );
@@ -37,34 +38,86 @@ class _LoginPageState extends State<LoginPage> {
       initialValue: null,
       obscureText: true,
       decoration: InputDecoration(
-          hintText: 'Password',
+          hintText: 'PASSWORD',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
           border: UnderlineInputBorder()),
     );
 
-    final loginButton = Padding(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
+    final loginButton = Container(
+        height: 40,
         child: Material(
-          shadowColor: Colors.greenAccent.shade200,
-          elevation: 5.0,
-          child: MaterialButton(
-            minWidth: 200.0,
-            height: 48.0,
+          borderRadius: BorderRadius.circular(20),
+          shadowColor: Colors.green,
+          color: colorStyles['button_green'],
+          elevation: 7.0,
+          child: FlatButton(
+            color: Colors.transparent,
             onPressed: () {
               Navigator.of(context).pushNamed(PageNavigator.tag);
             },
-            color: colorStyles['button_green'],
-            child: Text(
-              'log In',
-              style: TextStyle(color: Colors.white),
+            child: Center(
+              child: Text(
+                'LOGIN',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Roboto'),
+              ),
             ),
           ),
         ));
 
+    final registrationButton = Container(
+        height: 40,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('new to trackMe ? ',
+              style: TextStyle(
+                color: colorStyles['text_color'],
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w700
+              ) ,
+            ),
+            Material(
+              borderRadius: BorderRadius.circular(20),
+
+              color: Colors.transparent,
+              elevation: 0,
+
+              child: FlatButton(
+
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onPressed: () {
+                  print('pressed');
+                },
+                child: Center(
+                  child: Text(
+                    'REGISTER',
+                    style: TextStyle(
+                        color: colorStyles['primary_pink'],
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Roboto'),
+                  ),
+                ),
+              ),
+            )
+          ],
+        )
+    );
+
     final forgotLabel = FlatButton(
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
       child: Text(
-        'Forgot password ?',
-        style: TextStyle(color: Colors.black54),
+        'Forgot Password',
+        style: TextStyle(
+          color: colorStyles['button_green'],
+          fontWeight: FontWeight.bold,
+          fontSize: 14.0
+
+        ),
       ),
       onPressed: () {},
     );
@@ -81,9 +134,17 @@ class _LoginPageState extends State<LoginPage> {
             email,
             SizedBox(height: 8),
             password,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                forgotLabel,
+              ],
+            ),
             SizedBox(height: 48.0),
             loginButton,
-            forgotLabel,
+            SizedBox(height: 16.0),
+            registrationButton,
+
           ],
         ),
       ),
