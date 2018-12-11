@@ -18,6 +18,59 @@ router.post('/register', function(req, res) {
         streetNr: params.streetNr
     })
         .then(function() {
+            return knex('userCredentials').insert({
+                ssn: params.ssn,
+                mail: params.mail,
+                password: params.password
+            })
+        })
+        .then(function() {
+            res.status(200).end();
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
+router.get('/:ssn/credentials', function(req, res) {
+    var ssn = req.params.ssn.toLowerCase();
+    knex('userCredentials').select().where('ssn', ssn)
+        .then(function(row) {
+            res.status(200).send(row);
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
+router.get('/:ssn/session', function(req, res) {
+    var ssn = req.params.ssn.toLowerCase();
+    knex('userSession').select().where('ssn', ssn)
+        .then(function(row) {
+            res.status(200).send(row);
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
+router.post('/login', function(req, res) {
+    var params = req.body;
+    var insert = knex('userSession').insert({
+        ssn: params.ssn,
+        token: params.token,
+        expiration: params.expiration
+    }).toString();
+    var update = knex('userSession').update({
+        token: params.token,
+        expiration: params.expiration
+    }).whereRaw(`'userSession.ssn' = '${params.ssn}'`).toString().replace(/^update\s.*\sset\s/i, '');
+    var query = `${insert} ON CONFLICT (ssn) DO UPDATE SET ${update}`;
+    knex.raw(query)
+        .then(function() {
             res.status(200).end();
         })
         .catch(function(err) {
@@ -55,6 +108,27 @@ router.post('/registerWearable', function(req, res) {
     knex('wearableDevice').insert({
         macAddr: params.macAddr,
         userSsn: params.userSsn
+    })
+        .then(function() {
+            res.status(200).end();
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
+router.post('/registerInfoPacket', function(req, res) {
+    var params = req.body;
+    knex('infoPacket').insert({
+        ts: params.ts,
+        wearableMac: params.wearableMac,
+        userSsn: params.userSsn,
+        geoX: params.geoX,
+        geoY: params.geoY,
+        heartBeatRate: params.heartBeatRate,
+        bloodPressSyst: params.bloodPressSyst,
+        bloodPressDias: params.bloodPressDias
     })
         .then(function() {
             res.status(200).end();

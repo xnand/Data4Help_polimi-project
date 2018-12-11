@@ -52,7 +52,7 @@ function createWearableDeviceTable() {
 function createInfoPacketTable() {
     return knex.schema.createTable('infoPacket', function(table) {
         // columns
-        table.timestamp('ts').defaultTo(knex.fn.now()).notNullable();
+        table.timestamp('ts', true).notNullable(); // true = no timezone
         table.string('wearableMac');
         table.string('userSsn');
         table.float('geoX').notNullable();
@@ -121,10 +121,36 @@ function createFilterTable() {
     })
 }
 
+function createUserCredentialsTable() {
+    return knex.schema.createTable('userCredentials', function(table) {
+        // columns
+        table.string('ssn', 16).primary().notNullable();
+        table.string('mail').notNullable();
+        table.string('password', 32).notNullable();
+        // constraints
+        table.unique('ssn');
+        table.foreign('ssn').references('ssn').inTable('user');
+    });
+}
+
+function createUserSessionTable() {
+    return knex.schema.createTable('userSession', function(table) {
+        // columns
+        table.string('ssn', 16).primary().notNullable();
+        table.string('token', 16).notNullable();
+        table.datetime('expiration').notNullable();
+        // constraints
+        table.unique(['ssn', 'token']);
+        table.foreign('ssn').references('ssn').inTable('user');
+    });
+}
+
 function dropTables() {
-    return new Promise(function(res) {
+    return new Promise(function(resolve, reject) {
         [
             'user',
+            'userCredentials',
+            'userSession',
             'company',
             'wearableDevice',
             'infoPacket',
@@ -136,21 +162,15 @@ function dropTables() {
                 return knex.schema.dropTableIfExists(next);
             })
         }, Promise.resolve())
-            .then(res);
+            .then(resolve)
+            .catch(reject);
     })
 }
 
-function createTables(drop) {
-    new Promise(function(res) {
-        if (drop) {
-            dropTables()
-                .then(res)
-        }
-        else {
-            res();
-        }
-    })
-        .then(createUserTable)
+function createTables() {
+    createUserTable()
+        .then(createUserCredentialsTable)
+        .then(createUserSessionTable)
         .then(createCompanyTable)
         .then(createWearableDeviceTable)
         .then(createInfoPacketTable)
@@ -168,11 +188,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/user', usersRouter);
 
-// TODO if debug env
+// remember to give this to postgres after the database has been created:
+// ALTER DATABASE trackmedb SET datestyle TO "ISO, DMY";
+
+// TODO if debug
 app.get('/dropALL', function(req, res) {
     dropTables()
         .then(createTables)
-        .then(res.status(200).send('ok'));
+        .then(res.status(200).send('ok'))
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        })
 });
 
 // server setup stuff ---------------------------------------------
