@@ -22,6 +22,11 @@ router.post('/register', function(req, res) {
         });
 });
 
+router.get('/:ssn/login', function(req, res) {
+    // if execution reaches this point (after router.param(ssn)) credentials are valid
+    res.status(200).end();
+});
+
 router.param('ssn', function (req, res, next) {
     var ssn = req.params.ssn.toLowerCase();
     var header = (req.headers['authorization'] || '').split(/Basic /)[1];
@@ -76,7 +81,7 @@ router.post('/:ssn/packet', function(req, res) {
         .then(function() {
             res.status(201).end();
         })
-        .catch(function(err) {
+        .catch(function(err) {registerUser
             if (typeof err === 'string') {
                 res.status(400).send(err);
             }
