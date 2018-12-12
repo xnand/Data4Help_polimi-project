@@ -5,10 +5,6 @@ var request = bb.promisify(require('request'));
 var config = require('../../config.json');
 var hash = require('crypto').createHash('md5'); // to replace with pbkdf2/bcrypt/scrypt in production?
 
-function genHash(seed) {
-    return require('crypto').createHash('md5').update('server_secret').update(seed).digest('hex');
-}
-
 router.post('/register', function(req, res) {
     registerUser(req.body)
         .then(function() {
@@ -26,26 +22,8 @@ router.post('/register', function(req, res) {
         });
 });
 
-router.post('/login', function(req, res) {
-    loginUser(req.body)
-        .then(function(token) {
-            res.status(201).send(token);
-        })
-        .catch(function(err) {
-            if (typeof err === 'string' ) {
-                res.status(400).send(err);
-            }
-            else {
-                // not sending backend errors to client
-                console.log(err);
-                res.status(400).send('unknown error occurred');
-            }
-        });
-});
-
 router.param('ssn', function (req, res, next) {
     var ssn = req.params.ssn.toLowerCase();
-    var user = {};
     var header = (req.headers['authorization'] || '').split(/Basic /)[1];
     // email, password, sessionToken
     var auth = new Buffer.from(header.split(/\s+/).pop() || '', 'base64').toString().split(/:/);
@@ -64,29 +42,7 @@ router.param('ssn', function (req, res, next) {
             if (reqdata.length === 0 || reqdata.ssn !== ssn) {
                 return Promise.reject('invalid ssn');
             }
-            user.mail = reqdata.mail;
-            user.password = reqdata.password;
-        })
-        .then(function() {
-            return request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/session`,
-                method: 'GET'
-            })
-        })
-        .then(function(reqres) {
-            if (reqres.statusCode !== 200) {
-                return Promise.reject('invalid ssn');
-            }
-            var reqdata = JSON.parse(reqres.body)[0];
-            if (reqdata.length === 0) {
-                return Promise.reject('session expired');
-            }
-            user.token = reqdata.token;
-            user.expiration = reqdata.expiration;
-            if (auth[0] === user.mail && genHash(auth[1]) === user.password && auth[2] === user.token) {
-                if (new Date(user.expiration) < new Date(Date.now())) {
-                    return res.status(401).send('session expired');
-                }
+            if (auth[0] === reqdata.mail && genHash(auth[1]) === reqdata.password) {
                 next();
             }
             else {
@@ -203,61 +159,61 @@ function registerUser(paramsOrig) {
     })
 }
 
-function loginUser(paramsOrig) {
-    var token = randomString(8);
-    return new Promise(function(resolve, reject) {
-        var params = {};
-        Object.keys(paramsOrig).forEach(function(k) {
-            if (k !== 'password') {
-                params[k] = paramsOrig[k].toLowerCase();
-            }
-            else {
-                params.password = genHash(paramsOrig.password);
-            }
-        });
-        request({
-            url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${params.ssn}/credentials`,
-            method: 'GET'
-        })
-            .then(function(reqres) {
-                if (reqres.statusCode === 200) {
-                    var reqdata = JSON.parse(reqres.body)[0];
-                    if (reqdata.length === 0) {
-                        return Promise.reject('no such user');
-                    }
-                    else if (reqdata.mail === params.mail && reqdata.password === params.password) {
-                        return Promise.resolve();
-                    }
-                    return Promise.reject('wrong credentials');
-                }
-                return Promise.reject();
-            })
-            .then(function() {
-                var tomorrow = new Date(Date.now());
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                tomorrow = `${tomorrow.getDate()}-${tomorrow.getMonth() + 1}-${tomorrow.getFullYear()} ${tomorrow.getHours()}:${tomorrow.getMinutes()}:${tomorrow.getSeconds()}`;
-                return request({
-                    url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/login`,
-                    method: 'POST',
-                    json: true,
-                    body: {
-                        ssn: params.ssn,
-                        token: token,
-                        expiration: tomorrow
-                    }
-                })
-            })
-            .then(function(reqres) {
-                if (reqres.statusCode === 200) {
-                    return resolve(token);
-                }
-                return Promise.reject();
-            })
-            .catch(function(err) {
-                return reject(err);
-            });
-    })
-}
+// function loginUser(paramsOrig) {
+//     var token = randomString(8);
+//     return new Promise(function(resolve, reject) {
+//         var params = {};
+//         Object.keys(paramsOrig).forEach(function(k) {
+//             if (k !== 'password') {
+//                 params[k] = paramsOrig[k].toLowerCase();
+//             }
+//             else {
+//                 params.password = genHash(paramsOrig.password);
+//             }
+//         });
+//         request({
+//             url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${params.ssn}/credentials`,
+//             method: 'GET'
+//         })
+//             .then(function(reqres) {
+//                 if (reqres.statusCode === 200) {
+//                     var reqdata = JSON.parse(reqres.body)[0];
+//                     if (reqdata.length === 0) {
+//                         return Promise.reject('no such user');
+//                     }
+//                     else if (reqdata.mail === params.mail && reqdata.password === params.password) {
+//                         return Promise.resolve();
+//                     }
+//                     return Promise.reject('wrong credentials');
+//                 }
+//                 return Promise.reject();
+//             })
+//             .then(function() {
+//                 var tomorrow = new Date(Date.now());
+//                 tomorrow.setDate(tomorrow.getDate() + 1);
+//                 tomorrow = `${tomorrow.getDate()}-${tomorrow.getMonth() + 1}-${tomorrow.getFullYear()} ${tomorrow.getHours()}:${tomorrow.getMinutes()}:${tomorrow.getSeconds()}`;
+//                 return request({
+//                     url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/login`,
+//                     method: 'POST',
+//                     json: true,
+//                     body: {
+//                         ssn: params.ssn,
+//                         token: token,
+//                         expiration: tomorrow
+//                     }
+//                 })
+//             })
+//             .then(function(reqres) {
+//                 if (reqres.statusCode === 200) {
+//                     return resolve(token);
+//                 }
+//                 return Promise.reject();
+//             })
+//             .catch(function(err) {
+//                 return reject(err);
+//             });
+//     })
+// }
 
 function registerWearableDevice(paramsOrig) {
     return new Promise(function(resolve, reject) {
@@ -372,6 +328,10 @@ function registerInfoPacket(paramsOrig) {
                 return reject(err);
             })
     })
+}
+
+function genHash(seed) {
+    return require('crypto').createHash('md5').update('server_secret').update(seed).digest('hex');
 }
 
 function randomString(len, charSet) {

@@ -133,24 +133,11 @@ function createUserCredentialsTable() {
     });
 }
 
-function createUserSessionTable() {
-    return knex.schema.createTable('userSession', function(table) {
-        // columns
-        table.string('ssn', 16).primary().notNullable();
-        table.string('token', 16).notNullable();
-        table.datetime('expiration').notNullable();
-        // constraints
-        table.unique(['ssn', 'token']);
-        table.foreign('ssn').references('ssn').inTable('user');
-    });
-}
-
 function dropTables() {
     return new Promise(function(resolve, reject) {
         [
             'user',
             'userCredentials',
-            'userSession',
             'company',
             'wearableDevice',
             'infoPacket',
@@ -170,7 +157,6 @@ function dropTables() {
 function createTables() {
     createUserTable()
         .then(createUserCredentialsTable)
-        .then(createUserSessionTable)
         .then(createCompanyTable)
         .then(createWearableDeviceTable)
         .then(createInfoPacketTable)

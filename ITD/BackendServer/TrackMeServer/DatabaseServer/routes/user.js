@@ -57,28 +57,6 @@ router.get('/:ssn/session', function(req, res) {
         });
 });
 
-router.post('/login', function(req, res) {
-    var params = req.body;
-    var insert = knex('userSession').insert({
-        ssn: params.ssn,
-        token: params.token,
-        expiration: params.expiration
-    }).toString();
-    var update = knex('userSession').update({
-        token: params.token,
-        expiration: params.expiration
-    }).whereRaw(`'userSession.ssn' = '${params.ssn}'`).toString().replace(/^update\s.*\sset\s/i, '');
-    var query = `${insert} ON CONFLICT (ssn) DO UPDATE SET ${update}`;
-    knex.raw(query)
-        .then(function() {
-            res.status(200).end();
-        })
-        .catch(function(err) {
-            console.log(err);
-            res.status(400).end();
-        });
-});
-
 router.get('/:ssn', function(req, res) {
     var ssn = req.params.ssn.toLowerCase();
     knex('user').select().where('ssn', ssn)
