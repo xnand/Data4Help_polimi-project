@@ -45,9 +45,9 @@ router.get('/:ssn/credentials', function(req, res) {
         });
 });
 
-router.get('/:ssn/session', function(req, res) {
-    var ssn = req.params.ssn.toLowerCase();
-    knex('userSession').select().where('ssn', ssn)
+router.post('/getSsnFromMail', function(req, res) {
+    var params = req.body;
+    knex('userCredentials').select('ssn').where('mail', params.mail)
         .then(function(row) {
             res.status(200).send(row);
         })

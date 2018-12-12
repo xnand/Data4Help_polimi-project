@@ -22,42 +22,21 @@ router.post('/register', function(req, res) {
         });
 });
 
-router.get('/:ssn/login', function(req, res) {
-    // if execution reaches this point (after router.param(ssn)) credentials are valid
-    res.status(200).end();
+router.get('/login', function(req, res) {
+    validateCredentials(req, res, function() {
+        var ssn = req.params.ssn;
+        request({
+            url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}`,
+            method: 'GET'
+        })
+            .then(function(reqres) {
+                row = JSON.parse(reqres.body);
+                res.status(200).send(row[0]);
+            })
+    })
 });
 
-router.param('ssn', function (req, res, next) {
-    var ssn = req.params.ssn.toLowerCase();
-    var header = (req.headers['authorization'] || '').split(/Basic /)[1];
-    // email, password, sessionToken
-    var auth = new Buffer.from(header.split(/\s+/).pop() || '', 'base64').toString().split(/:/);
-    if (!ssn.match(/^[0-9a-z]{16}$/)) {
-        res.status(400).send('invalid ssn');
-    }
-    request({
-        url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/credentials`,
-        method: 'GET'
-    })
-        .then(function(reqres) {
-            if (reqres.statusCode !== 200) {
-                return Promise.reject('invalid ssn');
-            }
-            var reqdata = JSON.parse(reqres.body)[0];
-            if (reqdata.length === 0 || reqdata.ssn !== ssn) {
-                return Promise.reject('invalid ssn');
-            }
-            if (auth[0] === reqdata.mail && genHash(auth[1]) === reqdata.password) {
-                next();
-            }
-            else {
-                res.status(401).end();
-            }
-        })
-        .catch(function(err) {
-            res.status(400).send(err);
-        })
-});
+router.param('ssn', validateCredentials);
 
 router.post('/:ssn/registerWearable', function(req, res) {
     registerWearableDevice(req.body)
@@ -81,7 +60,7 @@ router.post('/:ssn/packet', function(req, res) {
         .then(function() {
             res.status(201).end();
         })
-        .catch(function(err) {registerUser
+        .catch(function(err) {
             if (typeof err === 'string') {
                 res.status(400).send(err);
             }
@@ -164,61 +143,61 @@ function registerUser(paramsOrig) {
     })
 }
 
-// function loginUser(paramsOrig) {
-//     var token = randomString(8);
-//     return new Promise(function(resolve, reject) {
-//         var params = {};
-//         Object.keys(paramsOrig).forEach(function(k) {
-//             if (k !== 'password') {
-//                 params[k] = paramsOrig[k].toLowerCase();
-//             }
-//             else {
-//                 params.password = genHash(paramsOrig.password);
-//             }
-//         });
-//         request({
-//             url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${params.ssn}/credentials`,
-//             method: 'GET'
-//         })
-//             .then(function(reqres) {
-//                 if (reqres.statusCode === 200) {
-//                     var reqdata = JSON.parse(reqres.body)[0];
-//                     if (reqdata.length === 0) {
-//                         return Promise.reject('no such user');
-//                     }
-//                     else if (reqdata.mail === params.mail && reqdata.password === params.password) {
-//                         return Promise.resolve();
-//                     }
-//                     return Promise.reject('wrong credentials');
-//                 }
-//                 return Promise.reject();
-//             })
-//             .then(function() {
-//                 var tomorrow = new Date(Date.now());
-//                 tomorrow.setDate(tomorrow.getDate() + 1);
-//                 tomorrow = `${tomorrow.getDate()}-${tomorrow.getMonth() + 1}-${tomorrow.getFullYear()} ${tomorrow.getHours()}:${tomorrow.getMinutes()}:${tomorrow.getSeconds()}`;
-//                 return request({
-//                     url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/login`,
-//                     method: 'POST',
-//                     json: true,
-//                     body: {
-//                         ssn: params.ssn,
-//                         token: token,
-//                         expiration: tomorrow
-//                     }
-//                 })
-//             })
-//             .then(function(reqres) {
-//                 if (reqres.statusCode === 200) {
-//                     return resolve(token);
-//                 }
-//                 return Promise.reject();
-//             })
-//             .catch(function(err) {
-//                 return reject(err);
-//             });
-//     })
-// }
+function validateCredentials(req, res, next) {
+    var ssn = req.params.ssn;
+    var header = (req.headers['authorization'] || '').split(/Basic /)[1];
+    // email, password, sessionToken
+    var auth = new Buffer.from(header.split(/\s+/).pop() || '', 'base64').toString().split(/:/);
+    new Promise(function(resolve, reject) {
+        if (!ssn) { // case /login
+            request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/getSsnFromMail`,
+                method: 'POST',
+                json: true,
+                body: {
+                    mail: auth[0]
+                }
+            })
+                .then(function(row) {
+                    ssn = row.body[0].ssn; // todo checks
+                    resolve();
+                })
+                .catch(reject) // todo
+        }
+        else {
+            ssn = ssn.toLowerCase();
+            resolve();
+        }
+    })
+        .then(function() {
+            if (!ssn.match(/^[0-9a-z]{16}$/)) {
+                res.status(400).send('invalid ssn');
+            }
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/credentials`,
+                method: 'GET'
+            })
+        })
+        .then(function(reqres) {
+            if (reqres.statusCode !== 200) {
+                return Promise.reject('invalid ssn');
+            }
+            var reqdata = JSON.parse(reqres.body)[0];
+            if (reqdata.length === 0 || reqdata.ssn !== ssn) {
+                return Promise.reject('invalid ssn');
+            }
+            if (auth[0] === reqdata.mail && genHash(auth[1]) === reqdata.password) {
+                req.params.ssn = ssn;
+                next();
+            }
+            else {
+                res.status(401).end();
+            }
+        })
+        .catch(function(err) {
+            res.status(400).send(err);
+        })
+}
 
 function registerWearableDevice(paramsOrig) {
     return new Promise(function(resolve, reject) {
