@@ -6,11 +6,27 @@ import 'PageNavigator.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
+
   @override
   _LoginPageState createState() => new _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  String _email;
+  String _password;
+  final formKey = new GlobalKey<FormState>();
+
+  void validateAndSave() {
+    final form = formKey.currentState;
+
+    if(form.validate()) {
+      form.save();
+      print('credential may be valid. Email: $_email, Password: $_password');
+    }
+  }
+  _LoginPageState() {
+
+  }
   @override
   Widget build(BuildContext context) {
     final logo = Hero(
@@ -23,12 +39,15 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final email = TextFormField(
+
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
+      onSaved: (email) => _email = email,
       initialValue: null,
+      validator: (value) => value.isEmpty ? 'Email can\'t be empy': null,
       decoration: InputDecoration(
+          labelText: 'Email',
 
-          hintText: 'EMAIL',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
           border: UnderlineInputBorder()),
     );
@@ -37,8 +56,10 @@ class _LoginPageState extends State<LoginPage> {
       autofocus: false,
       initialValue: null,
       obscureText: true,
+      validator: (value) => value.isEmpty ? 'Password can\'t be empy': null,
+      onSaved: (password) => _password = password,
       decoration: InputDecoration(
-          hintText: 'PASSWORD',
+          labelText: 'Password',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
           border: UnderlineInputBorder()),
     );
@@ -52,9 +73,7 @@ class _LoginPageState extends State<LoginPage> {
           elevation: 7.0,
           child: FlatButton(
             color: Colors.transparent,
-            onPressed: () {
-              Navigator.of(context).pushNamed(PageNavigator.tag);
-            },
+            onPressed: validateAndSave,
             child: Center(
               child: Text(
                 'LOGIN',
@@ -131,9 +150,15 @@ class _LoginPageState extends State<LoginPage> {
           children: <Widget>[
             logo,
             SizedBox(height: 48.0),
-            email,
-            SizedBox(height: 8),
-            password,
+            Form(
+              key: formKey,
+              child: Column(
+                children: <Widget>[
+                  email,
+                  password
+                ],
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
