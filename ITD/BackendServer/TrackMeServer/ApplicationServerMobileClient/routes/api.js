@@ -2,10 +2,38 @@ var express = require('express');
 var router = express.Router();
 var bb = require("bluebird");
 var request = bb.promisify(require('request'));
-var config = require('../../config.json');
-var hash = require('crypto').createHash('md5'); // to replace with pbkdf2/bcrypt/scrypt in production?
+var config = require('../../common/config.json');
+var common = require('../../common/common');
+
 
 router.post('/register', function(req, res) {
+    /**
+     * @api {post} /api/register User registration
+     * @apiName RegisterUser
+     * @apiGroup ApplicationServerMobileApp
+     *
+     * @apiParam {string} ssn
+     * @apiParam {string} name
+     * @apiParam {string} surname
+     * @apiParam {string="male","female"} sex
+     * @apiParam {string} birthDate Format: dd/mm/yyyy
+     * @apiParam {string} state
+     * @apiParam {string} country
+     * @apiParam {string} city
+     * @apiParam {string} zipcode
+     * @apiParam {string} street
+     * @apiParam {string} streetNr
+     * @apiParam {string} mail
+     * @apiParam {string} password
+     *
+     * @apiSuccess 201
+     *
+     * @apiError 400
+     *
+     * @apiErrorExample Error-Response:
+     *     HTTP/1.1 400 Not Found
+     *     unknown error occurred
+     */
     registerUser(req.body)
         .then(function() {
             res.status(201).end();
@@ -22,6 +50,31 @@ router.post('/register', function(req, res) {
         });
 });
 
+/**
+ * @api {get} /user/:id Request User information
+ * @apiName GetUser
+ * @apiGroup ApplicationServerMobileApp
+ *
+ * @apiParam {Number} id Users unique ID.
+ *
+ * @apiSuccess {String} firstname Firstname of the User.
+ * @apiSuccess {String} lastname  Lastname of the User.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "firstname": "John",
+ *       "lastname": "Doe"
+ *     }
+ *
+ * @apiError UserNotFound The id of the User was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "UserNotFound"
+ *     }
+ */
 router.get('/login', function(req, res) {
     validateCredentials(req, res, function() {
         var ssn = req.params.ssn;
@@ -80,7 +133,7 @@ function registerUser(paramsOrig) {
                 params[k] = paramsOrig[k].toLowerCase();
             }
             else {
-                params.password = genHash(paramsOrig.password);
+                params.password = common.genHash(paramsOrig.password);
             }
         });
         if (params.ssn === undefined || !params.ssn.match(/^[0-9a-z]{16}$/)) {
@@ -186,7 +239,7 @@ function validateCredentials(req, res, next) {
             if (reqdata.length === 0 || reqdata.ssn !== ssn) {
                 return Promise.reject('invalid ssn');
             }
-            if (auth[0] === reqdata.mail && genHash(auth[1]) === reqdata.password) {
+            if (auth[0] === reqdata.mail && common.genHash(auth[1]) === reqdata.password) {
                 req.params.ssn = ssn;
                 next();
             }
@@ -289,7 +342,7 @@ function registerInfoPacket(paramsOrig) {
                     return Promise.reject();
                 }
                 var reqdata = JSON.parse(reqres.body)[0];
-                if (reqdata.userSsn !== params.userSsn) {
+                if (!reqdata || reqdata.userSsn !== params.userSsn) {
                     return Promise.reject('user has not registered this wearable device');
                 }
                 return Promise.resolve();
@@ -314,18 +367,5 @@ function registerInfoPacket(paramsOrig) {
     })
 }
 
-function genHash(seed) {
-    return require('crypto').createHash('md5').update('server_secret').update(seed).digest('hex');
-}
-
-function randomString(len, charSet) {
-    charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var randomString = '';
-    for (var i = 0; i < len; i++) {
-        var randomPos = Math.floor(Math.random() * charSet.length);
-        randomString += charSet.substring(randomPos, randomPos+1);
-    }
-    return randomString;
-}
 
 module.exports = router;

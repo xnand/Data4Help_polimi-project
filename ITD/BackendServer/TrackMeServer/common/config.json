@@ -9,6 +9,6 @@
     "databaseServer": "127.0.0.1",
     "applicationServerMobileClient": "127.0.0.1",
     "applicationServerData4Help": "127.0.0.1",
-    "dbms": "127.0.0.1"
+    "dbms": "192.168.1.100"
   }
 }

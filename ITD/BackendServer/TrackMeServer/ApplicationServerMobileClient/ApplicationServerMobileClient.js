@@ -1,5 +1,5 @@
 var express = require('express');
-var config = require('../config.json');
+var config = require('../common/config.json');
 var apiRouter = require('./routes/api');
 
 var app = express();

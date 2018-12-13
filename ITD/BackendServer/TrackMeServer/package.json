@@ -14,5 +14,10 @@
     "morgan": "~1.9.0",
     "pg": "^7.6.1",
     "request": "^2.88.0"
+  },
+  "apidoc": {
+	"name": "trackme",
+	"version": "1.0.0",
+	"title": "TrackMe Backend documentation"
   }
 }

@@ -1,7 +1,8 @@
 var express = require('express');
 var knex = require('./knex');
 var usersRouter = require('./routes/user');
-var config = require('../config.json');
+var companyRouter = require('./routes/company');
+var config = require('../common/config.json');
 
 function createUserTable() {
     return knex.schema.createTable('user', function(table) {
@@ -173,6 +174,7 @@ var app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/user', usersRouter);
+app.use('/company', companyRouter);
 
 // remember to give this to postgres after the database has been created:
 // ALTER DATABASE trackmedb SET datestyle TO "ISO, DMY";

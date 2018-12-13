@@ -10,6 +10,8 @@ node_modules
 bin
 venv
 *.iml
+docs
+package-lock.json
 
 # Miscellaneous
 *.class
