@@ -26,7 +26,8 @@ var http = require('http');
  */
 
 var port = normalizePort(process.env.PORT || config.port.applicationServerData4Help);
-app.set('port', port);
+var ip = process.env.allIP || process.env.appServerD4HIP || config.address.applicationServerData4Help || '127.0.0.1';
+app.set('port', port, ip);
 
 /**
  * Create HTTP server.
@@ -99,5 +100,5 @@ function onListening() {
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
-    debug('Listening on ' + bind);
+    console.log(`listening on http://${ip}:${port}`);
 }

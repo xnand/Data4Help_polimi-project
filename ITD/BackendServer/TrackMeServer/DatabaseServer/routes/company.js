@@ -43,4 +43,32 @@ router.get('/byId/:id', function(req, res) {
         });
 });
 
+router.get('/byAPI/:apiKey', function(req, res) {
+    var apiKey = req.params.apiKey;
+    knex('company').select().where('apiKey', apiKey)
+        .then(function(row) {
+            res.status(200).send(row);
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
+router.post('/specificRequest', function(req, res) {
+    var params = req.body;
+    knex('specificRequest').insert({
+        companyId: params.companyId,
+        state: 'pending',
+        targetSsn: params.targetSsn
+    })
+        .then(function() {
+            res.status(200).end();
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
 module.exports = router;

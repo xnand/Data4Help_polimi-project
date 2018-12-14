@@ -85,7 +85,7 @@ router.post('/registerWearable', function(req, res) {
     var params = req.body;
     knex('wearableDevice').insert({
         macAddr: params.macAddr,
-        userSsn: params.userSsn
+        userSsn: params.ssn
     })
         .then(function() {
             res.status(200).end();

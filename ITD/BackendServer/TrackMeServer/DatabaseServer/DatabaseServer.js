@@ -26,7 +26,7 @@ function createUserTable() {
 function createCompanyTable() {
     return knex.schema.createTable('company', function(table) {
         // columns
-        table.increments('id').primary().notNullable();
+        table.increments('id').notNullable();
         table.string('vat', 11).notNullable();
         table.string('name').notNullable();
         table.string('apiKey', 40).notNullable();
@@ -73,38 +73,40 @@ function createInfoPacketTable() {
 function createSpecificRequestTable() {
     return knex.schema.createTable('specificRequest', function(table) {
         // columns
-        table.integer('id').autoIncrement;
-        table.integer('companyID');
+        table.increments('id');
+        table.integer('companyId').unsigned();
         table.enu('state', ['pending', 'authorized', 'rejected']);
         table.string('targetSsn');
         // constraints
-        table.unique(['id', 'companyID']);
+        table.unique(['id', 'companyId']);
         table.foreign('targetSsn').references('ssn').inTable('user');
-        table.foreign('companyID').references('id').inTable('company');
-        table.primary(['id', 'companyID']);
+        table.foreign('companyId').references('id').inTable('company');
+        table.dropPrimary(); // see this "feature" https://github.com/tgriesser/knex/issues/385
+        table.primary(['id', 'companyId']);
     });
 }
 
 function createGroupRequestTable() {
     return knex.schema.createTable('groupRequest', function(table) {
         // columns
-        table.integer('id').autoIncrement;
-        table.integer('companyID');
+        table.increments('id');
+        table.integer('companyId').unsigned();
         table.enu('state', ['pending', 'authorized', 'rejected']);
         // constraints
         table.unique('id');
-        table.unique(['id', 'companyID']);
-        table.foreign('companyID').references('id').inTable('company');
-        table.primary(['id', 'companyID']);
+        table.unique(['id', 'companyId']);
+        table.foreign('companyId').references('id').inTable('company');
+        table.dropPrimary(); // see this "feature" https://github.com/tgriesser/knex/issues/385
+        table.primary(['id', 'companyId']);
     })
 }
 
 function createFilterTable() {
     return knex.schema.createTable('filter', function(table) {
         // columns
-        table.integer('id').autoIncrement;
-        table.integer('requestID');
-        table.integer('companyID');
+        table.increments('id');
+        table.integer('requestId').unsigned();
+        table.integer('companyId').unsigned();
         table.integer('ageStart');
         table.integer('ageEnd');
         table.string('state');
@@ -116,9 +118,9 @@ function createFilterTable() {
         // TODO disease
         // TODO
         // constraints
-        table.unique(['id', 'requestID', 'companyID']);
-        table.foreign('requestID').references('id').inTable('groupRequest');
-        table.foreign('companyID').references('id').inTable('company');
+        table.unique(['id', 'requestId', 'companyId']);
+        table.foreign('requestId').references('id').inTable('groupRequest');
+        table.foreign('companyId').references('id').inTable('company');
     })
 }
 
@@ -190,33 +192,33 @@ app.get('/dropALL', function(req, res) {
         })
 });
 
+
 // server setup stuff ---------------------------------------------
+
 
 debug = require('debug')('trackmeserver:server');
 var http = require('http');
 
 var port = normalizePort(process.env.PORT || config.port.databaseServer);
+var ip = process.env.allIP || process.env.dbserverIP || config.address.databaseServer || '127.0.0.1';
 app.set('port', port);
 
 var server = http.createServer(app);
 
-server.listen(port);
+server.listen(port, ip);
 server.on('error', onError);
 server.on('listening', onListening);
 
 function normalizePort(val) {
     var port = parseInt(val, 10);
-
     if (isNaN(port)) {
         // named pipe
         return val;
     }
-
     if (port >= 0) {
         // port number
         return port;
     }
-
     return false;
 }
 
@@ -224,11 +226,9 @@ function onError(error) {
     if (error.syscall !== 'listen') {
         throw error;
     }
-
     var bind = typeof port === 'string'
         ? 'Pipe ' + port
         : 'Port ' + port;
-
     // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
@@ -249,5 +249,5 @@ function onListening() {
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
-    debug('Listening on ' + bind);
+    console.log(`listening on http://${ip}:${port}`);
 }

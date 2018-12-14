@@ -6,7 +6,7 @@ config = {
     version: '7.2',
     connection: {
         host: dbConnection,
-        user: 'trackme', // TODO change in trackme or something
+        user: 'trackme',
         // password : 'your_database_password', TODO
         database: 'trackmedb'
     }
