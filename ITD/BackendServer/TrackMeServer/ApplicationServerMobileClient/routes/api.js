@@ -117,7 +117,7 @@ router.post('/:ssn/registerWearable', function(req, res) {
         .then(function() {
             params.macAddr = params.macAddr.replace(/[ -]/g, '');
             return request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDeviceByMacAddr/${params.macAddr}`,
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice/ByMac/${params.macAddr}`,
                 method: 'GET'
             });
         })
@@ -150,6 +150,50 @@ router.post('/:ssn/registerWearable', function(req, res) {
         })
 });
 
+router.get('/:ssn/pendingRequests', function(req, res) {
+    var pendingRequests = {};
+    var ssn = req.params.ssn.toLowerCase();
+    request({
+        url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/specificRequest`,
+        method: 'GET'
+    })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+                return Promise.reject();
+            }
+            var reqdata = JSON.parse(reqres.body) || '';
+            if (!reqdata[0].id) {
+                return res.status(200).send({}); // no requests
+            }
+            // get company information for every pending request
+            var promises = [];
+            for (var i = 0; i < reqdata.length; i++) {
+                pendingRequests[i] = {};
+                pendingRequests[i].requestId = reqdata[i].id;
+                promises[i] = request({
+                    url: `http://${config.address.databaseServer}:${config.port.databaseServer}/company/byId/${reqdata[i].companyId}`,
+                    method: 'GET'
+                })
+            }
+            return Promise.all(promises);
+        })
+        .then(function(rows) {
+            // order is preserved
+            for (var i = 0; i < rows.length; i++) {
+                var companyData = JSON.parse(rows[i].body)[0];
+                delete companyData.apiKey;
+                pendingRequests[i].company = companyData;
+            }
+            return res.status(200).send(pendingRequests);
+        })
+        .catch(function(err) {
+            if (!err || !err.apiError) {
+                err = {apiError: 'unknown error'};
+            }
+            res.status(400).send(err);
+        })
+});
+
 router.post('/:ssn/packet', function(req, res) {
     var params = {};
     Object.keys(req.body).forEach(function(k) {
@@ -169,7 +213,7 @@ router.post('/:ssn/packet', function(req, res) {
             // check that the incoming packet is legit
             params.wearableMac = params.wearableMac.replace(/[ -]/g, '');
             return request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDeviceByMacAddr/${params.wearableMac}`,
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice/ByMac/${params.wearableMac}`,
                 method: 'GET'
             })
         })

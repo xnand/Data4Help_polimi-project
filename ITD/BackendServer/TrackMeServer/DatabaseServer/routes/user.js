@@ -33,30 +33,6 @@ router.post('/register', function(req, res) {
         });
 });
 
-router.get('/:ssn/credentials', function(req, res) {
-    var ssn = req.params.ssn.toLowerCase();
-    knex('userCredentials').select().where('ssn', ssn)
-        .then(function(row) {
-            res.status(200).send(row);
-        })
-        .catch(function(err) {
-            console.log(err);
-            res.status(400).end();
-        });
-});
-
-router.post('/getSsnFromMail', function(req, res) {
-    var params = req.body;
-    knex('userCredentials').select('ssn').where('mail', params.mail)
-        .then(function(row) {
-            res.status(200).send(row);
-        })
-        .catch(function(err) {
-            console.log(err);
-            res.status(400).end();
-        });
-});
-
 router.get('/:ssn', function(req, res) {
     var ssn = req.params.ssn.toLowerCase();
     knex('user').select().where('ssn', ssn)
@@ -69,9 +45,38 @@ router.get('/:ssn', function(req, res) {
         });
 });
 
-router.get('/wearableDeviceByMacAddr/:macAddr', function(req, res) {
-    var macAddr = req.params.macAddr.toLowerCase();
-    knex('wearableDevice').select().where('macAddr', macAddr)
+router.get('/:ssn/credentials', function(req, res) {
+    var ssn = req.params.ssn.toLowerCase();
+    knex('userCredentials').select().where('ssn', ssn)
+        .then(function(row) {
+            res.status(200).send(row);
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
+router.get('/:ssn/specificRequest', function(req, res) {
+    var ssn = req.params.ssn.toLowerCase();
+    knex('specificRequest').select().where({
+        targetSsn: ssn,
+        state: 'pending'
+    })
+        .then(function(rows) {
+            res.status(200).send(rows);
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
+router.post('/getSsnFromMail', function(req, res) {
+    // this is not in standard form /ssn/byMail/.. because
+    // is the mail address is not http encode friendly
+    var params = req.body;
+    knex('userCredentials').select('ssn').where('mail', params.mail)
         .then(function(row) {
             res.status(200).send(row);
         })
@@ -89,6 +94,18 @@ router.post('/registerWearable', function(req, res) {
     })
         .then(function() {
             res.status(200).end();
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
+router.get('/wearableDevice/ByMac/:macAddr', function(req, res) {
+    var macAddr = req.params.macAddr.toLowerCase();
+    knex('wearableDevice').select().where('macAddr', macAddr)
+        .then(function(row) {
+            res.status(200).send(row);
         })
         .catch(function(err) {
             console.log(err);
