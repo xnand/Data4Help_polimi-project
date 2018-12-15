@@ -1,69 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.3.0">
-  <zoom_level>10</zoom_level>
+  <zoom_level>16</zoom_level>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>140</x>
-      <y>190</y>
-      <w>20</w>
-      <h>20</h>
+      <x>528</x>
+      <y>512</y>
+      <w>32</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>type=initial</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLState</id>
-    <coordinates>
-      <x>310</x>
-      <y>180</y>
-      <w>130</w>
-      <h>50</h>
-    </coordinates>
-    <panel_attributes>awaiting approval</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <id>Relation</id>
     <coordinates>
-      <x>150</x>
-      <y>180</y>
-      <w>180</w>
-      <h>40</h>
+      <x>544</x>
+      <y>496</y>
+      <w>624</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=-&gt;
 sent to system</panel_attributes>
-    <additional_attributes>10.0;20.0;160.0;20.0</additional_attributes>
+    <additional_attributes>10.0;20.0;370.0;20.0</additional_attributes>
   </element>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>520</x>
-      <y>180</y>
-      <w>40</w>
-      <h>40</h>
+      <x>1136</x>
+      <y>496</y>
+      <w>64</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>type=decision</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>430</x>
-      <y>190</y>
-      <w>110</w>
-      <h>30</h>
-    </coordinates>
-    <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;90.0;10.0</additional_attributes>
-  </element>
-  <element>
     <id>UMLState</id>
     <coordinates>
-      <x>710</x>
-      <y>180</y>
-      <w>90</w>
-      <h>40</h>
+      <x>1440</x>
+      <y>496</y>
+      <w>144</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>accepted</panel_attributes>
     <additional_attributes/>
@@ -71,10 +49,10 @@ sent to system</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>550</x>
-      <y>180</y>
-      <w>180</w>
-      <h>50</h>
+      <x>1184</x>
+      <y>496</y>
+      <w>288</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=-&gt;
 data can
@@ -84,10 +62,10 @@ be anonymized</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>500</x>
-      <y>350</y>
-      <w>90</w>
-      <h>40</h>
+      <x>1104</x>
+      <y>768</y>
+      <w>144</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>refused</panel_attributes>
     <additional_attributes/>
@@ -95,10 +73,10 @@ be anonymized</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>530</x>
-      <y>210</y>
-      <w>100</w>
-      <h>160</h>
+      <x>1152</x>
+      <y>544</y>
+      <w>192</w>
+      <h>256</h>
     </coordinates>
     <panel_attributes>lt=-&gt;
 data can
@@ -109,10 +87,10 @@ anonymized</panel_attributes>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>730</x>
-      <y>350</y>
-      <w>40</w>
-      <h>40</h>
+      <x>1472</x>
+      <y>768</y>
+      <w>64</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>type=decision</panel_attributes>
     <additional_attributes/>
@@ -120,10 +98,10 @@ anonymized</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>580</x>
-      <y>360</y>
-      <w>170</w>
-      <h>30</h>
+      <x>1232</x>
+      <y>784</y>
+      <w>272</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=-&gt;</panel_attributes>
     <additional_attributes>10.0;10.0;150.0;10.0</additional_attributes>
@@ -131,10 +109,10 @@ anonymized</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>740</x>
-      <y>210</y>
-      <w>30</w>
-      <h>160</h>
+      <x>1488</x>
+      <y>544</y>
+      <w>48</w>
+      <h>256</h>
     </coordinates>
     <panel_attributes>lt=-&gt;</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
@@ -142,10 +120,10 @@ anonymized</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>740</x>
-      <y>380</y>
-      <w>30</w>
-      <h>80</h>
+      <x>1488</x>
+      <y>816</y>
+      <w>48</w>
+      <h>128</h>
     </coordinates>
     <panel_attributes>lt=-&gt;</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
@@ -153,10 +131,10 @@ anonymized</panel_attributes>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>740</x>
-      <y>440</y>
-      <w>20</w>
-      <h>20</h>
+      <x>1488</x>
+      <y>912</y>
+      <w>32</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>type=final</panel_attributes>
     <additional_attributes/>
