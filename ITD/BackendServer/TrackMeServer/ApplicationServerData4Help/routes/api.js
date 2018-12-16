@@ -44,10 +44,7 @@ router.post('/register', function(req, res) {
             res.status(201).send({apiKey: params.apiKey}); // success
         })
         .catch(function(err) {
-            if (!err || !err.apiError) {
-                err = {apiError: 'unknown error'};
-            }
-            res.status(400).send(err);
+            common.catchApi(err, res);
         })
 });
 
@@ -110,10 +107,7 @@ router.post('/specificRequest', function(req, res) {
             res.status(201).end(); // success
         })
         .catch(function(err) {
-            if (!err || !err.apiError) {
-                err = {apiError: 'unknown error'};
-            }
-            res.status(400).send(err);
+            common.catchApi(err, res);
         })
 });
 

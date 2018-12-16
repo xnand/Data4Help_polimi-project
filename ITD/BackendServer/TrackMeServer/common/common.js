@@ -1,5 +1,7 @@
 function getRegExp(k) {
     switch (k) {
+        case 'id':
+            return /^[0-9]*$/;
         // user
         case 'ssn':
         case 'userSsn':
@@ -20,7 +22,7 @@ function getRegExp(k) {
         case 'zipcode':
             return /^[0-9]{1,10}$/;
         case 'streetNr':
-            return /^[0-9]$/;
+            return /^[0-9]*$/;
         case 'mail':
             return /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
         case 'password':
@@ -74,6 +76,16 @@ module.exports = {
             }
             resolve();
         })
+    },
+
+    catchApi: function(err, res) {
+    if (err && err.noError) { // no error, just used sometimes to break a .then() chain
+        return;
     }
+    if (!err || !err.apiError) {
+        err = {apiError: 'unknown error'};
+    }
+    res.status(400).send(err);
+}
 };
 

@@ -72,6 +72,41 @@ router.get('/:ssn/specificRequest', function(req, res) {
         });
 });
 
+router.get('/:ssn/specificRequest/:id', function(req, res) {
+    var ssn = req.params.ssn.toLowerCase();
+    knex('specificRequest').select().where({
+        targetSsn: ssn,
+        state: 'pending'
+    })
+        .then(function(row) {
+            res.status(200).send(row);
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
+router.get('/:ssn/acceptRequest/:id', function(req, res) {
+    var ssn = req.params.ssn.toLowerCase();
+    var id = req.params.id;
+    knex('specificRequest').update({
+        state: 'authorized'
+    })
+        .where({
+        targetSsn: ssn,
+        state: 'pending',
+        id: id
+    })
+        .then(function() {
+            res.status(200).end();
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
 router.post('/getSsnFromMail', function(req, res) {
     // this is not in standard form /ssn/byMail/.. because
     // is the mail address is not http encode friendly

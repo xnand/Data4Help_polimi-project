@@ -76,10 +76,7 @@ router.post('/register', function(req, res) {
             res.status(201).end(); // success
         })
         .catch(function(err) {
-            if (!err || !err.apiError) {
-                err = {apiError: 'unknown error'};
-            }
-            res.status(400).send(err);
+            common.catchApi(err, res);
         })
 });
 
@@ -95,10 +92,7 @@ router.get('/login', function(req, res) {
                 res.status(200).send(row[0]);
             })
             .catch(function(err) {
-                if (!err || !err.apiError) {
-                    err = {apiError: 'unknown error'};
-                }
-                res.status(400).send(err);
+                common.catchApi(err, res);
             })
     })
 });
@@ -143,10 +137,7 @@ router.post('/:ssn/registerWearable', function(req, res) {
             res.status(201).end(); // success
         })
         .catch(function(err) {
-            if (!err || !err.apiError) {
-                err = {apiError: 'unknown error'};
-            }
-            res.status(400).send(err);
+            common.catchApi(err, res);
         })
 });
 
@@ -162,8 +153,9 @@ router.get('/:ssn/pendingRequests', function(req, res) {
                 return Promise.reject();
             }
             var reqdata = JSON.parse(reqres.body) || '';
-            if (!reqdata[0].id) {
-                return res.status(200).send({}); // no requests
+            if (!reqdata[0] || !reqdata[0].id) {
+                res.status(200).send({}); // no requests
+                return Promise.reject({noError: ''});
             }
             // get company information for every pending request
             var promises = [];
@@ -184,13 +176,51 @@ router.get('/:ssn/pendingRequests', function(req, res) {
                 delete companyData.apiKey;
                 pendingRequests[i].company = companyData;
             }
-            return res.status(200).send(pendingRequests);
+            res.status(200).send(pendingRequests);
         })
         .catch(function(err) {
-            if (!err || !err.apiError) {
-                err = {apiError: 'unknown error'};
+            common.catchApi(err, res);
+        })
+});
+
+router.post('/:ssn/acceptRequest', function(req, res) {
+    var ssn = req.params.ssn.toLowerCase();
+    var params = {};
+    Object.keys(req.body).forEach(function(k) {
+        params[k] = req.body[k].toLowerCase();
+    });
+    common.validateParams(params, [
+        'id',
+    ])
+        .then(function() {
+            // check that the request has this user as target
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/specificRequest/${params.id}`,
+                method: 'GET'
+            });
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+                return Promise.reject({apiError: 'you can\'t accept this request'});
             }
-            res.status(400).send(err);
+            var reqdata = JSON.parse(reqres.body) || '';
+            if (!reqdata[0].id) {
+                return Promise.reject({apiError: 'you can\'t accept this request'});
+            }
+            // change the request status to accepted
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/acceptRequest/${params.id}`,
+                method: 'GET'
+            });
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200) {
+                return Promise.reject();
+            }
+            res.status(200).end();
+        })
+        .catch(function(err) {
+            common.catchApi(err, res);
         })
 });
 
@@ -240,10 +270,7 @@ router.post('/:ssn/packet', function(req, res) {
             res.status(201).end(); // success
         })
         .catch(function(err) {
-            if (!err || !err.apiError) {
-                err = {apiError: 'unknown error'};
-            }
-            res.status(400).send(err);
+            common.catchApi(err, res);
         })
 });
 
@@ -299,7 +326,7 @@ function validateCredentials(req, res, next) {
             }
         })
         .catch(function(err) {
-            res.status(400).send(err);
+            common.catchApi(err, res);
         })
 }
 
