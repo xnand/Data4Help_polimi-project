@@ -65,12 +65,23 @@ module.exports = {
         return randStr;
     },
 
-    validateParams: function(params, expected) {
+    validateParams: function(params, expected, optional) {
         return new Promise(function(resolve, reject) {
-            var i, p;
+            var i, p, ignore;
             for (i = 0; i < expected.length; i++) {
+                ignore = false;
                 p = expected[i];
                 if (!params[p] || !getRegExp(p).test(params[p])) {
+                    if (optional) {
+                        for (var j = 0; j < optional.length; j++) {
+                            if (p === optional[j]) {
+                                ignore = true;
+                            }
+                        }
+                    }
+                    if (ignore) {
+                        continue;
+                    }
                     return reject({apiError: `invalid ${p}`});
                 }
             }
