@@ -323,7 +323,7 @@ router.post('/:ssn/packet', function(req, res) {
             }
             // todo check timestamp value!!!!!
             return request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/registerInfoPacket`,
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/infoPacket`,
                 method: 'POST',
                 json: true,
                 body: params

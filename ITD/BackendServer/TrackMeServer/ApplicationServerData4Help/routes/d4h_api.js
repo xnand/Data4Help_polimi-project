@@ -153,24 +153,60 @@ router.get('/specificRequest', function(req, res) {
         })
 });
 
-router.get('/accessSpecificData', function(req, res) {
+router.get('/specificRequest/data', function(req, res) {
     var companyId;
-    var allowed = ['id'];
     verifyApiKey(req.query.apiKey)
         .then(function(companyId_) {
             companyId = companyId_;
-            return common.validateParams(req.query, allowed, allowed)
+            return common.validateParams(req.query, ['id'])
         })
         .then(function() {
-            var where = {
-                companyId: companyId
-            };
-            for (var q in req.query) {
-                if (allowed.includes(q)) {
-                    where[q] = req.query[q];
+            // check that the request is authorized
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
+                method: 'GET',
+                qs: {
+                    id: req.query.id,
+                    companyId: companyId
                 }
+            })
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+                return Promise.reject({apiError: `you have not made the request with id ${req.query.id}`});
             }
-            // todo
+            var reqdata = JSON.parse(reqres.body)[0] || '';
+            if (!reqdata || !reqdata.state) {
+                return Promise.reject({apiError: `you have not made the request with id ${req.query.id}`});
+            }
+            if (reqdata.state === 'pending') {
+                return Promise.reject({apiError: `this request must be authorized yet`});
+            }
+            else if (reqdata.state === 'rejected') {
+                return Promise.reject({apiError: `this request has been rejected`});
+            }
+            if (reqdata.state !== 'authorized') {
+                // we should never get here, right?
+                return Promise.reject();
+            }
+            // send the data
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/infoPacket`,
+                method: 'GET',
+                qs: {
+                    userSsn: reqdata.targetSsn
+                }
+            })
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+                return Promise.reject();
+            }
+            var reqdata = JSON.parse(reqres.body) || '';
+            if (!reqdata) {
+                return Promise.reject();
+            }
+            res.status(200).send(reqdata); // success
         })
         .catch(function(err) {
             common.catchApi(err, res);
