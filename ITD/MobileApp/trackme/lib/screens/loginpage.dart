@@ -114,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onPressed: () {
-                  print('pressed');
+                  Navigator.of(context).pushNamed(RegisterPage.tag);
                 },
                 child: Center(
                   child: Text(
