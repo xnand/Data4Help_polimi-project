@@ -34,47 +34,52 @@ router.post('/register', function(req, res) {
      *     HTTP/1.1 400 Not Found
      *     unknown error occurred
      */
-    registerUser(req.body)
-        .then(function() {
-            res.status(201).end();
+
+    var params = {};
+    Object.keys(req.body).forEach(function(k) {
+        if (k !== 'password') {
+            params[k] = req.body[k].toLowerCase();
+        }
+        else {
+            params[k] = req.body[k];
+        }
+    });
+    common.validateParams(params, [
+        'ssn',
+        'name',
+        'surname',
+        'sex',
+        'birthDate',
+        'state',
+        'country',
+        'city',
+        'zipcode',
+        'street',
+        'streetNr',
+        'mail',
+        'password'
+    ])
+        .then(function() { // todo check existing user
+            params.sex = params.sex.replace(/^m.*/g, 'male').replace(/^f.*/g, 'female');
+            params.password = common.genHash(params.password);
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/register`,
+                method: 'POST',
+                json: true,
+                body: params
+            })
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200) {
+                return Promise.reject();
+            }
+            res.status(201).end(); // success
         })
         .catch(function(err) {
-            if (typeof err === 'string' ) {
-                res.status(400).send(err);
-            }
-            else {
-                // not sending backend errors to client
-                console.log(err);
-                res.status(400).send('unknown error occurred');
-            }
-        });
+            common.catchApi(err, res);
+        })
 });
 
-/**
- * @api {get} /user/:id Request User information
- * @apiName GetUser
- * @apiGroup ApplicationServerMobileApp
- *
- * @apiParam {Number} id Users unique ID.
- *
- * @apiSuccess {String} firstname Firstname of the User.
- * @apiSuccess {String} lastname  Lastname of the User.
- *
- * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "firstname": "John",
- *       "lastname": "Doe"
- *     }
- *
- * @apiError UserNotFound The id of the User was not found.
- *
- * @apiErrorExample Error-Response:
- *     HTTP/1.1 404 Not Found
- *     {
- *       "error": "UserNotFound"
- *     }
- */
 router.get('/login', function(req, res) {
     validateCredentials(req, res, function() {
         var ssn = req.params.ssn;
@@ -86,115 +91,188 @@ router.get('/login', function(req, res) {
                 row = JSON.parse(reqres.body);
                 res.status(200).send(row[0]);
             })
+            .catch(function(err) {
+                common.catchApi(err, res);
+            })
     })
 });
 
 router.param('ssn', validateCredentials);
 
 router.post('/:ssn/registerWearable', function(req, res) {
-    registerWearableDevice(req.body)
+    var params = {};
+    params.ssn = req.params.ssn;
+    Object.keys(req.body).forEach(function(k) {
+        params[k] = req.body[k].toLowerCase();
+    });
+    common.validateParams(params, [
+        'macAddr'
+    ])
         .then(function() {
-            res.status(201).end();
+            params.macAddr = params.macAddr.replace(/[ -]/g, '');
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice/ByMac/${params.macAddr}`,
+                method: 'GET'
+            });
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+                return Promise.reject({apiError: 'invalid macAddr'});
+            }
+            var reqdata = JSON.parse(reqres.body)[0] || '';
+            if (reqdata.userSsn) {
+                return Promise.reject({apiError: 'invalid macAddr'});
+            }
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/registerWearable`,
+                method: 'POST',
+                json: true,
+                body: params
+            })
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200) {
+                return Promise.reject();
+            }
+            res.status(201).end(); // success
         })
         .catch(function(err) {
-            if (typeof err === 'string' ) {
-                res.status(400).send(err);
+            common.catchApi(err, res);
+        })
+});
+
+router.get('/:ssn/pendingRequests', function(req, res) {
+    var pendingRequests = {};
+    var ssn = req.params.ssn.toLowerCase();
+    request({
+        url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/specificRequest`,
+        method: 'GET'
+    })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+                return Promise.reject();
             }
-            else {
-                // not sending backend errors to client
-                console.log(err);
-                res.status(400).send('unknown error occurred');
+            var reqdata = JSON.parse(reqres.body) || '';
+            if (!reqdata[0] || !reqdata[0].id) {
+                res.status(200).send({}); // no requests
+                return Promise.reject({noError: ''});
             }
+            // get company information for every pending request
+            var promises = [];
+            for (var i = 0; i < reqdata.length; i++) {
+                pendingRequests[i] = {};
+                pendingRequests[i].requestId = reqdata[i].id;
+                promises[i] = request({
+                    url: `http://${config.address.databaseServer}:${config.port.databaseServer}/company/byId/${reqdata[i].companyId}`,
+                    method: 'GET'
+                })
+            }
+            return Promise.all(promises);
+        })
+        .then(function(rows) {
+            // order is preserved
+            for (var i = 0; i < rows.length; i++) {
+                var companyData = JSON.parse(rows[i].body)[0];
+                delete companyData.apiKey;
+                pendingRequests[i].company = companyData;
+            }
+            res.status(200).send(pendingRequests);
+        })
+        .catch(function(err) {
+            common.catchApi(err, res);
+        })
+});
+
+router.post('/:ssn/acceptRequest', function(req, res) {
+    var ssn = req.params.ssn.toLowerCase();
+    var params = {};
+    Object.keys(req.body).forEach(function(k) {
+        params[k] = req.body[k].toLowerCase();
+    });
+    common.validateParams(params, [
+        'id',
+    ])
+        .then(function() {
+            // check that the request has this user as target
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/specificRequest/${params.id}`,
+                method: 'GET'
+            });
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+                return Promise.reject({apiError: 'you can\'t accept this request'});
+            }
+            var reqdata = JSON.parse(reqres.body) || '';
+            if (!reqdata[0].id) {
+                return Promise.reject({apiError: 'you can\'t accept this request'});
+            }
+            // change the request status to accepted
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/acceptRequest/${params.id}`,
+                method: 'GET'
+            });
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200) {
+                return Promise.reject();
+            }
+            res.status(200).end();
+        })
+        .catch(function(err) {
+            common.catchApi(err, res);
         })
 });
 
 router.post('/:ssn/packet', function(req, res) {
-    registerInfoPacket(req.body)
+    var params = {};
+    Object.keys(req.body).forEach(function(k) {
+        params[k] = req.body[k].toLowerCase();
+    });
+    common.validateParams(params, [
+        'ts',
+        'wearableMac',
+        'userSsn',
+        'geoX',
+        'geoY',
+        'heartBeatRate',
+        'bloodPressSyst',
+        'bloodPressDias'
+    ])
         .then(function() {
-            res.status(201).end();
+            // check that the incoming packet is legit
+            params.wearableMac = params.wearableMac.replace(/[ -]/g, '');
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice/ByMac/${params.wearableMac}`,
+                method: 'GET'
+            })
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+                return Promise.reject();
+            }
+            var reqdata = JSON.parse(reqres.body)[0] || '';
+            if (!reqdata.userSsn || reqdata.userSsn !== params.userSsn) {
+                return Promise.reject('invalid wearableMac');
+            }
+            // todo check timestamp value!!!!!
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/registerInfoPacket`,
+                method: 'POST',
+                json: true,
+                body: params
+            })
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200) {
+                return Promise.reject();
+            }
+            res.status(201).end(); // success
         })
         .catch(function(err) {
-            if (typeof err === 'string') {
-                res.status(400).send(err);
-            }
-            else {
-                // not sending backend errors to client
-                console.log(err);
-                res.status(400).send('unknown error occurred');
-            }
+            common.catchApi(err, res);
         })
 });
-
-function registerUser(paramsOrig) {
-    return new Promise(function(resolve, reject) {
-        var params = {};
-        Object.keys(paramsOrig).forEach(function(k) {
-            if (k !== 'password') {
-                params[k] = paramsOrig[k].toLowerCase();
-            }
-            else {
-                params.password = common.genHash(paramsOrig.password);
-            }
-        });
-        if (params.ssn === undefined || !params.ssn.match(/^[0-9a-z]{16}$/)) {
-            reject('invalid ssn. only alphanums == 16 chars allowed');
-        } // TODO check existing
-        if (params.name === undefined || !params.name.match(/^[0-9a-z']{1,32}$/)) {
-            reject('invalid name. must <= 32 chars');
-        }
-        if (params.surname === undefined || !params.surname.match(/^[0-9a-z']{1,32}$/)) {
-            reject('invalid name. must be alphanum <= 32 chars');
-        }
-        if (params.sex === undefined || (params.sex[0] !== 'm' && params.sex[0] !== 'f')) {
-            reject('invalid sex. male of female allowed');
-        }
-        if (params.birthDate === undefined ||
-            !params.birthDate.match(/^([0-9]{1,2}[ /-]){2}[0-9]{4}$/) ||
-            new Date(params.birthDate).getTime() >= Date.now()) {
-            reject('invalid date.');
-        }
-        if (params.state === undefined) {
-            reject('invalid state');
-        }
-        if (params.country === undefined) {
-            reject('invalid country');
-        }
-        if (params.city === undefined) {
-            reject('invalid city');
-        }
-        if (params.zipcode === undefined || !params.zipcode.match(/^[0-9]{1,10}$/)) {
-            reject('invalid zipcode');
-        }
-        if (params.street === undefined) {
-            reject('invalid street');
-        }
-        if (params.streetNr === undefined || !params.streetNr.match(/^[0-9]$/)) {
-            reject('invalid street number');
-        }
-        if (params.mail === undefined || !params.mail.match(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/)) {
-            reject('invalid email address');
-        }
-        if (params.password === undefined || !params.password.match(/^.[^:]{8,32}$/)) {
-            reject('invalid password');
-        }
-        params.sex = params.sex.replace(/^m.*/g, 'male').replace(/^f.*/g, 'female');
-        request({
-            url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/register`,
-            method: 'POST',
-            json: true,
-            body: params
-        })
-            .then(function(reqres) {
-                if (reqres.statusCode === 200) {
-                    return resolve();
-                }
-                return Promise.reject();
-            })
-            .catch(function(err) {
-                return reject(err);
-            });
-    })
-}
 
 function validateCredentials(req, res, next) {
     var ssn = req.params.ssn;
@@ -223,9 +301,9 @@ function validateCredentials(req, res, next) {
         }
     })
         .then(function() {
-            if (!ssn.match(/^[0-9a-z]{16}$/)) {
-                res.status(400).send('invalid ssn');
-            }
+            return common.validateParams({ssn: ssn}, ['ssn']);
+        })
+        .then(function() {
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/credentials`,
                 method: 'GET'
@@ -233,138 +311,23 @@ function validateCredentials(req, res, next) {
         })
         .then(function(reqres) {
             if (reqres.statusCode !== 200) {
-                return Promise.reject('invalid ssn');
+                return Promise.reject({apiError: 'invalid ssn'});
             }
-            var reqdata = JSON.parse(reqres.body)[0];
-            if (reqdata.length === 0 || reqdata.ssn !== ssn) {
-                return Promise.reject('invalid ssn');
+            var reqdata = JSON.parse(reqres.body)[0] || '';
+            if (!reqdata.ssn || reqdata.ssn !== ssn) {
+                return Promise.reject({apiError: 'invalid ssn'});
             }
             if (auth[0] === reqdata.mail && common.genHash(auth[1]) === reqdata.password) {
-                req.params.ssn = ssn;
-                next();
+                req.params.ssn = ssn; // DO NOT DELETE, this passes the ssn to next(). first line is not good for all cases
+                next(); // success
             }
             else {
                 res.status(401).end();
             }
         })
         .catch(function(err) {
-            res.status(400).send(err);
+            common.catchApi(err, res);
         })
-}
-
-function registerWearableDevice(paramsOrig) {
-    return new Promise(function(resolve, reject) {
-        var params = {};
-        Object.keys(paramsOrig).forEach(function(k) {
-            params[k] = paramsOrig[k].toLowerCase();
-        });
-        // validate
-        if (params.macAddr === undefined || !params.macAddr.match(/^([0-9a-f]{2}[ -:]?){5}[0-9a-f]{2}$/)) {
-            return reject('invalid mac address');
-        }
-        params.macAddr = params.macAddr.replace(/[ -]/g, '');
-        // check if the wearable is already registered
-        request({
-            url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDeviceByMacAddr/${params.macAddr}`,
-            method: 'GET'
-        })
-            .then(function(reqres) {
-                if (reqres.statusCode === 200) {
-                    var reqdata = JSON.parse(reqres.body)[0];
-                    if (reqdata !== undefined && reqdata.length !== 0) {
-                        return Promise.reject('device already registered');
-                    }
-                    return Promise.resolve();
-                }
-                return Promise.reject();
-            })
-            .then(function() {
-                return request({
-                    url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/registerWearable`,
-                    method: 'POST',
-                    json: true,
-                    body: params
-                })
-            })
-            .then(function(reqres) {
-                if (reqres.statusCode === 200) {
-                    return resolve();
-                }
-                return Promise.reject();
-            })
-            .catch(function(err) {
-                return reject(err);
-            });
-    })
-}
-
-function registerInfoPacket(paramsOrig) {
-    return new Promise(function(resolve, reject) {
-        // validate
-        var params = {};
-        Object.keys(paramsOrig).forEach(function(k) {
-            params[k] = paramsOrig[k].toLowerCase();
-        });
-        if (params.ts === undefined) {
-        // if (params.ts === undefined || !params.ts.match(/^[0-9]$/)) { // todo check timestamp value
-            reject('invalid timestamp');
-        }
-        if (params.wearableMac === undefined || !params.wearableMac.match(/^([0-9a-f]{2}[ -:]?){5}[0-9a-f]{2}$/)) {
-            reject('invalid mac address');
-        }
-        if (params.userSsn === undefined || !params.userSsn.match(/^[0-9a-z]{16}$/)) {
-            reject('invalid ssn');
-        }
-        if (params.geoX === undefined || !params.geoX.match(/^[-+]?[0-9]*\.?[0-9]+$/)) {
-            reject('invalid X geo');
-        }
-        if (params.geoY === undefined || !params.geoY.match(/^[-+]?[0-9]*\.?[0-9]+$/)) {
-            reject('invalid Y geo');
-        }
-        // these parameters can be not specified (eg. no wearable support)
-        if (params.heartBeatRate != undefined && !params.heartBeatRate.match(/^[-+]?[0-9]*\.?[0-9]+$/)) {
-            reject('invalid heartbeat rate')
-        }
-        if (params.bloodPressSyst != undefined && !params.bloodPressSyst.match(/^[-+]?[0-9]*\.?[0-9]+$/)) {
-            reject('invalid syst blood pressure');
-        }
-        if (params.bloodPressDias != undefined && !params.bloodPressDias.match(/^[-+]?[0-9]*\.?[0-9]+$/)) {
-            reject('invalid dias blood pressure');
-        }
-        params.wearableMac = params.wearableMac.replace(/[ -]/g, '');
-        // check that the incoming packet is legit
-        request({
-            url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDeviceByMacAddr/${params.wearableMac}`,
-            method: 'GET'
-        })
-            .then(function(reqres) {
-                if (reqres.statusCode !== 200) {
-                    return Promise.reject();
-                }
-                var reqdata = JSON.parse(reqres.body)[0];
-                if (!reqdata || reqdata.userSsn !== params.userSsn) {
-                    return Promise.reject('user has not registered this wearable device');
-                }
-                return Promise.resolve();
-            })
-            .then(function() {
-                return request({
-                    url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/registerInfoPacket`,
-                    method: 'POST',
-                    json: true,
-                    body: params
-                })
-            })
-            .then(function(reqres) {
-                if (reqres.statusCode === 200) {
-                    return resolve();
-                }
-                return Promise.reject();
-            })
-            .catch(function(err) {
-                return reject(err);
-            })
-    })
 }
 
 
