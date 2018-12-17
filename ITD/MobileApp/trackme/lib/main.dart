@@ -3,6 +3,7 @@ import 'screens/loginpage.dart';
 import 'screens/feed.dart';
 import 'screens/PageNavigator.dart';
 import 'screens/sharingPage.dart';
+import 'screens/registerPage.dart';
 
 void main() => runApp(TrackMe());
 
@@ -12,7 +13,9 @@ class TrackMe extends StatelessWidget {
     LoginPage.tag: (context) =>LoginPage(),
     FeedPage.tag: (context) =>FeedPage(),
     PageNavigator.tag: (context) => PageNavigator(),
-    SharingPage.tag: (context) => SharingPage()
+    SharingPage.tag: (context) => SharingPage(),
+    RegisterPage.tag: (context) => RegisterPage()
+
   };
   @override
   Widget build(BuildContext context) {

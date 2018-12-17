@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:track_me/screens/feed.dart';
 import 'package:track_me/styles/colors.dart';
+import 'package:track_me/networkManager/network.dart';
+import 'package:track_me/controllers/profileManager.dart';
+import 'registerPage.dart';
 
 import 'PageNavigator.dart';
 
@@ -19,9 +21,12 @@ class _LoginPageState extends State<LoginPage> {
   void validateAndSave() {
     final form = formKey.currentState;
 
+
     if(form.validate()) {
       form.save();
-      print('credential may be valid. Email: $_email, Password: $_password');
+      apiManager().login(_email, _password);
+
+
     }
   }
   _LoginPageState() {
@@ -43,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       onSaved: (email) => _email = email,
-      initialValue: null,
+      initialValue: 'testmail@gmail.it',
       validator: (value) => value.isEmpty ? 'Email can\'t be empy': null,
       decoration: InputDecoration(
           labelText: 'Email',
@@ -54,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final password = TextFormField(
       autofocus: false,
-      initialValue: null,
+      initialValue: 'testpsw',
       obscureText: true,
       validator: (value) => value.isEmpty ? 'Password can\'t be empy': null,
       onSaved: (password) => _password = password,
@@ -138,7 +143,9 @@ class _LoginPageState extends State<LoginPage> {
 
         ),
       ),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).pushNamed(RegisterPage.tag);
+      },
     );
 
     return Scaffold(
