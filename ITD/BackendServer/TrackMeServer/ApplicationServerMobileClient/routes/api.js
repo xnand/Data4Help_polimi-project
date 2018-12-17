@@ -59,7 +59,42 @@ router.post('/register', function(req, res) {
         'mail',
         'password'
     ])
-        .then(function() { // todo check existing user
+        .then(function() {
+            // check existing mail
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/`,
+                method: 'GET',
+                qs: {
+                    ssn: params.ssn
+                }
+            })
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200) {
+                return Promise.reject();
+            }
+            var reqdata = JSON.parse(reqres.body)[0];
+            if (reqdata) {
+                return Promise.reject({apiError: `user ${params.ssn} already registered`});
+            }
+            // check existing ssn
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/credentials`,
+                method: 'GET',
+                qs: {
+                    mail: params.mail
+                }
+            })
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200) {
+                return Promise.reject();
+            }
+            var reqdata = JSON.parse(reqres.body)[0];
+            if (reqdata) {
+                return Promise.reject({apiError: `mail ${params.mail} already registered`});
+            }
+            // record data
             params.sex = params.sex.replace(/^m.*/g, 'male').replace(/^f.*/g, 'female');
             params.password = common.genHash(params.password);
             return request({

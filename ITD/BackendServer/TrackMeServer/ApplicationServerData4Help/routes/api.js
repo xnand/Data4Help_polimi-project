@@ -153,8 +153,28 @@ router.get('/specificRequest', function(req, res) {
         })
 });
 
-router.get('accessData', function(req, res) {
-
+router.get('/accessSpecificData', function(req, res) {
+    var companyId;
+    var allowed = ['id'];
+    verifyApiKey(req.query.apiKey)
+        .then(function(companyId_) {
+            companyId = companyId_;
+            return common.validateParams(req.query, allowed, allowed)
+        })
+        .then(function() {
+            var where = {
+                companyId: companyId
+            };
+            for (var q in req.query) {
+                if (allowed.includes(q)) {
+                    where[q] = req.query[q];
+                }
+            }
+            // todo
+        })
+        .catch(function(err) {
+            common.catchApi(err, res);
+        })
 });
 
 router.post('/groupRequest', function(req, res) {
