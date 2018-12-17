@@ -14,42 +14,46 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  int _radioValue;
+  String _ssn;
+  String _name;
+  String _surname;
+  String _sex;
+  DateTime _birthdate;
+  String _state;
+  String _region;
+  String _city;
+  String _zipcode;
+  String _street;
+  String _streetNr;
+  String _email;
+  String _password;
 
+  void _handleRadioValueChange(int value) {
+
+    setState(() {
+      print(value);
+      _radioValue = value;
+
+      switch(_radioValue) {
+        case 0:
+          _sex = 'male';
+          break;
+        case 1:
+          _sex = "female";
+          break;
+      }
+      print(_sex + ' ' + _radioValue.toString());
+    });
+  }
 
 
   @override
   Widget build(BuildContext context) {
-    String _ssn;
-    String _name;
-    String _surname;
-    String _sex;
-    DateTime _birthdate;
-    String _state;
-    String _region;
-    String _city;
-    String _zipcode;
-    String _street;
-    String _streetNr;
-    String _email;
-    String _password;
-    int _radioValue = 1;
 
-    void _handleRadioValueChange(int value) {
 
-      setState(() {
-        _radioValue = value;
 
-        switch(_radioValue) {
-          case 0:
-            _sex = 'male';
-            break;
-          case 1:
-            _sex = "female";
-            break;
-        }
-        print(_sex + ' ' + _radioValue.toString());
-      });
-    }
+
 
     final dateFormat = DateFormat("EEEE, MMMM d, yyyy");
 
@@ -113,126 +117,128 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ));
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            email,
-            password,
-            SSN,
-            Row(
-              children: <Widget>[
-                customTextFormField(_name, '', 'Name'),
-                SizedBox(width: 16.0),
-                customTextFormField(_surname, '', 'Surname' )
+    return Material(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: ListView(
+            shrinkWrap: true,
+            children: <Widget>[
+              email,
+              password,
+              SSN,
+              Row(
+                children: <Widget>[
+                  customTextFormField(_name, '', 'Name'),
+                  SizedBox(width: 16.0),
+                  customTextFormField(_surname, '', 'Surname' )
 
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: DateTimePickerFormField(
-                    dateOnly: true,
-                    format: dateFormat,
-                    decoration: InputDecoration(labelText: 'Birth Date'),
-                    onChanged: (dt) => setState(() => _birthdate = dt),
-                  ),
-                ),
-                SizedBox(width: 16.0,),
-                new Radio(
-                    value: 0,
-                    groupValue: _radioValue,
-                    onChanged: _handleRadioValueChange,
-                ),
-                Text(
-                  'Male'
-                ),
-                new Radio(
-                    value: 1,
-                    groupValue: _radioValue,
-                    onChanged: _handleRadioValueChange
-                ),
-                Text(
-                  'Female'
-                )
-
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 32.0),
-                  child: new CountryCodePicker(
-                    onChanged: print,
-                    initialSelection: 'Italia',
-                  ),
-                ),
+                ],
               ),
-                customTextFormField(_region, '', 'Region')
-              ],
-            ),
-            TextFormField(
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: DateTimePickerFormField(
+                      dateOnly: true,
+                      format: dateFormat,
+                      decoration: InputDecoration(labelText: 'Birth Date'),
+                      onChanged: (dt) => setState(() => _birthdate = dt),
+                    ),
+                  ),
+                  SizedBox(width: 16.0,),
+                  new Radio(
+                      value: 0,
+                      groupValue: _radioValue,
+                      onChanged: _handleRadioValueChange,
+                  ),
+                  Text(
+                    'Male'
+                  ),
+                  new Radio(
+                      value: 1,
+                      groupValue: _radioValue,
+                      onChanged: _handleRadioValueChange,
+                  ),
+                  Text(
+                    'Female'
+                  )
 
-              keyboardType: TextInputType.text,
-              autofocus: false,
-              onSaved: (city) => _city = city,
-              initialValue: null,
-              validator: (value) => value.isEmpty ? 'City can\'t be empy': null,
-              decoration: InputDecoration(
-                  labelText: 'City',
-
-                  contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                  border: UnderlineInputBorder()),
-            ),
-            Row(
-              children: <Widget>[
-                customTextFormField(_street, '', 'Street'),
-                SizedBox(width: 16.0,),
-                Container(
-                  width: 60,
-                  child: TextFormField(
-                    autofocus: false,
-                    initialValue: null,
-                    validator: (value) => value.isEmpty ? 'Street Number can\'t be empy': null,
-                    keyboardType: TextInputType.number,
-                    onSaved:(streetNumber) => _streetNr = streetNumber,
-                      decoration: InputDecoration(
-                          labelText: 'N.',
-                          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                          border: UnderlineInputBorder()
-                      )
-
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 32.0),
+                    child: new CountryCodePicker(
+                      onChanged: print,
+                      initialSelection: 'Italia',
+                    ),
                   ),
                 ),
-                SizedBox(width: 16.0,),
-                Container(
-                  width: 80,
-                  child: TextFormField(
+                  customTextFormField(_region, '', 'Region')
+                ],
+              ),
+              TextFormField(
+
+                keyboardType: TextInputType.text,
+                autofocus: false,
+                onSaved: (city) => _city = city,
+                initialValue: null,
+                validator: (value) => value.isEmpty ? 'City can\'t be empy': null,
+                decoration: InputDecoration(
+                    labelText: 'City',
+
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    border: UnderlineInputBorder()),
+              ),
+              Row(
+                children: <Widget>[
+                  customTextFormField(_street, '', 'Street'),
+                  SizedBox(width: 16.0,),
+                  Container(
+                    width: 60,
+                    child: TextFormField(
                       autofocus: false,
                       initialValue: null,
-                      validator: (value) => value.isEmpty ? 'zip code can\'t be empy': null,
+                      validator: (value) => value.isEmpty ? 'Street Number can\'t be empy': null,
                       keyboardType: TextInputType.number,
-                      onSaved:(streetNumber) => _zipcode = streetNumber,
-                      decoration: InputDecoration(
-                          labelText: 'Zip',
-                          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                          border: UnderlineInputBorder())
+                      onSaved:(streetNumber) => _streetNr = streetNumber,
+                        decoration: InputDecoration(
+                            labelText: 'N.',
+                            contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                            border: UnderlineInputBorder()
+                        )
 
+                    ),
                   ),
-                )
-              ],
-            ),
-          SizedBox(height: 32.0),
-          loginButton
-          ],
-        ),
+                  SizedBox(width: 16.0,),
+                  Container(
+                    width: 80,
+                    child: TextFormField(
+                        autofocus: false,
+                        initialValue: null,
+                        validator: (value) => value.isEmpty ? 'zip code can\'t be empy': null,
+                        keyboardType: TextInputType.number,
+                        onSaved:(streetNumber) => _zipcode = streetNumber,
+                        decoration: InputDecoration(
+                            labelText: 'Zip',
+                            contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                            border: UnderlineInputBorder())
 
+                    ),
+                  )
+                ],
+              ),
+            SizedBox(height: 32.0),
+            loginButton
+            ],
+          ),
+
+        ),
       ),
     );
 
