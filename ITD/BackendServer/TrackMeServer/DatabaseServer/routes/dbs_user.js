@@ -48,6 +48,21 @@ router.get('/wearableDevice', function(req, res) {
         });
 });
 
+router.get('/infoPacket', function(req, res) {
+    var where = {};
+    for (var q in req.query) {
+        where[q] = req.query[q];
+    }
+    knex('infoPacket').select().where(where)
+        .then(function(queryRes) {
+            res.status(200).send(queryRes);
+        })
+        .catch(function(err) {
+            console.log(err);
+            res.status(400).end();
+        });
+});
+
 router.post('/register', function(req, res) {
     var params = req.body;
     knex('user').insert({
@@ -94,7 +109,7 @@ router.post('/registerWearable', function(req, res) {
         });
 });
 
-router.post('/registerInfoPacket', function(req, res) {
+router.post('/infoPacket', function(req, res) {
     var params = req.body;
     knex('infoPacket').insert({
         ts: params.ts,

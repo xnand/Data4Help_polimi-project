@@ -1,6 +1,6 @@
 var express = require('express');
 var config = require('../common/config.json');
-var apiRouter = require('./routes/api');
+var apiRouter = require('./routes/mob_api');
 
 var app = express();
 app.use(express.json());

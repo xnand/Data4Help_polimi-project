@@ -67,19 +67,11 @@ module.exports = {
 
     validateParams: function(params, expected, optional) {
         return new Promise(function(resolve, reject) {
-            var i, p, ignore;
+            var i, p;
             for (i = 0; i < expected.length; i++) {
-                ignore = false;
                 p = expected[i];
                 if (!params[p] || !getRegExp(p).test(params[p])) {
-                    if (optional) {
-                        for (var j = 0; j < optional.length; j++) {
-                            if (p === optional[j]) {
-                                ignore = true;
-                            }
-                        }
-                    }
-                    if (ignore) {
+                    if (optional && optional.includes(p)) {
                         continue;
                     }
                     return reject({apiError: `invalid ${p}`});
