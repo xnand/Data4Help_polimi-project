@@ -5,6 +5,7 @@ import 'package:track_me/networkManager/uriFactory.dart';
 import 'package:track_me/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:track_me/controllers/profileManager.dart';
+import 'package:track_me/models/apiError.dart';
 class apiManager {
 
   final httpClient = HttpClient();
@@ -25,6 +26,17 @@ class apiManager {
       User.fromJson(decoded);
       //ProfileManager().saveLocalUser(email, password, SSN);
     }
+  }
+  
+  Future<ApiError> registerUser(User user) async {
+    final response = await http.post('http://10.0.2.2:3001/api/register',
+    headers: {
+      HttpHeaders.contentTypeHeader: 'application/json'
+    },
+      body: userToJson(user)
+    );
+    var body = await response.body.toString();
+    return apiErrorFromJson(response.body);
   }
 
 
