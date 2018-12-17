@@ -2,8 +2,7 @@ var express = require('express');
 var router = express.Router();
 var knex = require('../knex');
 
-router.g
-et('', function(req, res) { // /api/company
+router.get('', function(req, res) { // /api/company
     var where = {};
     for (var q in req.query) {
         where[q] = req.query[q];

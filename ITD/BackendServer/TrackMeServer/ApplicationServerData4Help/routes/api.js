@@ -82,7 +82,23 @@ router.post('/specificRequest', function(req, res) {
                 return Promise.reject({apiError: `user with ssn ${params.targetSsn} does not exist in our database`});
             }
             // check that is not a duplicate request
-            // todo
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
+                method: 'GET',
+                qs: {
+                    targetSsn: params.targetSsn,
+                    companyId: params.companyId
+                }
+            })
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+                return Promise.reject();
+            }
+            var reqdata = JSON.parse(reqres.body)[0] || '';
+            if (reqdata.state) {
+                return Promise.reject({apiError: `a request for user ${params.targetSsn} already exists`});
+            }
             // record the request
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
@@ -102,13 +118,43 @@ router.post('/specificRequest', function(req, res) {
         })
 });
 
-router.get('/specificRequest/:id', function(req, res) { // todo change in query
-    var params = {};
+router.get('/specificRequest', function(req, res) {
+    var companyId;
+    var allowed = ['id', 'state', 'targetSsn'];
     verifyApiKey(req.query.apiKey)
-        .then(function(companyId) {
-            params.companyId = companyId;
-            // todo
+        .then(function(companyId_) {
+            companyId = companyId_;
+            return common.validateParams(req.query, allowed, allowed)
         })
+        .then(function() {
+            var where = {
+                companyId: companyId
+            };
+            for (var q in req.query) {
+                if (allowed.includes(q)) {
+                    where[q] = req.query[q];
+                }
+            }
+            return request({
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
+                method: 'GET',
+                qs: where
+            })
+        })
+        .then(function(reqres) {
+            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+                return Promise.reject();
+            }
+            var reqdata = JSON.parse(reqres.body)[0];
+            return res.status(200).send(reqdata);
+        })
+        .catch(function(err) {
+            common.catchApi(err, res);
+        })
+});
+
+router.get('accessData', function(req, res) {
+
 });
 
 router.post('/groupRequest', function(req, res) {
