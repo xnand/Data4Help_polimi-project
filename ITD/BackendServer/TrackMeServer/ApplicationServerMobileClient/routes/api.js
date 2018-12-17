@@ -84,8 +84,11 @@ router.get('/login', function(req, res) {
     validateCredentials(req, res, function() {
         var ssn = req.params.ssn;
         request({
-            url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}`,
-            method: 'GET'
+            url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/`,
+            method: 'GET',
+            qs: {
+                ssn: ssn
+            }
         })
             .then(function(reqres) {
                 row = JSON.parse(reqres.body);
@@ -111,8 +114,11 @@ router.post('/:ssn/registerWearable', function(req, res) {
         .then(function() {
             params.macAddr = params.macAddr.replace(/[ -]/g, '');
             return request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice/ByMac/${params.macAddr}`,
-                method: 'GET'
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice`,
+                method: 'GET',
+                qs: {
+                    macAddr: params.macAddr
+                }
             });
         })
         .then(function(reqres) {
@@ -141,12 +147,15 @@ router.post('/:ssn/registerWearable', function(req, res) {
         })
 });
 
-router.get('/:ssn/pendingRequests', function(req, res) {
+router.get('/:ssn/pendingRequests', function(req, res) { // todo change in querystring-get
     var pendingRequests = {};
     var ssn = req.params.ssn.toLowerCase();
     request({
-        url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/specificRequest`,
-        method: 'GET'
+        url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
+        method: 'GET',
+        qs: {
+            state: 'pending'
+        }
     })
         .then(function(reqres) {
             if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
@@ -163,8 +172,11 @@ router.get('/:ssn/pendingRequests', function(req, res) {
                 pendingRequests[i] = {};
                 pendingRequests[i].requestId = reqdata[i].id;
                 promises[i] = request({
-                    url: `http://${config.address.databaseServer}:${config.port.databaseServer}/company/byId/${reqdata[i].companyId}`,
-                    method: 'GET'
+                    url: `http://${config.address.databaseServer}:${config.port.databaseServer}/company`,
+                    method: 'GET',
+                    qs: {
+                        id: reqdata[i].companyId
+                    }
                 })
             }
             return Promise.all(promises);
@@ -195,8 +207,12 @@ router.post('/:ssn/acceptRequest', function(req, res) {
         .then(function() {
             // check that the request has this user as target
             return request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/specificRequest/${params.id}`,
-                method: 'GET'
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
+                method: 'GET',
+                qs: {
+                    targetSsn: ssn,
+                    id: params.id
+                }
             });
         })
         .then(function(reqres) {
@@ -207,11 +223,19 @@ router.post('/:ssn/acceptRequest', function(req, res) {
             if (!reqdata[0].id) {
                 return Promise.reject({apiError: 'you can\'t accept this request'});
             }
+            else if (reqdata[0].state === 'authorized') {
+                return Promise.reject({apiError: 'you already accepted this request'});
+            }
             // change the request status to accepted
             return request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/acceptRequest/${params.id}`,
-                method: 'GET'
-            });
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/acceptRequest`,
+                method: 'POST',
+                json: true,
+                body: {
+                    ssn: ssn,
+                    id: params.id
+                }
+            })
         })
         .then(function(reqres) {
             if (!reqres || reqres.statusCode !== 200) {
@@ -238,13 +262,20 @@ router.post('/:ssn/packet', function(req, res) {
         'heartBeatRate',
         'bloodPressSyst',
         'bloodPressDias'
+    ], [
+        'heartBeatRate',
+        'bloodPressSyst',
+        'bloodPressDias'
     ])
         .then(function() {
             // check that the incoming packet is legit
             params.wearableMac = params.wearableMac.replace(/[ -]/g, '');
             return request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice/ByMac/${params.wearableMac}`,
-                method: 'GET'
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice`,
+                method: 'GET',
+                qs: {
+                    macAddr: params.wearableMac
+                }
             })
         })
         .then(function(reqres) {
@@ -253,7 +284,7 @@ router.post('/:ssn/packet', function(req, res) {
             }
             var reqdata = JSON.parse(reqres.body)[0] || '';
             if (!reqdata.userSsn || reqdata.userSsn !== params.userSsn) {
-                return Promise.reject('invalid wearableMac');
+                return Promise.reject({apiError: 'invalid wearableMac'});
             }
             // todo check timestamp value!!!!!
             return request({
@@ -282,15 +313,21 @@ function validateCredentials(req, res, next) {
     new Promise(function(resolve, reject) {
         if (!ssn) { // case /login
             request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/getSsnFromMail`,
-                method: 'POST',
-                json: true,
-                body: {
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/credentials`,
+                method: 'GET',
+                qs: {
                     mail: auth[0]
                 }
             })
-                .then(function(row) {
-                    ssn = row.body[0].ssn; // todo checks
+                .then(function(reqres) {
+                    if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+                        return Promise.reject();
+                    }
+                    var reqdata = JSON.parse(reqres.body)[0] || '';
+                    if (!reqdata.ssn) {
+                        return Promise.reject();
+                    }
+                    ssn = reqdata.ssn; //todo checks
                     resolve();
                 })
                 .catch(reject) // todo
@@ -305,8 +342,11 @@ function validateCredentials(req, res, next) {
         })
         .then(function() {
             return request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/${ssn}/credentials`,
-                method: 'GET'
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/credentials`,
+                method: 'GET',
+                qs: {
+                    ssn: ssn
+                }
             })
         })
         .then(function(reqres) {

@@ -6,9 +6,9 @@ config = {
     version: '7.2',
     connection: {
         host: dbConnection,
-        user: 'trackme',
+        user: config.postgres.databaseUser,
         // password : 'your_database_password', TODO
-        database: 'trackmedb'
+        database: config.postgres.databaseName
     }
 };
 
