@@ -1,6 +1,6 @@
 // To parse this JSON data, do
 //
-//     final apiError = apiErrorFromJson(jsonString);
+//     final apiResponse = apiResponseFromJson(jsonString);
 
 import 'dart:convert';
 
@@ -15,17 +15,17 @@ String apiResponseToJson(ApiResponse data) {
 }
 
 class ApiResponse {
-  String apiResponse;
+  String apiError;
 
   ApiResponse({
-    this.apiResponse,
+    this.apiError,
   });
 
   factory ApiResponse.fromJson(Map<String, dynamic> json) => new ApiResponse(
-    apiResponse: json["apiResponse"],
+    apiError: json["apiError"],
   );
 
   Map<String, dynamic> toJson() => {
-    "apiResponse": apiResponse,
+    "apiError": apiError,
   };
 }

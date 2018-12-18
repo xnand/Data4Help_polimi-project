@@ -19,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   String _email;
   String _password;
   final formKey = new GlobalKey<FormState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
 
   void validateAndSave() async {
     final form = formKey.currentState;
@@ -28,8 +29,12 @@ class _LoginPageState extends State<LoginPage> {
       form.save();
       ApiResponse response = await apiManager().login(_email, _password);
 
-      if(response.apiResponse == '') Navigator.of(context).pushNamed(PageNavigator.tag);
-      else print(response.apiResponse);
+      if(response.apiError == 'noError') Navigator.of(context).pushNamed(PageNavigator.tag);
+        else {
+              final scaffold = scaffoldKey.currentState;
+              scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));
+        }
+
     }
   }
   _LoginPageState();
@@ -150,6 +155,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(

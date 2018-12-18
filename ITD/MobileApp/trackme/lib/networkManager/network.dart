@@ -8,7 +8,7 @@ import 'package:track_me/models/apiResponse.dart';
 
 class apiManager {
   final url = 'http://10.0.2.2:3001/api/';  //application server url
-
+  final String noError = 'noError';
   ///implement a Basic https login with email and password
   Future<ApiResponse> login(String email, String password) async {
     String basicAuth = 'Basic ' + base64Encode(utf8.encode('$email:$password'));
@@ -16,6 +16,9 @@ class apiManager {
     headers: {
       HttpHeaders.authorizationHeader : basicAuth
     },);
+    if(response.statusCode == 200) return new ApiResponse(apiError: noError);
+    else return apiResponseFromJson(response.body);
+
     return apiResponseFromJson(response.body);
   }
 
@@ -27,7 +30,9 @@ class apiManager {
     },
       body: userToJson(user)
     );
-    return apiResponseFromJson(response.body);
+    print(response?.body);
+    if(response.statusCode == 201) return new ApiResponse(apiError: noError);
+    else return apiResponseFromJson(response.body);
   }
 
 
