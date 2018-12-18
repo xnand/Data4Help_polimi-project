@@ -4,42 +4,31 @@ import 'dart:convert';
 import 'package:track_me/networkManager/uriFactory.dart';
 import 'package:track_me/models/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:track_me/controllers/profileManager.dart';
-import 'package:track_me/models/apiError.dart';
+import 'package:track_me/models/apiResponse.dart';
+
 class apiManager {
+  final url = 'http://10.0.2.2:3001/api/';  //application server url
 
-  final httpClient = HttpClient();
-  final uriFactory = UriFactory('http', '10.0.2.2', 3001);
-
-
-  //called on the login page to log the user inside the app
-  Future<bool> login(String email, String password) async {
-    final loginUri = uriFactory.createUri('/api/login');
-    String str = 'Basic ' + base64Encode(utf8.encode('$email:$password'));
-
-    var request = await httpClient.getUrl(loginUri);
-    request.headers.add('authorization', str);
-    var response = await request.close();
-
-    await for (var contents in response.transform(Utf8Decoder())) {
-      var decoded = jsonDecode(contents);
-      User.fromJson(decoded);
-      //ProfileManager().saveLocalUser(email, password, SSN);
-    }
+  ///implement a Basic https login with email and password
+  Future<ApiResponse> login(String email, String password) async {
+    String basicAuth = 'Basic ' + base64Encode(utf8.encode('$email:$password'));
+    final response = await http.get('$url/login',
+    headers: {
+      HttpHeaders.authorizationHeader : basicAuth
+    },);
+    return apiResponseFromJson(response.body);
   }
-  
-  Future<ApiError> registerUser(User user) async {
-    final response = await http.post('http://10.0.2.2:3001/api/register',
+
+  ///register a user to TrackMe
+  Future<ApiResponse> registerUser(User user) async {
+    final response = await http.post('$url/register',
     headers: {
       HttpHeaders.contentTypeHeader: 'application/json'
     },
       body: userToJson(user)
     );
-    var body = await response.body.toString();
-    return apiErrorFromJson(response.body);
+    return apiResponseFromJson(response.body);
   }
-
-
 
 
 
