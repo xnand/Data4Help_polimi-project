@@ -360,12 +360,14 @@ function validateCredentials(req, res, next) {
                     }
                     var reqdata = JSON.parse(reqres.body)[0] || '';
                     if (!reqdata.ssn) {
-                        return Promise.reject();
+                        return Promise.reject({apiError: `email ${auth[0]} is not registered`});
                     }
-                    ssn = reqdata.ssn; //todo checks
+                    ssn = reqdata.ssn; //todo checks ??
                     resolve();
                 })
-                .catch(reject) // todo
+                .catch(function(err) {
+                    reject(err);
+                })
         }
         else {
             ssn = ssn.toLowerCase();
@@ -386,7 +388,7 @@ function validateCredentials(req, res, next) {
         })
         .then(function(reqres) {
             if (reqres.statusCode !== 200) {
-                return Promise.reject({apiError: 'invalid ssn'});
+                return Promise.reject();
             }
             var reqdata = JSON.parse(reqres.body)[0] || '';
             if (!reqdata.ssn || reqdata.ssn !== ssn) {
@@ -395,6 +397,9 @@ function validateCredentials(req, res, next) {
             if (auth[0] === reqdata.mail && common.genHash(auth[1]) === reqdata.password) {
                 req.params.ssn = ssn; // DO NOT DELETE, this passes the ssn to next(). first line is not good for all cases
                 next(); // success
+            }
+            else if (auth[0] === reqdata.mail && common.genHash(auth[1]) !== reqdata.password) {
+                return Promise.reject({apiError: 'wrong password'});
             }
             else {
                 res.status(401).end();
