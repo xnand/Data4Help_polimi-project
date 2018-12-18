@@ -26,6 +26,9 @@ class User {
   String zipcode;
   String street;
   String streetNr;
+  String password;
+  String email;
+
 
   User({
     this.ssn,
@@ -39,6 +42,8 @@ class User {
     this.zipcode,
     this.street,
     this.streetNr,
+    this.password,
+    this.email
   });
 
   factory User.fromJson(Map<String, dynamic> json) => new User(
@@ -53,6 +58,7 @@ class User {
     zipcode: json["zipcode"],
     street: json["street"],
     streetNr: json["streetNr"],
+    password: json['password']
   );
 
   Map<String, dynamic> toJson() => {
@@ -67,5 +73,7 @@ class User {
     "zipcode": zipcode,
     "street": street,
     "streetNr": streetNr,
+    "mail": email,
+    "password": password
   };
 }

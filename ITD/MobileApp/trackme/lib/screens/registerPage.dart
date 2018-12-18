@@ -4,6 +4,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
 import 'package:track_me/styles/colors.dart';
 import 'package:track_me/models/user.dart';
+import 'package:track_me/networkManager/network.dart';
 
 class RegisterPage extends StatefulWidget {
   static String tag = 'register-page';
@@ -30,7 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   final formKey = new GlobalKey<FormState>();
 
-  //this function transform the date gathered from the widget to the API specification
+  //this function transform the date gathered from the widget to the API specification request date
   void parseDate(DateTime date) {
     List<String> dateFiltered =
         date.toString().split(' ').elementAt(0).split(new RegExp(r"-"));
@@ -61,19 +62,25 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void saveAndSubmit() {
     final form = formKey.currentState;
-    form.validate();
-    form.save();
-    print(_ssn);
-    print(_name);
-    print(_surname);
-    print(_email);
-    print(_password);
-    print(_country);
-    print(_region);
-    print(_city);
-    print(_street);
-    print(_streetNr);
-    print(_zipcode);
+    if(form.validate()) {
+      form.save();
+      User user = new User(
+          ssn: _ssn,
+          name: _name,
+          surname: _surname,
+          sex: _sex,
+          birthDate: _parsedDate,
+          state: _country,
+          country: _region,
+          city: _city,
+          zipcode: _zipcode,
+          street: _street,
+          streetNr: _streetNr,
+          email: _email,
+          password: _password
+      );
+      apiManager().registerUser(user);
+    }
   }
 
   @override
