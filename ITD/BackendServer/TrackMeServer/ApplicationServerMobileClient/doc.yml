@@ -1,0 +1,340 @@
+securityDefinitions:
+    basicAuth:
+        type: basic
+
+definitions:
+    ApiError:
+        type: object
+        properties:
+            apiError:
+                type: string
+                description: Error description
+    LoginRes:
+        type: object
+        properties:
+            ssn:
+                type: string
+            name:
+                type: string
+            surname:
+                type: string
+            sex:
+                type: string
+            birthDate:
+                type: string
+            state:
+                type: string
+            country:
+                type: string
+            city:
+                type: string
+            zipcode:
+                type: string
+            street:
+                type: string
+            streetNr:
+                type: string
+    RequestRes:
+        type: object
+        properties:
+            id:
+                type: string
+            state:
+                type: string
+            company:
+                type: object
+                properties:
+                    id:
+                        type: string
+                    vat:
+                        type: string
+                    name:
+                        type: string
+
+
+paths:
+    /register:
+        post:
+            summary: User registration
+            description: ''
+            consumes:
+            - 'application/x-www-form-urlencoded'
+            produces:
+            - 'application/json'
+            parameters:
+            -   in: formData
+                name: ssn
+                type: string
+                required: true
+                description: Social security number
+            -   in: formData
+                name: name
+                type: string
+                required: true
+                description: User's name
+            -   in: formData
+                name: surname
+                type: string
+                required: true
+                description: User's surname
+            -   in: formData
+                name: sex
+                type: string
+                required: true
+                enum: [male, female]
+                description: User's sex
+            -   in: formData
+                name: ssn
+                type: string
+                required: true
+                description: social security number
+            -   in: formData
+                name: birthDate
+                type: string
+                required: true
+                description: User's birth date, in DD/MM/YYYY format
+            -   in: formData
+                name: ssn
+                type: string
+                required: true
+                description: social security number
+            -   in: formData
+                name: state
+                type: string
+                required: true
+                description: User's state of residence
+            -   in: formData
+                name: country
+                type: string
+                required: true
+                description: User's country of residence
+            -   in: formData
+                name: city
+                type: string
+                required: true
+                description: User's city of residence
+            -   in: formData
+                name: zipcode
+                type: string
+                required: true
+                description: User's residence zipcode
+            -   in: formData
+                name: street
+                type: string
+                required: true
+                description: User's residence street name
+            -   in: formData
+                name: streetNr
+                type: string
+                required: true
+                description: User's residence street number
+            -   in: formData
+                name: mail
+                type: string
+                required: true
+                description: User's email
+            -   in: formData
+                name: password
+                type: string
+                required: true
+                description: User's password
+            responses:
+                201:
+                    description: User successfully registered
+                400:
+                    description: User not registered; invalid field
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
+    /login:
+        get:
+            summary: "Login"
+            description: "Login to test the credentials and obtain user information if valid"
+            produces:
+            - 'application/json'
+            security:
+            -   basicAuth: [username:password]
+            responses:
+                200:
+                    description: Login successful
+                    schema:
+                        $ref: "#/definitions/LoginRes"
+                400:
+                    description: Login unsuccessful
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong credentials
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
+    /{ssn}/registerWearable:
+        post:
+            summary: Register wearable device
+            description: ''
+            consumes:
+            - 'application/x-www-form-urlencoded'
+            produces:
+            - 'application/json'
+            security:
+            -   basicAuth: [username:password]
+            parameters:
+            -   in: path
+                name: ssn
+                type: string
+                required: true
+                description: User's ssn
+            -   in: formData
+                name: macAddr
+                type: string
+                required: true
+                description: MAC Address of the wearable device
+            responses:
+                201:
+                    description: Wearable succesfully registered
+                400:
+                    description: Wearable not registered; invalid field
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong credentials
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
+    /{ssn}/request:
+        get:
+            summary: "Request information"
+            description: "Obtain information about specific requests and the company that made them, where the user is the target.
+            Can be filtered with query parameters. If no query parameter is specified, returns all the requests"
+            produces:
+            - 'application/json'
+            security:
+            -   basicAuth: [username:password]
+            parameters:
+            -   in: path
+                name: ssn
+                type: string
+                required: true
+                description: User's ssn
+            -   in: query
+                name: id
+                type: string
+                required: false
+                description: Request's id
+            -   in: query
+                name: state
+                type: string
+                required: false
+                enum: [pending, authorized, rejected]
+                description: Request's state
+            -   in: query
+                name: companyId
+                type: string
+                required: false
+                description: Id of the company that made the request
+            responses:
+                200:
+                    description: Query successful
+                    schema:
+                        $ref: "#/definitions/RequestRes"
+                400:
+                    description: Query unsuccessful; wrong parameters
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong credentials
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
+    /{ssn}/acceptRequest:
+        post:
+            summary: Authorize a specific request
+            description: ''
+            consumes:
+            - 'application/x-www-form-urlencoded'
+            produces:
+            - 'application/json'
+            security:
+            -   basicAuth: [username:password]
+            parameters:
+            -   in: path
+                name: ssn
+                type: string
+                required: true
+                description: User's ssn
+            -   in: formData
+                name: id
+                type: string
+                required: true
+                description: Request's id
+            responses:
+                201:
+                    description: Request succesfully authorized
+                400:
+                    description: Request not authorized; invalid field
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong credentials
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
+    /{ssn}/packet:
+        post:
+            summary: Register an infoPacket in the system
+            description: Register a packet containing information about user's body, obtained from a wearable device, in the system
+            consumes:
+            - 'application/x-www-form-urlencoded'
+            produces:
+            - 'application/json'
+            security:
+            -   basicAuth: [username:password]
+            parameters:
+            -   in: path
+                name: ssn
+                type: string
+                required: true
+                description: User's ssn
+            -   in: formData
+                name: ts
+                type: string
+                required: true
+                description: Timestamp, in "DD/MM/YYYY HH:MM:SS" format; no two packets with same timestamp can be registered
+            -   in: formData
+                name: wearableMac
+                type: string
+                required: true
+                description: Mac address of the wearable device that generated this packet
+            -   in: formData
+                name: geoX
+                type: string
+                required: true
+                description: X coordinate of current geolocation
+            -   in: formData
+                name: geoY
+                type: string
+                required: true
+                description: Y coordinate of current geolocation
+            -   in: formData
+                name: heartBeatRate
+                type: string
+                description: Rate of the user's heart beat
+            -   in: formData
+                name: bloodPressSyst
+                type: string
+                description: User's systolic blood pressure measurement
+            -   in: formData
+                name: bloodPressDias
+                type: string
+                description: User's diastolic blood pressure measurement
+            responses:
+                201:
+                    description: Packet successfully registered
+                400:
+                    description: Packet not registered; invalid field
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong credentials
+                    schema:
+                        $ref: "#/definitions/ApiError"

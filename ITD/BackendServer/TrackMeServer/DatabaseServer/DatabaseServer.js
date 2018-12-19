@@ -116,8 +116,7 @@ function createFilterTable() {
         table.string('zipcode', 10);
         table.string('street');
         table.string('streetNr');
-        // TODO disease
-        // TODO
+        // TODO ?
         // constraints
         table.unique(['id', 'requestId', 'companyId']);
         table.foreign('requestId').references('id').inTable('groupRequest');

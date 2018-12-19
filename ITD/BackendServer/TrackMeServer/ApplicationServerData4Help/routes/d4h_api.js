@@ -214,21 +214,42 @@ router.get('/specificRequest/data', function(req, res) {
 });
 
 router.post('/groupRequest', function(req, res) {
-    var params = {};
-    Object.keys(req.body).forEach(function (k) {
-        if (k !== 'apiKey') {
-            params[k] = req.body[k].toLowerCase();
-        }
-        else {
-            params.apiKey = req.body.apiKey;
-        }
-    });
-    common.validateParams(params, [
-        'apiKey',
-        'targetSsn'
-    ])
+    var params = {}, filters = {};
+    verifyApiKey(req.query.apiKey)
+        .then(function(companyId) {
+            params.companyId = companyId;
+            Object.keys(req.body).forEach(function (k) {
+                params[k] = req.body[k].toLowerCase();
+            });
+            // parse the different filters
+            var num, field, r;
+            Object.keys(params).forEach(function(k) {
+                r = k.match(/[0-9]*$/);
+                if (!r[0]) {
+                    num = '0';
+                }
+                if (!filters[num]) {
+                    filters[num] = {};
+                }
+                field = k.substring(0, r.index);
+                if (filters[num][field]) {
+                    return Promise.reject({apiError: `invalid ${field}${num}; duplicate filter`})
+                }
+                filters[num][field] = params[k];
+            });
+            // verify them
+            var promises = [], i = 0;
+            Object.keys(filters).forEach(function(n) {
+                promises[i++] = common.validateParams(filters[n], Object.keys(filters[n]), [], n);
+            });
+            return Promise.all(promises);
+        })
         .then(function() {
-            //todo
+            // grab the users satisfying the filters
+            // todo
+        })
+        .catch(function(err) {
+            common.catchApi(err, res);
         })
 });
 

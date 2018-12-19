@@ -7,6 +7,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/api', apiRouter);
 
+const swaggerJSDoc = require('swagger-jsdoc');
+const options = {
+    definition: {
+        swagger: '2.0',
+        info: {
+            title: 'Application Server Mobile Client',
+            version: '1.0.0',
+        },
+		basePath: '/api',
+    },
+    apis: ['./ApplicationServerMobileClient/doc.yml'],
+};
+const swaggerSpec = swaggerJSDoc(options);
+const swaggerUi = require('swagger-ui-express');
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // server setup stuff ---------------------------------------------
 
 /**
@@ -96,4 +112,7 @@ function onListening() {
         ? 'pipe ' + addr
         : 'port ' + addr.port;
     console.log(`listening on http://${ip}:${port}`);
+    if (swaggerSpec) {
+        console.log(`documentation available on http://${ip}:${port}/docs`)
+    }
 }

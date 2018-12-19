@@ -1,5 +1,6 @@
 function getRegExp(k) {
     switch (k) {
+        case 'companyId':
         case 'id':
             return /^[0-9]*$/;
         // user
@@ -65,7 +66,10 @@ module.exports = {
         return randStr;
     },
 
-    validateParams: function(params, expected, optional) {
+    validateParams: function(params, expected, optional, append) {
+        if (!append) {
+            append = ''
+        }
         return new Promise(function(resolve, reject) {
             var i, p;
             for (i = 0; i < expected.length; i++) {
@@ -74,7 +78,7 @@ module.exports = {
                     if (optional && optional.includes(p)) {
                         continue;
                     }
-                    return reject({apiError: `invalid ${p}`});
+                    return reject({apiError: `invalid ${p}${append}`});
                 }
             }
             resolve();

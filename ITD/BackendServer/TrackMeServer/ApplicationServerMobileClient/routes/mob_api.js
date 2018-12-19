@@ -7,34 +7,6 @@ var common = require('../../common/common');
 
 
 router.post('/register', function(req, res) {
-    /**
-     * @api {post} /api/register User registration
-     * @apiName RegisterUser
-     * @apiGroup ApplicationServerMobileApp
-     *
-     * @apiParam {string} ssn
-     * @apiParam {string} name
-     * @apiParam {string} surname
-     * @apiParam {string="male","female"} sex
-     * @apiParam {string} birthDate Format: dd/mm/yyyy
-     * @apiParam {string} state
-     * @apiParam {string} country
-     * @apiParam {string} city
-     * @apiParam {string} zipcode
-     * @apiParam {string} street
-     * @apiParam {string} streetNr
-     * @apiParam {string} mail
-     * @apiParam {string} password
-     *
-     * @apiSuccess 201
-     *
-     * @apiError 400
-     *
-     * @apiErrorExample Error-Response:
-     *     HTTP/1.1 400 Not Found
-     *     unknown error occurred
-     */
-
     var params = {};
     Object.keys(req.body).forEach(function(k) {
         if (k !== 'password') {
@@ -182,52 +154,58 @@ router.post('/:ssn/registerWearable', function(req, res) {
         })
 });
 
-router.get('/:ssn/pendingRequests', function(req, res) { // todo change in querystring-get
-    var pendingRequests = {};
-    var ssn = req.params.ssn.toLowerCase();
-    request({
-        url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
-        method: 'GET',
-        qs: {
-            state: 'pending'
-        }
-    })
-        .then(function(reqres) {
-            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
-                return Promise.reject();
-            }
-            var reqdata = JSON.parse(reqres.body) || '';
-            if (!reqdata[0] || !reqdata[0].id) {
-                res.status(200).send({}); // no requests
-                return Promise.reject({noError: ''});
-            }
-            // get company information for every pending request
-            var promises = [];
-            for (var i = 0; i < reqdata.length; i++) {
-                pendingRequests[i] = {};
-                pendingRequests[i].requestId = reqdata[i].id;
-                promises[i] = request({
-                    url: `http://${config.address.databaseServer}:${config.port.databaseServer}/company`,
-                    method: 'GET',
-                    qs: {
-                        id: reqdata[i].companyId
-                    }
-                })
-            }
-            return Promise.all(promises);
-        })
-        .then(function(rows) {
-            // order is preserved
-            for (var i = 0; i < rows.length; i++) {
-                var companyData = JSON.parse(rows[i].body)[0];
-                delete companyData.apiKey;
-                pendingRequests[i].company = companyData;
-            }
-            res.status(200).send(pendingRequests);
-        })
-        .catch(function(err) {
-            common.catchApi(err, res);
-        })
+router.get('/:ssn/request', function(req, res) {
+	var ssn = req.params.ssn.toLowerCase();
+	var allowed = ['id', 'state', 'companyId'];
+	var requests;
+	common.validateParams(req.query, allowed, allowed)
+		.then(function() {
+			var where = {
+				targetSsn: ssn
+			};
+			for (var q in req.query) {
+				where[q] = req.query[q];
+			}
+			// get the requests
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
+				method: 'GET',
+				qs: where
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject();
+			}
+			var reqdata = JSON.parse(reqres.body);
+			// for every request, put in the company data
+			var promises = [];
+			requests = reqdata;
+			for (var i = 0; i < reqdata.length; i++) {
+				delete requests[i].companyId;
+				delete requests[i].targetSsn;
+				promises[i] = request({
+					url: `http://${config.address.databaseServer}:${config.port.databaseServer}/company`,
+					method: 'GET',
+					qs: {
+						id: reqdata[i].companyId
+					}
+				});
+			}
+			return Promise.all(promises);
+		})
+		.then(function(rows) {
+			// order is preserved
+			for (var i = 0; i < rows.length; i++) {
+				var companyData = JSON.parse(rows[i].body)[0];
+				delete companyData.apiKey;
+				requests[i].company = companyData;
+			}
+			res.status(200).send(requests); // success
+		})
+		.catch(function(err) {
+			common.catchApi(err, res);
+		})
 });
 
 router.post('/:ssn/acceptRequest', function(req, res) {
@@ -284,10 +262,12 @@ router.post('/:ssn/acceptRequest', function(req, res) {
 });
 
 router.post('/:ssn/packet', function(req, res) {
+	var ssn = req.params.ssn.toLowerCase();
     var params = {};
     Object.keys(req.body).forEach(function(k) {
         params[k] = req.body[k].toLowerCase();
     });
+    params.userSsn = ssn;
     common.validateParams(params, [
         'ts',
         'wearableMac',
@@ -342,9 +322,15 @@ router.post('/:ssn/packet', function(req, res) {
 
 function validateCredentials(req, res, next) {
     var ssn = req.params.ssn;
-    var header = (req.headers['authorization'] || '').split(/Basic /)[1];
-    // email, password, sessionToken
-    var auth = new Buffer.from(header.split(/\s+/).pop() || '', 'base64').toString().split(/:/);
+    try {
+		var header = (req.headers['authorization'] || '').split(/Basic /)[1];
+		// email, password, sessionToken
+		var auth = new Buffer.from(header.split(/\s+/).pop() || '', 'base64').toString().split(/:/);
+	}
+	catch {
+		res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+		return res.status(401).end();
+	}
     new Promise(function(resolve, reject) {
         if (!ssn) { // case /login
             request({
@@ -402,6 +388,7 @@ function validateCredentials(req, res, next) {
                 return Promise.reject({apiError: 'wrong password'});
             }
             else {
+				res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
                 res.status(401).end();
             }
         })
