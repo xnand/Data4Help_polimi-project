@@ -13,8 +13,8 @@ function createUserTable() {
         table.string('surname', 32).notNullable();
         table.enu('sex', ['male', 'female']).notNullable();
         table.date('birthDate').notNullable();
-        table.string('state').notNullable();
         table.string('country').notNullable();
+        table.string('region').notNullable();
         table.string('city').notNullable();
         table.string('zipcode', 10).notNullable();
         table.string('street').notNullable();

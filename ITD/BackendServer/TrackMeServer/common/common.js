@@ -15,8 +15,8 @@ function getRegExp(k) {
             return /^[mf].*$/;
         case 'birthDate':
             return /^([0-9]{1,2}[ /-]){2}[0-9]{4}$/;
-        case 'state':
         case 'country':
+        case 'region':
         case 'city':
         case 'street':
             return /.*/;
@@ -46,6 +46,9 @@ function getRegExp(k) {
             return /^[0-9a-z ]{1,11}$/;
         case 'apiKey':
             return /^[a-zA-Z0-9]{40}$/;
+		// request
+		case 'state':
+			return /^(pending|authorized|rejected)$/;
         default:
             return false;
     }
