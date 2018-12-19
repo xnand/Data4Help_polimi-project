@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:track_me/styles/colors.dart';
 import 'package:track_me/models/user.dart';
 import 'package:track_me/networkManager/network.dart';
+import 'package:track_me/models/apiResponse.dart';
+import 'package:track_me/screens/loginpage.dart';
 
 class RegisterPage extends StatefulWidget {
   static String tag = 'register-page';
@@ -30,6 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String _password;
 
   final formKey = new GlobalKey<FormState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
 
   //this function transform the date gathered from the widget to the API specification request date
   void parseDate(DateTime date) {
@@ -60,7 +63,7 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  void saveAndSubmit() {
+  void saveAndSubmit() async{
     final form = formKey.currentState;
     if(form.validate()) {
       form.save();
@@ -79,7 +82,14 @@ class _RegisterPageState extends State<RegisterPage> {
           email: _email,
           password: _password
       );
-      apiManager().registerUser(user);
+
+      print(userToJson(user));
+      ApiResponse response = await apiManager().registerUser(user);
+      if(response.apiError == 'noError') Navigator.of(context).pushNamed(LoginPage.tag);
+        else{
+          final scaffold = scaffoldKey.currentState;
+          scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));
+      }
     }
   }
 
@@ -208,6 +218,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ));
     return Material(
       child: Scaffold(
+        key: scaffoldKey,
         backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.all(32.0),

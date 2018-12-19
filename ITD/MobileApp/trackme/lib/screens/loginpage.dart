@@ -3,6 +3,8 @@ import 'package:track_me/styles/colors.dart';
 import 'package:track_me/networkManager/network.dart';
 import 'package:track_me/controllers/profileManager.dart';
 import 'registerPage.dart';
+import 'package:track_me/models/apiResponse.dart';
+import 'package:track_me/screens/PageNavigator.dart';
 
 import 'PageNavigator.dart';
 
@@ -17,21 +19,25 @@ class _LoginPageState extends State<LoginPage> {
   String _email;
   String _password;
   final formKey = new GlobalKey<FormState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  void validateAndSave() {
+  void validateAndSave() async {
     final form = formKey.currentState;
 
 
     if(form.validate()) {
       form.save();
-      apiManager().login(_email, _password);
+      ApiResponse response = await apiManager().login(_email, _password);
 
+      if(response.apiError == 'noError') Navigator.of(context).pushNamed(PageNavigator.tag);
+        else {
+              final scaffold = scaffoldKey.currentState;
+              scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));
+        }
 
     }
   }
-  _LoginPageState() {
-
-  }
+  _LoginPageState();
   @override
   Widget build(BuildContext context) {
     final logo = Hero(
@@ -149,6 +155,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(
