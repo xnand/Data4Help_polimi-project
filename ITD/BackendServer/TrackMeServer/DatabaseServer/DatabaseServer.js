@@ -106,12 +106,12 @@ function createFilterTable() {
     return knex.schema.createTable('filter', function(table) {
         // columns
         table.increments('id');
-        table.integer('requestId').unsigned();
+        table.integer('requestId').unsigned(); // groupRequest only
         table.integer('companyId').unsigned();
         table.integer('ageStart');
         table.integer('ageEnd');
-        table.string('state');
         table.string('country');
+        table.string('region');
         table.string('city');
         table.string('zipcode', 10);
         table.string('street');

@@ -24,14 +24,7 @@ router.post('/specificRequest', function(req, res) {
         companyId: params.companyId,
         state: 'pending',
         targetSsn: params.targetSsn
-    })
-        .then(function() {
-            // return the id of the request
-            return knex('specificRequest').select().where({
-                companyId: params.companyId,
-                targetSsn: params.targetSsn
-            })
-        })
+    }, 'id')
         .then(function(queryRes) {
             res.status(200).send(queryRes);
         })
@@ -39,6 +32,44 @@ router.post('/specificRequest', function(req, res) {
             console.log(err);
             res.status(400).end();
         });
+});
+
+router.post('/groupRequest', function(req, res) {
+	var params = req.body;
+	knex('groupRequest').insert({
+		companyId: params.companyId,
+		state: 'authorized',
+	}, 'id')
+		.then(function(queryRes) {
+			res.status(200).send(queryRes);
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
+});
+
+router.post('/filter', function(req, res) {
+	var params = req.body;
+	knex('filter').insert({
+		requestId: params.requestId,
+		companyId: params.companyId,
+		ageStart: params.filter.ageStart || null,
+		ageEnd: params.filter.ageEnd || null,
+		country: params.filter.country || null,
+		region: params.filter.region || null,
+		city: params.filter.city || null,
+		zipcode: params.filter.zipcode || null,
+		street: params.filter.street || null,
+		streetNr: params.filter.streetNr || null
+	})
+		.then(function(queryRes) {
+			res.status(200).send(queryRes);
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
 });
 
 

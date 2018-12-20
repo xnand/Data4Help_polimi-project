@@ -108,10 +108,10 @@ router.post('/specificRequest', function(req, res) {
             })
         })
         .then(function(reqres) {
-            if (!reqres || reqres.statusCode !== 200 || !reqres.body || !reqres.body[0].id) {
+            if (!reqres || reqres.statusCode !== 200 || !reqres.body || !reqres.body[0]) {
                 return Promise.reject();
             }
-            res.status(201).send({apiMsg: `your specific request id is: ${reqres.body[0].id}`}); // success
+            res.status(201).send({apiMsg: `your specific request id is: ${reqres.body[0]}`}); // success
         })
         .catch(function(err) {
             common.catchApi(err, res);
@@ -214,10 +214,10 @@ router.get('/specificRequest/data', function(req, res) {
 });
 
 router.post('/groupRequest', function(req, res) {
-    var params = {}, filters = {};
+    var params = {}, filters = {}, requestId, companyId;
     verifyApiKey(req.query.apiKey)
-        .then(function(companyId) {
-            params.companyId = companyId;
+        .then(function(companyId_) {
+            companyId = companyId_;
             Object.keys(req.body).forEach(function (k) {
                 params[k] = req.body[k].toLowerCase();
             });
@@ -225,8 +225,9 @@ router.post('/groupRequest', function(req, res) {
             var num, field, r;
             Object.keys(params).forEach(function(k) {
                 r = k.match(/[0-9]*$/);
+                num = r[0];
                 if (!r[0]) {
-                    num = '0';
+                    num = '1';
                 }
                 if (!filters[num]) {
                     filters[num] = {};
@@ -245,9 +246,66 @@ router.post('/groupRequest', function(req, res) {
             return Promise.all(promises);
         })
         .then(function() {
-            // grab the users satisfying the filters
-            // todo
+            // count the users satisfying the filters
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/advancedSearch`,
+				method: 'POST',
+				json: true,
+				body: {
+					filters: filters,
+					select: 'ssn'
+				}
+			})
         })
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject();
+			}
+			if (reqres.body.length < config.minUsersGroupRequest) {
+				// maybe register the request too?
+			    return Promise.reject({apiError: `request automatically rejected; filters too restrictive, at least ${config.minUsersGroupRequest} users must be included`});
+            }
+			// record the request
+			params.companyId = companyId;
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/groupRequest`,
+				method: 'POST',
+				json: true,
+				body: params
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body || !reqres.body[0]) {
+				return Promise.reject();
+			}
+			requestId = reqres.body[0];
+			// record its filters
+			var promises = [];
+			Object.keys(filters).forEach(function(filterKey) {
+				promises.push(
+					request({
+						url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/filter`,
+						method: 'POST',
+						json: true,
+						body: {
+							companyId: companyId,
+							requestId: requestId,
+							filter: filters[filterKey]
+						}
+					})
+				);
+			});
+			return Promise.all(promises);
+		})
+		.then(function(reqres) {
+			for (var i = 0; i < reqres.length; i++) {
+				var response = reqres[i];
+				if (response.statusCode !== 200) {
+					return Promise.reject();
+				}
+			}
+			res.status(201).send({apiMsg: `your group request id is: ${requestId}`}); // success
+		})
         .catch(function(err) {
             common.catchApi(err, res);
         })

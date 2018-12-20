@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var knex = require('../knex');
+var dateFormat = require('dateformat');
 
 
 router.get('', function(req, res) {
@@ -16,6 +17,57 @@ router.get('', function(req, res) {
             console.log(err);
             res.status(400).end();
         });
+});
+
+router.post('/advancedSearch', function(req, res) {
+	var filters = req.body.filters || '';
+	var select = req.body.select || '*';
+	var query = knex('user').select(select);
+	var where = [''];
+	var birth;
+	var first = true;
+	Object.keys(filters).forEach(function(filterKey) {
+		var filter = filters[filterKey];
+		if (first) {
+			first = false;
+			where[0] += ' (';
+		}
+		else {
+			where[0] += ' OR (';
+		}
+		Object.keys(filter).forEach(function(fieldKey) {
+			if (fieldKey !== Object.keys(filter)[0] && fieldKey !== Object.keys(filter)[Object.keys(filter).length]) {
+				where[0] += ' AND ';
+			}
+			switch (fieldKey) {
+				case 'ageStart':
+					birth = new Date();
+					birth.setYear(birth.getFullYear() - filters[filterKey][fieldKey]);
+					where[0] += '"birthDate" <= ?';
+					where.push(dateFormat(birth, 'dd/mm/yyyy'));
+					break;
+				case 'ageEnd':
+					birth = new Date();
+					birth.setYear(birth.getFullYear() - filters[filterKey][fieldKey]);
+					where[0] += '"birthDate" >= ?';
+					where.push(dateFormat(birth, 'dd/mm/yyyy'));
+					break;
+				default:
+					where[0] += `"${fieldKey}" = ?`;
+					where.push(filters[filterKey][fieldKey]);
+					break;
+			}
+		});
+		where[0] += ')';
+	});
+	query.where(knex.raw(where.splice(0,1)[0], where))
+		.then(function(queryRes) {
+			res.status(200).send(queryRes);
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
 });
 
 router.get('/credentials', function(req, res) {

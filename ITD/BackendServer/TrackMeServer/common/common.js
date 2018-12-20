@@ -2,6 +2,8 @@ function getRegExp(k) {
     switch (k) {
         case 'companyId':
         case 'id':
+		case 'ageStart':
+		case 'ageEnd':
             return /^[0-9]*$/;
         // user
         case 'ssn':
@@ -74,10 +76,11 @@ module.exports = {
             append = ''
         }
         return new Promise(function(resolve, reject) {
-            var i, p;
+            var i, p, r;
             for (i = 0; i < expected.length; i++) {
                 p = expected[i];
-                if (!params[p] || !getRegExp(p).test(params[p])) {
+                r = getRegExp(p);
+                if (!params[p] || !r || !r.test(params[p])) {
                     if (optional && optional.includes(p)) {
                         continue;
                     }
@@ -96,6 +99,6 @@ module.exports = {
         err = {apiError: 'unknown error'};
     }
     res.status(400).send(err);
-}
+	}
 };
 
