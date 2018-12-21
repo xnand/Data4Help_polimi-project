@@ -20,8 +20,8 @@ class User {
   String surname;
   String sex;
   String birthDate;
-  String state;
   String country;
+  String region;
   String city;
   String zipcode;
   String street;
@@ -36,8 +36,8 @@ class User {
     this.surname,
     this.sex,
     this.birthDate,
-    this.state,
     this.country,
+    this.region,
     this.city,
     this.zipcode,
     this.street,
@@ -52,8 +52,8 @@ class User {
     surname: json["surname"],
     sex: json["sex"],
     birthDate: json["birthDate"],
-    state: json["state"],
     country: json["country"],
+    region: json["region"],
     city: json["city"],
     zipcode: json["zipcode"],
     street: json["street"],
@@ -67,8 +67,8 @@ class User {
     "surname": surname,
     "sex": sex,
     "birthDate": birthDate,
-    "state": state,
     "country": country,
+    "region": region,
     "city": city,
     "zipcode": zipcode,
     "street": street,

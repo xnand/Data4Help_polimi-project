@@ -68,19 +68,19 @@ class _RegisterPageState extends State<RegisterPage> {
     if(form.validate()) {
       form.save();
       User user = new User(
-          ssn: _ssn,
-          name: _name,
-          surname: _surname,
-          sex: _sex,
-          birthDate: _parsedDate,
-          state: _country,
-          country: _region,
-          city: _city,
-          zipcode: _zipcode,
-          street: _street,
-          streetNr: _streetNr,
-          email: _email,
-          password: _password
+          ssn: _ssn.trim(),
+          name: _name.trim(),
+          surname: _surname.trim(),
+          sex: _sex.trim(),
+          birthDate: _parsedDate.trim(),
+          country: _country.trim(),
+          region: _region.trim(),
+          city: _city.trim(),
+          zipcode: _zipcode.trim(),
+          street: _street.trim(),
+          streetNr: _streetNr.trim(),
+          email: _email.trim(),
+          password: _password.trim()
       );
 
       print(userToJson(user));
