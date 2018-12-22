@@ -75,6 +75,31 @@ body {
   outline: 0 !important;
 }
 
+
+
+
+input { /* Stili per il campo di testo e per la textarea */
+  border: none;
+  background-color: #009788;
+  color: #ffffff;
+  height: 30px; /* Altezza */
+  line-height: 30px; /* Altezza di riga */
+  width: 100%; /* Larghezza */
+  max-width:200px;
+}
+
+textarea { /* Stili specifici per la teaxtarea */
+  border: none;
+  border-bottom: 1px solid #DB001E; /* Bordo */
+  color: rgba(0, 31, 27, 0.78); /* Colore del testo */
+  height: 30px; /* Altezza */
+  line-height: 30px; /* Altezza di riga */
+  width: 100%; /* Larghezza */
+  font-size: 12px;
+  height: 30px;
+
+}
+
 hr {
   box-sizing: content-box;
   height: 0;
