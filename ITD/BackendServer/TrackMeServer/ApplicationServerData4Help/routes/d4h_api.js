@@ -311,6 +311,165 @@ router.post('/groupRequest', function(req, res) {
         })
 });
 
+router.get('/groupRequest', function(req, res) {
+	var companyId, requests = [];
+	var allowed = ['id', 'state'];
+	verifyApiKey(req.query.apiKey)
+		.then(function(companyId_) {
+			companyId = companyId_;
+			return common.validateParams(req.query, allowed, allowed)
+		})
+		.then(function() {
+			var where = {
+				companyId: companyId
+			};
+			for (var q in req.query) {
+				if (allowed.includes(q)) {
+					where[q] = req.query[q];
+				}
+			}
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/groupRequest`,
+				method: 'GET',
+				qs: where
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject();
+			}
+			requests = JSON.parse(reqres.body);
+			// put the filters
+			var promises = [];
+			for (var i = 0; i < requests.length; i++) {
+				promises.push(request({
+					url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/filter`,
+					method: 'GET',
+					qs: {
+						requestId: requests[i].id
+					}
+				}))
+			}
+			return Promise.all(promises);
+		})
+		.then(function(queryRes) {
+			for (var i = 0; i < queryRes.length; i++) {
+				requests[i].filters = JSON.parse(queryRes[i].body);
+			}
+			return res.status(200).send(requests);
+		})
+		.catch(function(err) {
+			common.catchApi(err, res);
+		})
+});
+
+router.get('/groupRequest/data', function(req, res) {
+	var companyId, groupReq;
+	verifyApiKey(req.query.apiKey)
+		.then(function(companyId_) {
+			companyId = companyId_;
+			return common.validateParams(req.query, ['id'])
+		})
+		.then(function() {
+			// check that the request is authorized
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/groupRequest`,
+				method: 'GET',
+				qs: {
+					id: req.query.id,
+					companyId: companyId
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject({apiError: `you have not made the request with id ${req.query.id}`});
+			}
+			var reqdata = JSON.parse(reqres.body)[0] || '';
+			if (!reqdata || !reqdata.state) {
+				return Promise.reject({apiError: `you have not made the request with id ${req.query.id}`});
+			}
+			if (reqdata.state === 'pending') {
+				return Promise.reject({apiError: `this request must be authorized yet`});
+			}
+			else if (reqdata.state === 'rejected') {
+				return Promise.reject({apiError: `this request has been rejected`});
+			}
+			if (reqdata.state !== 'authorized') {
+				// we should never get here, right?
+				return Promise.reject();
+			}
+			groupReq = reqdata;
+			// grab the filters
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/filter`,
+				method: 'GET',
+				qs: {
+					requestId: groupReq.id
+				}
+			})
+		})
+		.then(function(reqres) {
+			groupReq.filters = JSON.parse(reqres.body);
+			// find the users who satisfy the filters
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/advancedSearch`,
+				method: 'POST',
+				json: true,
+				body: {
+					filters: groupReq.filters,
+					select: 'ssn'
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (reqres.body.length < config.minUsersGroupRequest) {
+				return Promise.reject({apiError: `this data can no longer be available. please make a new request`});
+				// todo set to rejected
+			}
+			// send the packets of every user
+			var promises = [];
+            for (var i = 0; i < reqres.body.length; i++) {
+                promises.push(
+                    request({
+                        url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/infoPacket`,
+                        method: 'GET',
+                        qs: {
+                            userSsn: reqres.body[i].ssn
+                        }
+                    })
+                );
+            }
+			return Promise.all(promises);
+		})
+        .then(function(queryRes) {
+            var data = [];
+            for (var i = 0; i < queryRes.length; i++) {
+                var reqdata = JSON.parse(queryRes[i].body);
+                for (var j = 0; j < reqdata.length; j++) {
+                    delete reqdata[j].userSsn;
+                    delete reqdata[j].wearableMac;
+                    data.push(reqdata[j]);
+                }
+            }
+            // sort all data by the timestamp
+            data.sort(function(a, b) {
+                if (a.ts < b.ts) {
+                    return -1;
+                }
+                else if (a.ts > b.ts) {
+                    return 1;
+                }
+                return 0;
+            });
+            res.status(200).send(data);
+            console.log(queryRes);
+        })
+		.catch(function(err) {
+			common.catchApi(err, res);
+		})
+});
+
 function generateAPIkey() {
     // todo check duplicate
     return common.randomString(40);

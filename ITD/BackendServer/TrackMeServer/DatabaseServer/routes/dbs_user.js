@@ -25,18 +25,26 @@ router.post('/advancedSearch', function(req, res) {
 	var query = knex('user').select(select);
 	var where = [''];
 	var birth;
-	var first = true;
+	var firstFilter = true;
 	Object.keys(filters).forEach(function(filterKey) {
 		var filter = filters[filterKey];
-		if (first) {
-			first = false;
+		if (firstFilter) {
+			firstFilter = false;
 			where[0] += ' (';
 		}
 		else {
 			where[0] += ' OR (';
 		}
+		var firstField = true;
 		Object.keys(filter).forEach(function(fieldKey) {
-			if (fieldKey !== Object.keys(filter)[0] && fieldKey !== Object.keys(filter)[Object.keys(filter).length]) {
+			if (!filters[filterKey][fieldKey] || [
+				'id',
+				'companyId',
+				'requestId'
+			].includes(fieldKey)) {
+				return;
+			}
+			if (!firstField) {
 				where[0] += ' AND ';
 			}
 			switch (fieldKey) {
@@ -57,6 +65,7 @@ router.post('/advancedSearch', function(req, res) {
 					where.push(filters[filterKey][fieldKey]);
 					break;
 			}
+			firstField = false;
 		});
 		where[0] += ')';
 	});

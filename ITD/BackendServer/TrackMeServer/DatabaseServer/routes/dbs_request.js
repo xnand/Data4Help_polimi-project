@@ -34,12 +34,42 @@ router.post('/specificRequest', function(req, res) {
         });
 });
 
+router.get('/groupRequest', function(req, res) {
+	var where = {};
+	for (var q in req.query) {
+		where[q] = req.query[q];
+	}
+	knex('groupRequest').select().where(where)
+		.then(function(queryRes) {
+			res.status(200).send(queryRes);
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
+});
+
 router.post('/groupRequest', function(req, res) {
 	var params = req.body;
 	knex('groupRequest').insert({
 		companyId: params.companyId,
 		state: 'authorized',
 	}, 'id')
+		.then(function(queryRes) {
+			res.status(200).send(queryRes);
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
+});
+
+router.get('/filter', function(req, res) {
+	var where = {};
+	for (var q in req.query) {
+		where[q] = req.query[q];
+	}
+	knex('filter').select().where(where)
 		.then(function(queryRes) {
 			res.status(200).send(queryRes);
 		})
