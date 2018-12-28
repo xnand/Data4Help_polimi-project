@@ -314,6 +314,8 @@ router.post('/:ssn/packet', function(req, res) {
                 return Promise.reject();
             }
             res.status(201).end(); // success
+            // check if there is a subscription we need to send this data to
+
         })
         .catch(function(err) {
             common.catchApi(err, res);

@@ -54,6 +54,7 @@ router.post('/groupRequest', function(req, res) {
 	knex('groupRequest').insert({
 		companyId: params.companyId,
 		state: 'authorized',
+		targets: params.targets
 	}, 'id')
 		.then(function(queryRes) {
 			res.status(200).send(queryRes);

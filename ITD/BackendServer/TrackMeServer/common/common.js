@@ -1,6 +1,7 @@
 function getRegExp(k) {
     switch (k) {
         case 'companyId':
+        case 'requestId':
         case 'id':
 		case 'ageStart':
 		case 'ageEnd':
@@ -51,6 +52,8 @@ function getRegExp(k) {
 		// request
 		case 'state':
 			return /^(pending|authorized|rejected)$/;
+        case 'forwardingLink':
+            return /^.*$/; // todo!
         default:
             return false;
     }

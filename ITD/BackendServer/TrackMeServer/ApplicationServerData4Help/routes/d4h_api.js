@@ -122,6 +122,7 @@ router.post('/specificRequest', function(req, res) {
 });
 
 router.get('/specificRequest', function(req, res) {
+	// todo solve error when no requests are registered
     var companyId;
     var allowed = ['id', 'state', 'targetSsn'];
     verifyApiKey(req.query.apiKey)
@@ -271,6 +272,10 @@ router.post('/groupRequest', function(req, res) {
             }
 			// record the request
 			params.companyId = companyId;
+			params.targets = [];
+			for (var i = 0; i < reqres.body.length; i++) {
+				params.targets.push(reqres.body[i].ssn);
+			}
 			return request({
 				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/groupRequest`,
 				method: 'POST',
@@ -412,43 +417,15 @@ router.get('/groupRequest/data', function(req, res) {
 				// we should never get here, right?
 				return Promise.reject();
 			}
-			groupReq = reqdata;
-			// grab the filters
-			return request({
-				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/filter`,
-				method: 'GET',
-				qs: {
-					requestId: groupReq.id
-				}
-			})
-		})
-		.then(function(reqres) {
-			groupReq.filters = JSON.parse(reqres.body);
-			// find the users who satisfy the filters
-			return request({
-				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/advancedSearch`,
-				method: 'POST',
-				json: true,
-				body: {
-					filters: groupReq.filters,
-					select: 'ssn'
-				}
-			})
-		})
-		.then(function(reqres) {
-			if (reqres.body.length < config.minUsersGroupRequest) {
-				return Promise.reject({apiError: `this data can no longer be available. please make a new request`});
-				// todo set to rejected
-			}
 			// send the packets of every user
 			var promises = [];
-            for (var i = 0; i < reqres.body.length; i++) {
+            for (var i = 0; i < reqdata.targets.length; i++) {
                 promises.push(
                     request({
                         url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/infoPacket`,
                         method: 'GET',
                         qs: {
-                            userSsn: reqres.body[i].ssn
+                            userSsn: reqdata.targets[i]
                         }
                     })
                 );
@@ -482,8 +459,69 @@ router.get('/groupRequest/data', function(req, res) {
 		})
 });
 
-router.post('/subscribe', function(req, res) {
-
+router.post('/specificRequest/subscribe', function(req, res) {
+	var params = {};
+	verifyApiKey(req.query.apiKey)
+		.then(function(companyId) {
+			params.companyId = companyId;
+			Object.keys(req.body).forEach(function (k) {
+				if (k === 'forwardingLink') {
+					params[k] = req.body[k];
+					return;
+				}
+				params[k] = req.body[k].toLowerCase();
+			});
+			return common.validateParams(params, [
+				'requestId',
+				'forwardingLink'
+			]);
+		})
+		.then(function() {
+			// verify the request
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
+				method: 'GET',
+				qs: {
+					id: params.requestId,
+					companyId: params.companyId
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject({apiError: `you have not made the request with id ${params.requestId}`});
+			}
+			var reqdata = JSON.parse(reqres.body)[0] || '';
+			if (!reqdata || !reqdata.state) {
+				return Promise.reject({apiError: `you have not made the request with id ${params.requestId}`});
+			}
+			if (reqdata.state !== 'authorized') {
+				return Promise.reject({apiError: 'this request has not been authorized'});
+			}
+			// verify that the forwardingLink is reachable
+			return new Promise(function(resolve, reject) {
+				request({
+					url: params.forwardingLink,
+					method: 'POST',
+					timeout: 5,
+				})
+					.then(function(res) {
+						if (res.statusCode === 200) {
+							return resolve();
+						}
+						reject();
+					})
+					.catch(function() {
+						reject({apiError: `can not communicate with ${params.forwardingLink}`})
+					})
+			})
+		})
+		.then(function(linkRes) {
+			// register the subscription
+		})
+		.catch(function(err) {
+			common.catchApi(err, res);
+		})
 });
 
 function generateAPIkey() {
