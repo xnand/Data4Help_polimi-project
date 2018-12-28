@@ -97,7 +97,6 @@ app.post('/send', (req, res) => {
             }
             console.log('Message sent: %s', info.messageId);
             res.render('register');
-
         });
     }
     else{
