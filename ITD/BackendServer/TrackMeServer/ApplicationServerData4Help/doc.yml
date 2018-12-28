@@ -1,0 +1,333 @@
+definitions:
+    ApiError:
+        type: object
+        properties:
+            apiError:
+                type: string
+                description: Error description
+    Filter:
+        type: object
+        description: "Filters to be applied when a group request is forwarder. At least one filter must be specified. A number at the end of the field name indicates that is part of the nth filter: \
+        for example, 'ageStart=18&ageEnd1=23&street2=napoleone' filters for all users that are between 18 and 23 years old OR have residence in Napoleone street; if no number is specified \
+        at the end of the field name, it is assumed to be 1"
+        properties:
+            ageStart:
+                type: number
+            ageEnd:
+                type: number
+            country:
+                type: string
+            region:
+                type: string
+            city:
+                type: string
+            zipcode:
+                type: string
+            street:
+                type: string
+            streetNr:
+                type: string
+    SpecificRequests:
+        type: object
+        properties:
+            id:
+                type: number
+            state:
+                type: string
+            targetSsn:
+                type: string
+    SpecificRequestData:
+        type: object
+        properties:
+            ts:
+                type: string
+            wearableMac:
+                type: string
+            userSsn:
+                type: string
+            geoX:
+                type: number
+            geoY:
+                type: number
+            heartBeatRate:
+                type: number
+            bloodPressSyst:
+                type: number
+            BloodPressDias:
+                type: number
+    GroupRequests:
+        type: object
+        properties:
+            id:
+                type: number
+            state:
+                type: string
+            filters:
+                type: array
+                items:
+                    type: object
+                    properties:
+                        ageStart:
+                            type: number
+                        ageEnd:
+                            type: number
+                        country:
+                            type: string
+                        region:
+                            type: string
+                        city:
+                            type: string
+                        zipcode:
+                            type: string
+                        street:
+                            type: string
+                        streetNr:
+                            type: string
+    GroupRequestData:
+        type: object
+        properties:
+            ts:
+                type: string
+            geoX:
+                type: number
+            geoY:
+                type: number
+            heartBeatRate:
+                type: number
+            bloodPressSyst:
+                type: number
+            BloodPressDias:
+                type: number
+
+
+
+paths:
+    /register:
+        post:
+            summary: Company registration (for system testing only, not production)
+            description: 'Register a company'
+            consumes:
+                - 'application/x-www-form-urlencoded'
+            produces:
+                - 'application/json'
+            parameters:
+                -   in: formData
+                    name: vat
+                    type: string
+                    required: true
+                    description: VAT number
+                -   in: formData
+                    name: name
+                    type: string
+                    required: true
+                    description: Company's name
+            responses:
+                201:
+                    description: User successfully registered
+                    schema:
+                        type: object
+                        properties:
+                            apiKey:
+                                type: string
+                                description: API Key that the company must use from now on to communicate with the system
+                400:
+                    description: Company not registered; invalid field
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
+    /specificRequest:
+        post:
+            summary: Forward a request for a specific customer, specifying its SSN (social security number)
+            description: ''
+            consumes:
+                - 'application/x-www-form-urlencoded'
+            produces:
+                - 'application/json'
+            parameters:
+                -   in: query
+                    name: apiKey
+                    type: string
+                    required: true
+                    description: Company's API Key
+                -   in: formData
+                    name: ssn
+                    type: string
+                    required: true
+                    description: Target customer's ssn
+            responses:
+                201:
+                    description: Request successfully registered
+                    schema:
+                        type: object
+                        properties:
+                            apiMsg:
+                                type: string
+                                description: success message
+                            specificRequestId:
+                                type: number
+                                description: id of the specific request
+                400:
+                    description: Request not registered; invalid field
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong API Key
+                    schema:
+                        $ref: "#/definitions/ApiError"
+        get:
+            summary: Get informations about all the registered specific requests
+            produces:
+                - 'application/json'
+            parameters:
+                -   in: query
+                    name: apiKey
+                    type: string
+                    required: true
+                    description: Company's API Key
+            responses:
+                200:
+                    description: Requests
+                    schema:
+                        type: array
+                        items:
+                            type: object
+                            $ref: "#/definitions/SpecificRequests"
+                400:
+                    description: Error
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong API Key
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
+    /specificRequest/data:
+        get:
+            summary: Get the requested data
+            produces:
+                - 'application/json'
+            parameters:
+                -   in: query
+                    name: apiKey
+                    type: string
+                    required: true
+                    description: Company's API Key
+                -   in: query
+                    name: id
+                    type: number
+                    required: true
+                    description: Id of the previously registered specific request
+            responses:
+                200:
+                    description: Requests data
+                    schema:
+                        type: array
+                        items:
+                            type: object
+                            $ref: "#/definitions/SpecificRequestData"
+                400:
+                    description: Request does not exist or has not been authorized yet
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong API Key
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
+    /groupRequest:
+        post:
+            summary: Forward a request for anonymous data about a large group of customers
+            consumes:
+                - 'application/x-www-form-urlencoded'
+            produces:
+                - 'application/json'
+            parameters:
+                -   in: query
+                    name: apiKey
+                    type: string
+                    required: true
+                    description: Company's API Key
+                -   in: formData
+                    name: "filter[s]"
+                    type: object
+                    required: true
+                    description: Filters to apply for the request; see Filters model below for details
+            responses:
+                201:
+                    description: Request successfully registered
+                    schema:
+                        type: object
+                        properties:
+                            apiMsg:
+                                type: string
+                                description: success message
+                            groupRequestId:
+                                type: number
+                                description: id of the group request
+                400:
+                    description: Request not registered; invalid field
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong API Key
+                    schema:
+                        $ref: "#/definitions/ApiError"
+        get:
+            summary: Get informations about all the registered group requests
+            produces:
+                - 'application/json'
+            parameters:
+                -   in: query
+                    name: apiKey
+                    type: string
+                    required: true
+                    description: Company's API Key
+            responses:
+                200:
+                    description: Requests data
+                    schema:
+                        type: array
+                        items:
+                            type: object
+                            $ref: "#/definitions/GroupRequests"
+                400:
+                    description: Error
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong API Key
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
+    /groupRequest/data:
+        get:
+            summary: Get the requested data
+            produces:
+                - 'application/json'
+            parameters:
+                -   in: query
+                    name: apiKey
+                    type: string
+                    required: true
+                    description: Company's API Key
+                -   in: query
+                    name: id
+                    type: number
+                    required: true
+                    description: Id of the previously registered group request
+            responses:
+                200:
+                    description: Requests data
+                    schema:
+                        type: array
+                        items:
+                            type: object
+                            $ref: "#/definitions/GroupRequestData"
+                400:
+                    description: Request does not exist or has not been authorized
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong API Key
+                    schema:
+                        $ref: "#/definitions/ApiError"

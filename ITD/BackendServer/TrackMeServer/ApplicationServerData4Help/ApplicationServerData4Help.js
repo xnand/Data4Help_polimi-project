@@ -8,8 +8,22 @@ var app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/api', apiRouter);
-//app.use(cookieParser());
-//app.use(express.static(path.join(__dirname, 'public')));
+
+const swaggerJSDoc = require('swagger-jsdoc');
+const options = {
+    definition: {
+        swagger: '2.0',
+        info: {
+            title: 'Application Server Data4Help',
+            version: '1.0.0',
+        },
+        basePath: '/api',
+    },
+    apis: ['./ApplicationServerData4Help/doc.yml'],
+};
+const swaggerSpec = swaggerJSDoc(options);
+const swaggerUi = require('swagger-ui-express');
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 // server setup stuff ---------------------------------------------
@@ -101,4 +115,7 @@ function onListening() {
         ? 'pipe ' + addr
         : 'port ' + addr.port;
     console.log(`listening on http://${ip}:${port}`);
+    if (swaggerSpec) {
+        console.log(`documentation available on http://${ip}:${port}/docs`)
+    }
 }

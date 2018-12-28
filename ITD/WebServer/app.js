@@ -27,6 +27,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// swagger documentation
+const swaggerJSDoc = require('swagger-jsdoc');
+const options = {
+    definition: {
+        swagger: '2.0',
+        info: {
+            title: 'Application Server Data4Help',
+            version: '1.0.0',
+        },
+    },
+    apis: ['./D4Hdoc.yml'],
+};
+const swaggerSpec = swaggerJSDoc(options);
+const swaggerUi = require('swagger-ui-express');
+app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -91,6 +106,64 @@ app.post('/send', (req, res) => {
     }
 
 });
+
+// server setup stuff ---------------------------------------------
+var debug = require('debug')('trackmeserver:server');
+var http = require('http');
+
+var port = normalizePort(process.env.PORT || 3000); // todo change port and maybe put some config file
+var ip = process.env.allIP || process.env.appServerD4HIP || '127.0.0.1';
+app.set('port', port, ip);
+
+var server = http.createServer(app);
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
+    if (port >= 0) {
+        // port number
+        return port;
+    }
+    return false;
+}
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+    var bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    console.log(`listening on http://${ip}:${port}`);
+    if (swaggerSpec) {
+        console.log(`documentation available on http://${ip}:${port}/documentation`)
+    }
+}
 
 
 module.exports = app;

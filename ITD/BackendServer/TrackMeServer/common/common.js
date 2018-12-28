@@ -98,7 +98,12 @@ module.exports = {
     if (!err || !err.apiError) {
         err = {apiError: 'unknown error'};
     }
-    res.status(400).send(err);
+    if (err.apiError === 'API key not authorized') {
+        res.status(401).send(err);
+    }
+    else {
+        res.status(400).send(err);
+    }
 	}
 };
 

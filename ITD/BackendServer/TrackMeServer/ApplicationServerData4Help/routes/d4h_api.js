@@ -111,7 +111,10 @@ router.post('/specificRequest', function(req, res) {
             if (!reqres || reqres.statusCode !== 200 || !reqres.body || !reqres.body[0]) {
                 return Promise.reject();
             }
-            res.status(201).send({apiMsg: `your specific request id is: ${reqres.body[0]}`}); // success
+            res.status(201).send({
+				apiMsg: `your specific request has been registered`,
+				specificRequestId: reqres.body[0]
+            }); // success
         })
         .catch(function(err) {
             common.catchApi(err, res);
@@ -146,6 +149,7 @@ router.get('/specificRequest', function(req, res) {
                 return Promise.reject();
             }
             var reqdata = JSON.parse(reqres.body)[0];
+            delete reqdata.companyId;
             return res.status(200).send(reqdata);
         })
         .catch(function(err) {
@@ -304,7 +308,9 @@ router.post('/groupRequest', function(req, res) {
 					return Promise.reject();
 				}
 			}
-			res.status(201).send({apiMsg: `your group request id is: ${requestId}`}); // success
+			res.status(201).send({
+				apiMsg: `your group request has been successfully registered`,
+				groupRequestId: requestId}); // success
 		})
         .catch(function(err) {
             common.catchApi(err, res);
@@ -339,9 +345,10 @@ router.get('/groupRequest', function(req, res) {
 				return Promise.reject();
 			}
 			requests = JSON.parse(reqres.body);
-			// put the filters
+			// put the filters and delete unnecessary info
 			var promises = [];
 			for (var i = 0; i < requests.length; i++) {
+				delete requests[i].companyId;
 				promises.push(request({
 					url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/filter`,
 					method: 'GET',
@@ -354,7 +361,13 @@ router.get('/groupRequest', function(req, res) {
 		})
 		.then(function(queryRes) {
 			for (var i = 0; i < queryRes.length; i++) {
-				requests[i].filters = JSON.parse(queryRes[i].body);
+				var filters = JSON.parse(queryRes[i].body);
+				for (var j = 0; j < filters.length; j++) {
+					delete filters[j].companyId;
+					delete filters[j].requestId;
+					delete filters[j].id;
+				}
+				requests[i].filters = filters;
 			}
 			return res.status(200).send(requests);
 		})
@@ -463,7 +476,6 @@ router.get('/groupRequest/data', function(req, res) {
                 return 0;
             });
             res.status(200).send(data);
-            console.log(queryRes);
         })
 		.catch(function(err) {
 			common.catchApi(err, res);
