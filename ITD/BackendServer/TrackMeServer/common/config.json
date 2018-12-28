@@ -12,6 +12,7 @@
     "dbms": "127.0.0.1"
   },
   "postgres": {
+    "useHeroku": "false",
     "databaseName": "trackmedb",
     "databaseUser": "trackme",
     "databasePassword": ""

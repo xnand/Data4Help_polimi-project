@@ -482,6 +482,10 @@ router.get('/groupRequest/data', function(req, res) {
 		})
 });
 
+router.post('/subscribe', function(req, res) {
+
+});
+
 function generateAPIkey() {
     // todo check duplicate
     return common.randomString(40);
