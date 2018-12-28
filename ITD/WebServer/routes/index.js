@@ -10,4 +10,8 @@ router.get('/documentation', function(req, res, next) {
     res.render('documentation', { title: 'TrackMe Documentation' });
 });
 
+router.get('/register', function(req, res, next) {
+    res.render('register', { title: 'TrackMe Registration' });
+});
+
 module.exports = router;
