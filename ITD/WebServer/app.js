@@ -15,7 +15,7 @@ var app = express();
 
 // View engine setup
 app.engine('html', cons.swig);
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'public'));
 app.set('view engine', 'html');
 
 app.use(logger('dev'));
@@ -73,9 +73,6 @@ app.post('/send', (req, res) => {
 
     //validation email field
     var a= new String(req.body.email);
-    /*if(a.indexOf("@")!=-1&&(a.indexOf(".")!=-1)&&(a.lastIndexOf("@"))<a.lastIndexOf(".")){
-        a=="valid";
-    }*/
 
     if(!req.body.businessName==""&&!req.body.vat==""&&(a.indexOf("@")!=-1&&(a.indexOf(".")!=-1)&&(a.lastIndexOf("@"))<a.lastIndexOf("."))){
         // send mail with defined transport object
@@ -90,6 +87,7 @@ app.post('/send', (req, res) => {
     }
     else{
         console.log('Message not sent');
+        res.render('register');
     }
 
 });
