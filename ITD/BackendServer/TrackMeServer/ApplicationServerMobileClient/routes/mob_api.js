@@ -315,7 +315,51 @@ router.post('/:ssn/packet', function(req, res) {
             }
             res.status(201).end(); // success
             // check if there is a subscription we need to send this data to
-
+            var promises = [];
+            ['specificRequest', 'groupRequest'].forEach(function(t) {
+                promises.push(request({
+                    url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/${t}`,
+                    method: 'GET',
+                    qs: {
+                        targetSsn: ssn,
+                        state: 'authorized',
+                        subscription: true
+                    }
+                }))
+            });
+            return Promise.all(promises);
+        })
+        .then(function(queryRes) {
+            // send data to subscribed companies
+            delete params.userSsn;
+            delete params.wearableMac; // todo yes? no? maybe?
+            var forwards = [];
+            for (var i = 0; i < 2; i++) {
+                if (queryRes[i].body && queryRes[i].body.length > 0) {
+                    var reqdata = JSON.parse(queryRes[i].body);
+                    for (var j = 0; j < reqdata.length; j++) {
+                        if (forwards.includes(reqdata[j].subscriptionForwardingLink)) {
+                            continue; // send the packet only once per subscription link
+                        }
+                        forwards.push(reqdata[j].subscriptionForwardingLink);
+                    }
+                }
+            }
+            var link;
+            for (var i = 0; i < forwards.length; i++) {
+                link = forwards[i];
+                request({
+                    url: link,
+                    method: 'POST',
+                    timeout: 5,
+                    json: true,
+                    body: params
+                })
+                    .catch(function() {
+                        console.log(link);
+                        // todo disable subscription?
+                    })
+            }
         })
         .catch(function(err) {
             common.catchApi(err, res);
@@ -326,7 +370,7 @@ function validateCredentials(req, res, next) {
     var ssn = req.params.ssn;
     try {
 		var header = (req.headers['authorization'] || '').split(/Basic /)[1];
-		// email, password, sessionToken
+		// auth = [email, password]
 		var auth = new Buffer.from(header.split(/\s+/).pop() || '', 'base64').toString().split(/:/);
 	}
 	catch {

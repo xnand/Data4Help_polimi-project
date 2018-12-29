@@ -516,8 +516,103 @@ router.post('/specificRequest/subscribe', function(req, res) {
 					})
 			})
 		})
-		.then(function(linkRes) {
+		.then(function() {
 			// register the subscription
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest/subscribe`,
+				method: 'POST',
+				json: true,
+				body: {
+					requestId: params.requestId,
+					forwardingLink: params.forwardingLink
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200) {
+				return Promise.reject();
+			}
+			return res.status(201).end();
+		})
+		.catch(function(err) {
+			common.catchApi(err, res);
+		})
+});
+
+router.post('/groupRequest/subscribe', function(req, res) {
+	var params = {};
+	verifyApiKey(req.query.apiKey)
+		.then(function(companyId) {
+			params.companyId = companyId;
+			Object.keys(req.body).forEach(function (k) {
+				if (k === 'forwardingLink') {
+					params[k] = req.body[k];
+					return;
+				}
+				params[k] = req.body[k].toLowerCase();
+			});
+			return common.validateParams(params, [
+				'requestId',
+				'forwardingLink'
+			]);
+		})
+		.then(function() {
+			// verify the request
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/groupRequest`,
+				method: 'GET',
+				qs: {
+					id: params.requestId,
+					companyId: params.companyId
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject({apiError: `you have not made the request with id ${params.requestId}`});
+			}
+			var reqdata = JSON.parse(reqres.body)[0] || '';
+			if (!reqdata || !reqdata.state) {
+				return Promise.reject({apiError: `you have not made the request with id ${params.requestId}`});
+			}
+			if (reqdata.state !== 'authorized') {
+				return Promise.reject({apiError: 'this request has not been authorized'});
+			}
+			// verify that the forwardingLink is reachable
+			return new Promise(function(resolve, reject) {
+				request({
+					url: params.forwardingLink,
+					method: 'POST',
+					timeout: 5,
+				})
+					.then(function(res) {
+						if (res.statusCode === 200) {
+							return resolve();
+						}
+						reject();
+					})
+					.catch(function() {
+						reject({apiError: `can not communicate with ${params.forwardingLink}`})
+					})
+			})
+		})
+		.then(function() {
+			// register the subscription
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/groupRequest/subscribe`,
+				method: 'POST',
+				json: true,
+				body: {
+					requestId: params.requestId,
+					forwardingLink: params.forwardingLink
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200) {
+				return Promise.reject();
+			}
+			return res.status(201).end();
 		})
 		.catch(function(err) {
 			common.catchApi(err, res);

@@ -112,3 +112,6 @@ for i in range(1, maxUsersToGenerate):
     except Exception as e:
         print(e)
         continue
+
+for k in range(1, random.randint(1, maxPacketsPerDevice)):
+    sendInfoPacket(ssn, mac, i)

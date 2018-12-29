@@ -34,12 +34,56 @@ router.post('/specificRequest', function(req, res) {
         });
 });
 
+router.post('/specificRequest/subscribe', function(req, res) {
+	var params = req.body;
+	knex('specificRequest').update({
+		subscription: true,
+		subscriptionForwardingLink: params.forwardingLink
+	}).where({
+		id: params.requestId,
+	})
+		.then(function() {
+			res.status(200).end();
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
+});
+
+router.post('/specificRequest/disableSubscription', function(req, res) { // todo, unused
+	var params = req.body;
+	knex('specificRequest').update({
+		subscription: false,
+		subscriptionForwardingLink: null
+	}).where({
+		id: params.requestId,
+	})
+		.then(function() {
+			res.status(200).end();
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
+});
+
 router.get('/groupRequest', function(req, res) {
 	var where = {};
 	for (var q in req.query) {
+		if (q === 'targetSsn') {
+			continue;
+		}
 		where[q] = req.query[q];
 	}
-	knex('groupRequest').select().where(where)
+	var query;
+	if (!req.query.targetSsn) {
+		query = knex('groupRequest').select().where(where);
+	}
+	else {
+		query = knex('groupRequest').select().where(where).whereRaw('? = ANY (targets)', req.query.targetSsn);
+	}
+	query
 		.then(function(queryRes) {
 			res.status(200).send(queryRes);
 		})
@@ -58,6 +102,40 @@ router.post('/groupRequest', function(req, res) {
 	}, 'id')
 		.then(function(queryRes) {
 			res.status(200).send(queryRes);
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
+});
+
+router.post('/groupRequest/subscribe', function(req, res) {
+	var params = req.body;
+	knex('groupRequest').update({
+		subscription: true,
+		subscriptionForwardingLink: params.forwardingLink
+	}).where({
+		id: params.requestId
+	})
+		.then(function() {
+			res.status(200).end();
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
+});
+
+router.post('/groupRequest/disableSubscription', function(req, res) { // todo, unused
+	var params = req.body;
+	knex('groupRequest').update({
+		subscription: false,
+		subscriptionForwardingLink: null
+	}).where({
+		id: params.requestId
+	})
+		.then(function() {
+			res.status(200).end();
 		})
 		.catch(function(err) {
 			console.log(err);

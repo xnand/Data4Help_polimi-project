@@ -78,6 +78,8 @@ function createSpecificRequestTable() {
         table.integer('companyId').unsigned();
         table.enu('state', ['pending', 'authorized', 'rejected']);
         table.string('targetSsn');
+        table.boolean('subscription').default(false);
+        table.string('subscriptionForwardingLink').default(null);
         // constraints
         table.unique(['id', 'companyId']);
         table.foreign('targetSsn').references('ssn').inTable('user');
@@ -94,24 +96,14 @@ function createGroupRequestTable() {
         table.integer('companyId').unsigned();
         table.enu('state', ['pending', 'authorized', 'rejected']);
         table.specificType('targets', 'text ARRAY');
+        table.boolean('subscription').default(false);
+        table.string('subscriptionForwardingLink').default(null);
         // constraints
         table.unique('id');
         table.unique(['id', 'companyId']);
         table.foreign('companyId').references('id').inTable('company');
         table.dropPrimary(); // see this "feature" https://github.com/tgriesser/knex/issues/385
         table.primary(['id', 'companyId']);
-    })
-}
-
-function createSubscriptionTable() {
-    return knex.schema.createTable('subscription', function(table) {
-        // columns
-        table.increments('id');
-        table.enu('type', ['specific', 'group']);
-        table.integer('requestId').unsigned();
-        table.string('forwardingLink');
-        // constraints
-
     })
 }
 
