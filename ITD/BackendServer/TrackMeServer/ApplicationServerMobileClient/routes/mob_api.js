@@ -32,7 +32,7 @@ router.post('/register', function(req, res) {
         'password'
     ])
         .then(function() {
-            // check existing mail
+            // check existing ssn
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/`,
                 method: 'GET',
@@ -49,7 +49,7 @@ router.post('/register', function(req, res) {
             if (reqdata) {
                 return Promise.reject({apiError: `user ${params.ssn} already registered`});
             }
-            // check existing ssn
+            // check existing mail
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/credentials`,
                 method: 'GET',

@@ -25,6 +25,7 @@ const swaggerSpec = swaggerJSDoc(options);
 const swaggerUi = require('swagger-ui-express');
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+module.exports = app;
 
 // server setup stuff ---------------------------------------------
 
@@ -111,6 +112,7 @@ function onError(error) {
 
 function onListening() {
     var addr = server.address();
+    app.emit("appStarted");
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;

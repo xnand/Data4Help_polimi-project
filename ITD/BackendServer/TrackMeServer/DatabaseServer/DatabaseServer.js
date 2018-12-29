@@ -185,7 +185,7 @@ app.use('/company', companyRouter);
 app.use('/request', requestRouter);
 
 // remember to give this to postgres after the database has been created:
-// ALTER DATABASE trackmedb SET datestyle TO "ISO, DMY";
+// ALTER DATABASE trackmedb SET datestyle TO "ISO, DMY"; ?
 
 // TODO if debug
 app.get('/dropALL', function(req, res) {
@@ -198,6 +198,7 @@ app.get('/dropALL', function(req, res) {
         })
 });
 
+module.exports = app;
 
 // server setup stuff ---------------------------------------------
 
@@ -252,6 +253,7 @@ function onError(error) {
 
 function onListening() {
     var addr = server.address();
+    app.emit("appStarted");
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;

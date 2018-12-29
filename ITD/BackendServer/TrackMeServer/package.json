@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "bluebird": "^3.5.3",
+    "chai-http": "^4.2.0",
     "cookie-parser": "~1.4.3",
     "dateformat": "^3.0.3",
     "debug": "~2.6.9",
@@ -22,5 +23,9 @@
     "name": "trackme",
     "version": "1.0.0",
     "title": "TrackMe Backend documentation"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
   }
 }
