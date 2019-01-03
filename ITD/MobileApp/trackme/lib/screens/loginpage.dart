@@ -29,7 +29,10 @@ class _LoginPageState extends State<LoginPage> {
       form.save();
       ApiResponse response = await apiManager().login(_email, _password);
 
-      if(response.apiError == 'noError') Navigator.of(context).pushNamed(PageNavigator.tag);
+      if(response.apiError == 'noError') {
+        ProfileManager().setLoginCredentials(_email, _password);
+        Navigator.of(context).pushNamed(PageNavigator.tag);
+      }
         else {
               final scaffold = scaffoldKey.currentState;
               scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));

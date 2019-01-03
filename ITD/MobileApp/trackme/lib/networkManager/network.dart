@@ -5,6 +5,7 @@ import 'package:track_me/networkManager/uriFactory.dart';
 import 'package:track_me/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:track_me/models/apiResponse.dart';
+import 'package:track_me/controllers/profileManager.dart';
 
 class apiManager {
   final url = 'http://10.0.2.2:3001/api/';  //application server url
@@ -16,7 +17,11 @@ class apiManager {
     headers: {
       HttpHeaders.authorizationHeader : basicAuth
     },);
-    if(response.statusCode == 200) return new ApiResponse(apiError: noError);
+    if(response.statusCode == 200) {
+      ProfileManager().setSSN(userFromJson(response.body).ssn);
+      return new ApiResponse(apiError: noError);
+
+    }
     else return apiResponseFromJson(response.body);
 
     return apiResponseFromJson(response.body);

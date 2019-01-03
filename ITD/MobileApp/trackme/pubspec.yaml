@@ -18,6 +18,7 @@ dependencies:
   shared_preferences: ^0.4.3
   http: ^0.12.0
   datetime_picker_formfield: ^0.1.7
+  country_code_picker: ^1.1.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -46,7 +47,6 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
   - assets/icons/
-  - assets/data/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

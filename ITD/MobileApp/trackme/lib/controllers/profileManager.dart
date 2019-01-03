@@ -1,20 +1,38 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 class ProfileManager {
-  Future<String> retrieveLocalUser() async {
+  Future<String> getPassword() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.get('email') ?? null;
+    return prefs.getString('password') ?? null;
   }
 
-  Future<void> saveLocalUser(String email, String password, String SSN) async {
+  Future<String> getEmail() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('credentials', [email,password, SSN]);
-    var credentials = await prefs.getStringList('credentials');
-    print(credentials.elementAt(2));
+    return prefs.getString('email') ?? null;
   }
 
+  Future<String> getSSN() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.get('SSN');
+  }
 
+  Future<void> setLoginCredentials(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('email', email);
+    prefs.setString('password', password);
+  }
 
+  Future<void> setSSN(String SSN) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('SSN', SSN);
+
+  }
+
+  Future<void> clearShared() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
 
 }
