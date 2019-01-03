@@ -11,11 +11,14 @@ import requests
 import random
 import string
 import datetime
+import json
 
 # config options:
-maxUsersToGenerate = 20
+maxUsersToGenerate = 40
 maxDevicesPerUser = 4
 maxPacketsPerDevice = 10
+maxCompaniesToGenerate = 10
+probCompanySpecReq = 0.25
 # backend server location(s)
 databaseServer = 'http://127.0.0.1:3000'
 appServerMobileClient = 'http://127.0.0.1:3001/api'
@@ -28,6 +31,9 @@ appServerData4Help = 'http://127.0.0.1:3002/api'
 lat = [45.572524, 45.328044]
 long = [8.884990, 8.915986]
 
+apiKeys = {}
+SSNs = {}
+
 def registerUser(n):
     birthDate = randomDate(datetime.date(1960, 1, 1), datetime.date.today())
     ssn = randomWord(16, string.digits + string.ascii_lowercase)
@@ -36,7 +42,7 @@ def registerUser(n):
         'name': 'name{}'.format(n),
         'surname': 'surname{}'.format(n),
         'sex': random.choice(['male', 'female']),
-        'birthDate': '{}/{}/{}'.format(birthDate.day, birthDate.month, birthDate.year),
+        'birthDate': '{}/{}/{}'.format(birthDate.month, birthDate.day, birthDate.year),
         'country': 'italy',
         'region': 'lombardia',
         'city': 'milan',
@@ -52,6 +58,7 @@ def registerUser(n):
         print(postData)
         print(post.text)
         raise Exception
+    SSNs[n] = ssn
     return ssn
 
 def registerWearable(ssn, n):
@@ -72,7 +79,7 @@ def sendInfoPacket(ssn, mac, n):
     rDate = randomDate(datetime.date(2017, 1, 1), datetime.date.today())
     rTime = randomTime()
     postData = {
-        'ts': '{}/{}/{} {}:{}:{}'.format(rDate.day, rDate.month, rDate.year, rTime.hour, rTime.minute, rTime.second),
+        'ts': '{}/{}/{} {}:{}:{}'.format(rDate.month, rDate.day, rDate.year, rTime.hour, rTime.minute, rTime.second),
         'wearableMac': mac,
         'userSsn': ssn,
         'geoX': random.uniform(lat[0], lat[1]),
@@ -89,6 +96,32 @@ def sendInfoPacket(ssn, mac, n):
         print(postData)
         raise Exception
 
+def registerCompany(n):
+    postData = {
+        'vat': randomWord(11, string.digits + string.ascii_lowercase),
+        'name': 'company{}'.format(n)
+    }
+    post = requests.post('{}/register'.format(appServerData4Help), postData)
+    if post.status_code != 201:
+        print('company {} not registered'.format(n))
+        print(post.text)
+        print(postData)
+        raise Exception
+    apiKey = json.loads(post.text)['apiKey']
+    apiKeys[n] = apiKey
+    return apiKey
+
+def specificRequest(companyKey, userSsn):
+    postData = {'targetSsn': userSsn}
+    qs = {'apiKey': companyKey}
+    post = requests.post('{}/specificRequest'.format(appServerData4Help), postData, params = qs)
+    if post.status_code != 201:
+        print('specificRequest for user {} not forwarded'.format(userSsn))
+        print(post.text)
+        print(postData)
+        print(qs)
+        raise Exception
+
 def randomWord(length, alpha):
     return ''.join(random.choice(alpha) for i in range(length))
 
@@ -100,8 +133,12 @@ def randomDate(start, end):
 def randomTime():
     return datetime.time(random.randint(0, 23), random.randint(0, 59), random.randint(0, 59))
 
+def trueFalse(prob):
+    return True if random.randint(0,100) < prob * 100 else False
 
+# reset/clean the db
 requests.get(databaseServer + '/dropALL')
+# register users, devices and packets
 for i in range(1, maxUsersToGenerate):
     try:
         ssn = registerUser(i)
@@ -112,6 +149,16 @@ for i in range(1, maxUsersToGenerate):
     except Exception as e:
         print(e)
         continue
-
-for k in range(1, random.randint(1, maxPacketsPerDevice)):
-    sendInfoPacket(ssn, mac, i)
+# register companies, make specific requests to previous users
+for i in range(1, maxCompaniesToGenerate):
+    try:
+        registerCompany(i)
+        for j in range(1, maxUsersToGenerate):
+            if trueFalse(probCompanySpecReq):
+                try:
+                    specificRequest(apiKeys[i], SSNs[j])
+                except:
+                    continue
+    except Exception as e:
+        print(e)
+        continue
