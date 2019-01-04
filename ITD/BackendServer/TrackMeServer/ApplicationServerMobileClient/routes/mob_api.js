@@ -276,6 +276,62 @@ router.post('/:ssn/acceptRequest', function(req, res) {
         })
 });
 
+// reject a specific request
+router.post('/:ssn/rejectRequest', function(req, res) {
+	// parse & validate parameters
+	var ssn = req.params.ssn.toLowerCase();
+	var params = {};
+	Object.keys(req.body).forEach(function(k) {
+		params[k] = req.body[k].toLowerCase();
+	});
+	common.validateParams(params, [
+		'id',
+	])
+		.then(function() {
+			// check that the request has this user as target
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
+				method: 'GET',
+				qs: {
+					targetSsn: ssn,
+					id: params.id
+				}
+			});
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject();
+			}
+			var reqdata = JSON.parse(reqres.body) || '';
+			if (!reqdata[0].id) {
+				// no such request
+				return Promise.reject({apiError: 'you can\'t reject this request'});
+			}
+			else if (reqdata[0].state === 'rejected') {
+				return Promise.reject({apiError: 'you already rejected this request'});
+			}
+			// change the request status to rejected
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/rejectRequest`,
+				method: 'POST',
+				json: true,
+				body: {
+					ssn: ssn,
+					id: params.id
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200) {
+				return Promise.reject();
+			}
+			res.status(200).end(); // success
+		})
+		.catch(function(err) {
+			common.catchApi(err, res);
+		})
+});
+
 // register a infoPacket
 router.post('/:ssn/packet', function(req, res) {
 	// parse & validate parameters

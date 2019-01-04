@@ -218,4 +218,29 @@ router.post('/acceptRequest', function(req, res) {
         });
 });
 
+// change state of specific request to authorized
+router.post('/rejectRequest', function(req, res) {
+	var params = req.body;
+	knex('specificRequest').update({
+		state: 'rejected'
+	})
+		.where({
+			targetSsn: params.ssn,
+			state: 'pending',
+			id: params.id
+		})
+		.orWhere({
+			targetSsn: params.ssn,
+			state: 'authorized',
+			id: params.id
+		})
+		.then(function() {
+			res.status(200).end();
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
+});
+
 module.exports = router;
