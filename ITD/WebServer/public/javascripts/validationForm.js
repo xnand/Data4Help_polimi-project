@@ -14,7 +14,7 @@ function Modulo() {
         return false;
     }
 
-    else if ((vat == "") || (vat == "undefined")||(vat == "Vat")) {
+    else if ((vat == "") || (vat == "undefined")||(vat == "VAT")) {
         alert("All fields are mandatory.");
         document.modulo.vat.focus();
         return false;
@@ -26,7 +26,7 @@ function Modulo() {
         return false;
     }
 
-    else if ((message == "") || (message == "undefined")||(message == "Tell us whay you want to use our services.")) {
+    else if ((message == "") || (message == "undefined")||(message == "Tell us why you want to use our services.")) {
         alert("All fields are mandatory.");
         document.modulo.message.focus();
         return false;
@@ -38,7 +38,9 @@ function Modulo() {
         return false;
     }
 
-    else {
+     else {
+        alert("Message will now be sent.");
+
         document.modulo.action = "/send";
         document.modulo.submit();
     }
