@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var knex = require('../knex');
 
+
+// get companies
 router.get('', function(req, res) { // /api/company
     var where = {};
     for (var q in req.query) {
@@ -17,6 +19,7 @@ router.get('', function(req, res) { // /api/company
         });
 });
 
+// record a company into db
 router.post('/register', function(req, res) {
     var params = req.body;
     knex('company').insert({
