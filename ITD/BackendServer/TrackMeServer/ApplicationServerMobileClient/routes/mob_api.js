@@ -454,7 +454,7 @@ function validateCredentials(req, res, next) {
                 return Promise.reject({apiError: 'invalid ssn'});
             }
             if (auth[0] === reqdata.mail && common.genHash(auth[1]) === reqdata.password) {
-                req.params.ssn = ssn; // DO NOT DELETE, this passes the ssn to next(). first line is not good for all cases
+                req.params.ssn = ssn; // reminder to me: DO NOT DELETE (again), this passes the ssn to next(). first line is not good for all cases
                 next(); // success
             }
             else if (auth[0] === reqdata.mail && common.genHash(auth[1]) !== reqdata.password) {
