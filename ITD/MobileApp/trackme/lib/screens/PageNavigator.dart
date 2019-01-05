@@ -4,6 +4,7 @@ import 'settings.dart';
 import 'automatedSOS.dart';
 import 'devices.dart';
 import 'track4run.dart';
+import 'package:track_me/styles/colors.dart';
 
 class PageNavigator extends StatefulWidget {
   static String tag = 'navigator';
@@ -33,6 +34,8 @@ class _PageNavigatorState extends State<PageNavigator> {
           onTap: onTabTapped,
           currentIndex: _currentIndex,
           type: BottomNavigationBarType.fixed,
+          iconSize: 32.0,
+          fixedColor: colorStyles['primary_pink'],
 
           items: [
             BottomNavigationBarItem(

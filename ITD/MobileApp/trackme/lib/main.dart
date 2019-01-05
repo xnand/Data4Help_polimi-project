@@ -4,8 +4,15 @@ import 'screens/feed.dart';
 import 'screens/PageNavigator.dart';
 import 'screens/sharingPage.dart';
 import 'screens/registerPage.dart';
+import 'package:flutter/services.dart';
 
-void main() => runApp(TrackMe());
+void main() {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+      .then((_) {
+    runApp(new TrackMe());
+  });
+
+}
 
 class TrackMe extends StatelessWidget {
 
@@ -20,6 +27,7 @@ class TrackMe extends StatelessWidget {
   };
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'TrackMe',
       debugShowCheckedModeBanner: false,

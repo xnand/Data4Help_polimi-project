@@ -42,19 +42,32 @@ class apiManager {
   Future<Object> getRequests({String state}) async {
     String SSN = await ProfileManager().getSSN();
     String basicAuth = await craftAuthString();
-    String toAppend;
-    if(state == "pending" || state == "accepted")toAppend = "?state=$state";
-    else toAppend= "";
+    String toAppend = "";
+    
+    switch(state) {
+      case "pending" : {
+        toAppend = "?state=pending";
+        break;
+      }
+      case "authorized" : {
+        toAppend = "?state=authorized";
+        break;
+      }
+      
+    }
     
     final response = await http.get(
       '$url/$SSN/request$toAppend',
       headers: {HttpHeaders.authorizationHeader: basicAuth},
     );
+    
     if (response.statusCode == 200) {
       List<Request> requestList = (json.decode(response.body) as List)
           .map((e) => new Request.fromJson(e))
           .toList();
+      requestList.forEach((e) => print(e.state));
       return requestList;
+
     }
   }
 
@@ -66,6 +79,19 @@ class apiManager {
 
     final response = await http.post(
       "$url/$SSN/acceptRequest",
+      headers: {HttpHeaders.authorizationHeader: basicAuth},
+      body: {"id" : requestId},
+    );
+    if(response.statusCode == 200)return new ApiResponse(apiError: noError);
+    else return apiResponseFromJson(response.body);
+  }
+  
+  Future<ApiResponse> rejectRequest(String requestId) async {
+    String SSN = await ProfileManager().getSSN();
+    String basicAuth = await craftAuthString();
+
+    final response = await http.post(
+      "$url/$SSN/rejectRequest",
       headers: {HttpHeaders.authorizationHeader: basicAuth},
       body: {"id" : requestId},
     );

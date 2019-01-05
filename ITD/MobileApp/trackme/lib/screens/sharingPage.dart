@@ -5,10 +5,6 @@ import 'package:track_me/networkManager/network.dart';
 import 'package:track_me/models/request.dart';
 import 'package:track_me/models/apiResponse.dart';
 
-//testing lists
-final activeRequestList = List<companyTileAccepted>.generate(
-    6, (i) => companyTileAccepted('Name ${i + 1}', 'Type', 'date'));
-
 final pendingRequestList = List<companyTileRequest>.generate(
     6, (i) => companyTileRequest('Name ${i + 1}', 'Type', i));
 
@@ -173,9 +169,11 @@ class SharingPage extends StatefulWidget {
 }
 
 class _SharingPageState extends State<SharingPage> {
-  Widget createListView(BuildContext context, AsyncSnapshot snapshot, DismissDirection direction) {
+  Widget createListView(BuildContext context, AsyncSnapshot snapshot,
+      DismissDirection direction) {
     DismissDirection dismissDirection = direction;
     List<Request> requestList = snapshot.data;
+
     return new ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
@@ -249,13 +247,19 @@ class _SharingPageState extends State<SharingPage> {
                 }
                 //delete request
                 else if (direction == DismissDirection.startToEnd) {
-                  item.refuse();
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                          "${item.companyName} following request refused")));
+                  ApiResponse response = await apiManager().rejectRequest(
+                      requestList.elementAt(index).id.toString());
+                  if (response.apiError == "noError") {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            "${item.companyName} following request refused")));
+                  } else {
+                    Scaffold.of(context).showSnackBar(
+                        SnackBar(content: Text(response.apiError)));
+                  }
                 }
               },
-              child: pendingRequestList[index]);
+              child: item);
         });
   }
 
@@ -274,13 +278,14 @@ class _SharingPageState extends State<SharingPage> {
             if (snapshot.hasError)
               return new Text('Error: ${snapshot.error}');
             else
-              return createListView(context, snapshot, DismissDirection.horizontal);
+              return createListView(
+                  context, snapshot, DismissDirection.horizontal);
         }
       },
     );
 
-    var acceptedListFuture = new FutureBuilder(
-      future: apiManager().getRequests(state: "accepted"),
+    var activeListFuture = new FutureBuilder(
+      future: apiManager().getRequests(state: "authorized"),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -292,7 +297,8 @@ class _SharingPageState extends State<SharingPage> {
             if (snapshot.hasError)
               return new Text('Error: ${snapshot.error}');
             else
-              return createListView(context, snapshot, DismissDirection.endToStart);
+              return createListView(
+                  context, snapshot, DismissDirection.startToEnd);
         }
       },
     );
@@ -316,52 +322,7 @@ class _SharingPageState extends State<SharingPage> {
             SizedBox(
               height: 32.0,
             ),
-            ListView.builder(
-                physics: ClampingScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: activeRequestList.length,
-                itemBuilder: (context, index) {
-                  final item = activeRequestList[index];
-                  return Dismissible(
-                      // Show a red background as the item is swiped away
-                      movementDuration: Duration(seconds: 1),
-                      background: Padding(
-                        padding: EdgeInsets.only(top: 15, bottom: 5),
-                        child: Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(16.0),
-                            color: Color.fromRGBO(243, 20, 49, 0.5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    radius: 16,
-                                    child:
-                                        Image.asset('assets/icons/cross.png'),
-                                  ),
-                                )
-                              ],
-                            )),
-                      ),
-                      key: Key(item.companyName),
-                      direction: DismissDirection.startToEnd,
-                      onDismissed: (direction) {
-                        setState(() {
-                          //delete request
-                          item.refuse(); //this function modify the database
-                          activeRequestList.removeAt(index);
-                        });
-
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                                "${item.companyName} subscription deleted")));
-                      },
-                      child: activeRequestList[index]);
-                })
+            activeListFuture,
           ],
         ),
       ),
