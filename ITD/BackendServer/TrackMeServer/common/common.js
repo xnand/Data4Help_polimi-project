@@ -1,3 +1,5 @@
+
+// returns the regexp to check an incoming field
 function getRegExp(k) {
     switch (k) {
         case 'companyId':
@@ -60,10 +62,13 @@ function getRegExp(k) {
 }
 
 module.exports = {
+	// generate hash for a password
     genHash: function (seed) {
+    	// change hash for production
         return require('crypto').createHash('md5').update('server_secret').update(seed).digest('hex');
     },
 
+	// generate a random string
     randomString: function (len, charSet) {
         charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         var randStr = '';
@@ -74,6 +79,10 @@ module.exports = {
         return randStr;
     },
 
+	// validate parameters;
+	// expected are the checked parameters, grabbed from the params object
+	// optional are the ones that are inside expected but can not be defined in params
+	// append is a string to place at the end of the error message in case a parameter is invalid
     validateParams: function(params, expected, optional, append) {
         if (!append) {
             append = ''
@@ -94,6 +103,7 @@ module.exports = {
         })
     },
 
+	// common error handler for endpoints
     catchApi: function(err, res) {
     if (err && err.noError) { // no error, just used sometimes to break a .then() chain
         return;

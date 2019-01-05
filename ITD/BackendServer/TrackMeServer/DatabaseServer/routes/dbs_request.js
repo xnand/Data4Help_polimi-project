@@ -3,6 +3,7 @@ var router = express.Router();
 var knex = require('../knex');
 
 
+// get specific requests
 router.get('/specificRequest', function(req, res) {
     var where = {};
     for (var q in req.query) {
@@ -18,6 +19,7 @@ router.get('/specificRequest', function(req, res) {
         });
 });
 
+// record a specific request
 router.post('/specificRequest', function(req, res) {
     var params = req.body;
     knex('specificRequest').insert({
@@ -34,6 +36,7 @@ router.post('/specificRequest', function(req, res) {
         });
 });
 
+// subscribe to a specific request
 router.post('/specificRequest/subscribe', function(req, res) {
 	var params = req.body;
 	knex('specificRequest').update({
@@ -51,6 +54,7 @@ router.post('/specificRequest/subscribe', function(req, res) {
 		});
 });
 
+// unsubscribe to a specific request
 router.post('/specificRequest/disableSubscription', function(req, res) { // todo, unused
 	var params = req.body;
 	knex('specificRequest').update({
@@ -68,6 +72,7 @@ router.post('/specificRequest/disableSubscription', function(req, res) { // todo
 		});
 });
 
+// get group requests
 router.get('/groupRequest', function(req, res) {
 	var where = {};
 	for (var q in req.query) {
@@ -93,6 +98,7 @@ router.get('/groupRequest', function(req, res) {
 		});
 });
 
+// record a group request
 router.post('/groupRequest', function(req, res) {
 	var params = req.body;
 	knex('groupRequest').insert({
@@ -109,6 +115,7 @@ router.post('/groupRequest', function(req, res) {
 		});
 });
 
+// subscribe to a group request
 router.post('/groupRequest/subscribe', function(req, res) {
 	var params = req.body;
 	knex('groupRequest').update({
@@ -126,6 +133,7 @@ router.post('/groupRequest/subscribe', function(req, res) {
 		});
 });
 
+// unsubscribe to a group request
 router.post('/groupRequest/disableSubscription', function(req, res) { // todo, unused
 	var params = req.body;
 	knex('groupRequest').update({
@@ -143,6 +151,7 @@ router.post('/groupRequest/disableSubscription', function(req, res) { // todo, u
 		});
 });
 
+// get filters belonging to a group request
 router.get('/filter', function(req, res) {
 	var where = {};
 	for (var q in req.query) {
@@ -158,6 +167,7 @@ router.get('/filter', function(req, res) {
 		});
 });
 
+// record a filter belonging to a group request
 router.post('/filter', function(req, res) {
 	var params = req.body;
 	knex('filter').insert({

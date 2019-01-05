@@ -6,6 +6,7 @@ var config = require('../../common/config.json');
 var common = require('../../common/common');
 
 
+// register a company
 router.post('/register', function(req, res) {
     var params = {};
     Object.keys(req.body).forEach(function (k) {
@@ -51,6 +52,7 @@ router.post('/register', function(req, res) {
         })
 });
 
+// send a specific request from company to the specified ssn
 router.post('/specificRequest', function(req, res) {
     var params = {};
     verifyApiKey(req.query.apiKey)
@@ -121,6 +123,7 @@ router.post('/specificRequest', function(req, res) {
         })
 });
 
+// retrieve all the specific requests the company has made, optionally filter with query parameters
 router.get('/specificRequest', function(req, res) {
 	// todo solve error when no requests are registered
     var companyId;
@@ -158,6 +161,8 @@ router.get('/specificRequest', function(req, res) {
         })
 });
 
+// get all the data a authorized specific request grants access to
+// i.e. all the packets of the corresponding user
 router.get('/specificRequest/data', function(req, res) {
     var companyId;
     verifyApiKey(req.query.apiKey)
@@ -218,6 +223,7 @@ router.get('/specificRequest/data', function(req, res) {
         })
 });
 
+// send a group request
 router.post('/groupRequest', function(req, res) {
     var params = {}, filters = {}, requestId, companyId;
     verifyApiKey(req.query.apiKey)
@@ -267,6 +273,7 @@ router.post('/groupRequest', function(req, res) {
 				return Promise.reject();
 			}
 			if (reqres.body.length < config.minUsersGroupRequest) {
+				// too few users to guarantee anonymity
 				// maybe register the request too?
 			    return Promise.reject({apiError: `request automatically rejected; filters too restrictive, at least ${config.minUsersGroupRequest} users must be included`});
             }
@@ -322,6 +329,7 @@ router.post('/groupRequest', function(req, res) {
         })
 });
 
+// get all the group requests a company has made, optionally filter with query parameters
 router.get('/groupRequest', function(req, res) {
 	var companyId, requests = [];
 	var allowed = ['id', 'state'];
@@ -331,6 +339,7 @@ router.get('/groupRequest', function(req, res) {
 			return common.validateParams(req.query, allowed, allowed)
 		})
 		.then(function() {
+			// parse the query parameters
 			var where = {
 				companyId: companyId
 			};
@@ -339,6 +348,7 @@ router.get('/groupRequest', function(req, res) {
 					where[q] = req.query[q];
 				}
 			}
+			// obtain the requests
 			return request({
 				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/groupRequest`,
 				method: 'GET',
@@ -350,7 +360,7 @@ router.get('/groupRequest', function(req, res) {
 				return Promise.reject();
 			}
 			requests = JSON.parse(reqres.body);
-			// put the filters and delete unnecessary info
+			// append the filters and delete unnecessary info
 			var promises = [];
 			for (var i = 0; i < requests.length; i++) {
 				delete requests[i].companyId;
@@ -374,13 +384,14 @@ router.get('/groupRequest', function(req, res) {
 				}
 				requests[i].filters = filters;
 			}
-			return res.status(200).send(requests);
+			return res.status(200).send(requests); // success
 		})
 		.catch(function(err) {
 			common.catchApi(err, res);
 		})
 });
 
+// get all the data a group request grants access to
 router.get('/groupRequest/data', function(req, res) {
 	var companyId, groupReq;
 	verifyApiKey(req.query.apiKey)
@@ -414,7 +425,7 @@ router.get('/groupRequest/data', function(req, res) {
 				return Promise.reject({apiError: `this request has been rejected`});
 			}
 			if (reqdata.state !== 'authorized') {
-				// we should never get here, right?
+				// we should never get here too, right?
 				return Promise.reject();
 			}
 			// send the packets of every user
@@ -459,6 +470,7 @@ router.get('/groupRequest/data', function(req, res) {
 		})
 });
 
+// subscribe to a specific request
 router.post('/specificRequest/subscribe', function(req, res) {
 	var params = {};
 	verifyApiKey(req.query.apiKey)
@@ -539,6 +551,7 @@ router.post('/specificRequest/subscribe', function(req, res) {
 		})
 });
 
+// subscribe to a group request
 router.post('/groupRequest/subscribe', function(req, res) {
 	var params = {};
 	verifyApiKey(req.query.apiKey)
@@ -619,17 +632,20 @@ router.post('/groupRequest/subscribe', function(req, res) {
 		})
 });
 
+// generate an API key = 40 random characters
 function generateAPIkey() {
     // todo check duplicate
     return common.randomString(40);
 }
 
+// verify the api key and return the company id associated
 function verifyApiKey(key) {
     return new Promise(function(resolve, reject) {
         common.validateParams({apiKey: key}, [
             'apiKey',
         ])
             .then(function() {
+            	// obtain the company associated with this api key
                 return request({
                     url: `http://${config.address.databaseServer}:${config.port.databaseServer}/company`,
                     method: 'GET',

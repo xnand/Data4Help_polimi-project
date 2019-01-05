@@ -258,7 +258,7 @@ paths:
                 required: true
                 description: Request's id
             responses:
-                201:
+                200:
                     description: Request succesfully authorized
                 400:
                     description: Request not authorized; invalid field

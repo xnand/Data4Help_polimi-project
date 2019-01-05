@@ -13,6 +13,7 @@ else {
     dbConnection = {
         host: process.env.DATABASE_URL || config.address.dbms ||"127.0.0.1",
         user: config.postgres.databaseUser,
+        password: process.env.DATABASE_PASSWORD || config.postgres.databasePassword || "",
         database: config.postgres.databaseName
     }
 }

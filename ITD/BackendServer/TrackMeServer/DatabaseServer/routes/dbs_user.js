@@ -3,7 +3,7 @@ var router = express.Router();
 var knex = require('../knex');
 var dateFormat = require('dateformat');
 
-
+// get users
 router.get('', function(req, res) {
     var where = {};
     for (var q in req.query) {
@@ -19,9 +19,10 @@ router.get('', function(req, res) {
         });
 });
 
+// get users, more in depth filtering
 router.post('/advancedSearch', function(req, res) {
 	var filters = req.body.filters || '';
-	var select = req.body.select || '*';
+	var select = req.body.select || '*'; // the field[s] to return
 	var query = knex('user').select(select);
 	var where = [''];
 	var birth;
@@ -79,6 +80,7 @@ router.post('/advancedSearch', function(req, res) {
 		});
 });
 
+// get users mail & hash(password)
 router.get('/credentials', function(req, res) {
     var where = {};
     for (var q in req.query) {
@@ -94,6 +96,7 @@ router.get('/credentials', function(req, res) {
         });
 });
 
+// get user wearable devices
 router.get('/wearableDevice', function(req, res) {
     var where = {};
     for (var q in req.query) {
@@ -109,6 +112,7 @@ router.get('/wearableDevice', function(req, res) {
         });
 });
 
+// get user info packets
 router.get('/infoPacket', function(req, res) {
     var where = {};
     for (var q in req.query) {
@@ -124,6 +128,7 @@ router.get('/infoPacket', function(req, res) {
         });
 });
 
+// record a user
 router.post('/register', function(req, res) {
     var params = req.body;
     knex('user').insert({
@@ -155,6 +160,7 @@ router.post('/register', function(req, res) {
         });
 });
 
+// record a wearable device
 router.post('/registerWearable', function(req, res) {
     var params = req.body;
     knex('wearableDevice').insert({
@@ -170,6 +176,7 @@ router.post('/registerWearable', function(req, res) {
         });
 });
 
+// record a info packet
 router.post('/infoPacket', function(req, res) {
     var params = req.body;
     knex('infoPacket').insert({
@@ -191,6 +198,7 @@ router.post('/infoPacket', function(req, res) {
         });
 });
 
+// change state of specific request to authorized
 router.post('/acceptRequest', function(req, res) {
     var params = req.body;
     knex('specificRequest').update({
@@ -208,6 +216,31 @@ router.post('/acceptRequest', function(req, res) {
             console.log(err);
             res.status(400).end();
         });
+});
+
+// change state of specific request to authorized
+router.post('/rejectRequest', function(req, res) {
+	var params = req.body;
+	knex('specificRequest').update({
+		state: 'rejected'
+	})
+		.where({
+			targetSsn: params.ssn,
+			state: 'pending',
+			id: params.id
+		})
+		.orWhere({
+			targetSsn: params.ssn,
+			state: 'authorized',
+			id: params.id
+		})
+		.then(function() {
+			res.status(200).end();
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
 });
 
 module.exports = router;

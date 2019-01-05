@@ -6,7 +6,9 @@ var config = require('../../common/config.json');
 var common = require('../../common/common');
 
 
+// register a user
 router.post('/register', function(req, res) {
+	// parse parameters
     var params = {};
     Object.keys(req.body).forEach(function(k) {
         if (k !== 'password') {
@@ -16,6 +18,7 @@ router.post('/register', function(req, res) {
             params[k] = req.body[k];
         }
     });
+    // validate parameters
     common.validateParams(params, [
         'ssn',
         'name',
@@ -87,6 +90,7 @@ router.post('/register', function(req, res) {
         })
 });
 
+// test the credentials and send back user info
 router.get('/login', function(req, res) {
     validateCredentials(req, res, function() {
         var ssn = req.params.ssn;
@@ -107,19 +111,24 @@ router.get('/login', function(req, res) {
     })
 });
 
+// this calls validateCredentials before handling any endpoint with the SSN in its URI
 router.param('ssn', validateCredentials);
 
+// register a wearable device
 router.post('/:ssn/registerWearable', function(req, res) {
+	// parse parameters
     var params = {};
     params.ssn = req.params.ssn;
     Object.keys(req.body).forEach(function(k) {
         params[k] = req.body[k].toLowerCase();
     });
+    // validate parameters
     common.validateParams(params, [
         'macAddr'
     ])
         .then(function() {
             params.macAddr = params.macAddr.replace(/[ -]/g, '');
+            // check that the wearable with this mac address is not already registered
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice`,
                 method: 'GET',
@@ -134,8 +143,10 @@ router.post('/:ssn/registerWearable', function(req, res) {
             }
             var reqdata = JSON.parse(reqres.body)[0] || '';
             if (reqdata.userSsn) {
-                return Promise.reject({apiError: 'invalid macAddr'});
+            	// there is one user with this wearable registered already
+                return Promise.reject({apiError: 'wearable already registered'});
             }
+            // record the wearable
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/registerWearable`,
                 method: 'POST',
@@ -154,7 +165,9 @@ router.post('/:ssn/registerWearable', function(req, res) {
         })
 });
 
+// get all request, optionally filter by query
 router.get('/:ssn/request', function(req, res) {
+	// parse & validate parameters
 	var ssn = req.params.ssn.toLowerCase();
 	var allowed = ['id', 'state', 'companyId'];
 	var requests;
@@ -178,7 +191,7 @@ router.get('/:ssn/request', function(req, res) {
 				return Promise.reject();
 			}
 			var reqdata = JSON.parse(reqres.body);
-			// for every request, put in the company data
+			// for every request, append the company data
 			var promises = [];
 			requests = reqdata;
 			for (var i = 0; i < reqdata.length; i++) {
@@ -195,7 +208,6 @@ router.get('/:ssn/request', function(req, res) {
 			return Promise.all(promises);
 		})
 		.then(function(rows) {
-			// order is preserved
 			for (var i = 0; i < rows.length; i++) {
 				var companyData = JSON.parse(rows[i].body)[0];
 				delete companyData.apiKey;
@@ -208,7 +220,9 @@ router.get('/:ssn/request', function(req, res) {
 		})
 });
 
+// accept a specific request
 router.post('/:ssn/acceptRequest', function(req, res) {
+	// parse & validate parameters
     var ssn = req.params.ssn.toLowerCase();
     var params = {};
     Object.keys(req.body).forEach(function(k) {
@@ -230,10 +244,11 @@ router.post('/:ssn/acceptRequest', function(req, res) {
         })
         .then(function(reqres) {
             if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
-                return Promise.reject({apiError: 'you can\'t accept this request'});
+                return Promise.reject();
             }
             var reqdata = JSON.parse(reqres.body) || '';
             if (!reqdata[0].id) {
+            	// no such request
                 return Promise.reject({apiError: 'you can\'t accept this request'});
             }
             else if (reqdata[0].state === 'authorized') {
@@ -254,14 +269,72 @@ router.post('/:ssn/acceptRequest', function(req, res) {
             if (!reqres || reqres.statusCode !== 200) {
                 return Promise.reject();
             }
-            res.status(200).end();
+            res.status(200).end(); // success
         })
         .catch(function(err) {
             common.catchApi(err, res);
         })
 });
 
+// reject a specific request
+router.post('/:ssn/rejectRequest', function(req, res) {
+	// parse & validate parameters
+	var ssn = req.params.ssn.toLowerCase();
+	var params = {};
+	Object.keys(req.body).forEach(function(k) {
+		params[k] = req.body[k].toLowerCase();
+	});
+	common.validateParams(params, [
+		'id',
+	])
+		.then(function() {
+			// check that the request has this user as target
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
+				method: 'GET',
+				qs: {
+					targetSsn: ssn,
+					id: params.id
+				}
+			});
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject();
+			}
+			var reqdata = JSON.parse(reqres.body) || '';
+			if (!reqdata[0].id) {
+				// no such request
+				return Promise.reject({apiError: 'you can\'t reject this request'});
+			}
+			else if (reqdata[0].state === 'rejected') {
+				return Promise.reject({apiError: 'you already rejected this request'});
+			}
+			// change the request status to rejected
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/rejectRequest`,
+				method: 'POST',
+				json: true,
+				body: {
+					ssn: ssn,
+					id: params.id
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200) {
+				return Promise.reject();
+			}
+			res.status(200).end(); // success
+		})
+		.catch(function(err) {
+			common.catchApi(err, res);
+		})
+});
+
+// register a infoPacket
 router.post('/:ssn/packet', function(req, res) {
+	// parse & validate parameters
 	var ssn = req.params.ssn.toLowerCase();
     var params = {};
     Object.keys(req.body).forEach(function(k) {
@@ -283,7 +356,7 @@ router.post('/:ssn/packet', function(req, res) {
         'bloodPressDias'
     ])
         .then(function() {
-            // check that the incoming packet is legit
+            // check that the incoming packet comes from a wearable owned by this user
             params.wearableMac = params.wearableMac.replace(/[ -]/g, '');
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice`,
@@ -299,9 +372,11 @@ router.post('/:ssn/packet', function(req, res) {
             }
             var reqdata = JSON.parse(reqres.body)[0] || '';
             if (!reqdata.userSsn || reqdata.userSsn !== params.userSsn) {
+            	// no such wearable or wearable has a different user associated
                 return Promise.reject({apiError: 'invalid wearableMac'});
             }
-            // todo check timestamp value!!!!!
+            // todo check timestamp value
+			// record the packet
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/infoPacket`,
                 method: 'POST',
@@ -356,8 +431,10 @@ router.post('/:ssn/packet', function(req, res) {
                     body: params
                 })
                     .catch(function() {
+                    	// forwardingLink not reachable
                         console.log(link);
                         // todo disable subscription?
+						// todo
                     })
             }
         })
@@ -366,6 +443,8 @@ router.post('/:ssn/packet', function(req, res) {
         })
 });
 
+// grab email & password from the 'authorization' header and check them against the registered users
+// follows http basic auth
 function validateCredentials(req, res, next) {
     var ssn = req.params.ssn;
     try {
@@ -374,9 +453,11 @@ function validateCredentials(req, res, next) {
 		var auth = new Buffer.from(header.split(/\s+/).pop() || '', 'base64').toString().split(/:/);
 	}
 	catch {
+    	// no credentials supplied
 		res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
 		return res.status(401).end();
 	}
+	// obtain the ssn
     new Promise(function(resolve, reject) {
         if (!ssn) { // case /login
             request({
@@ -401,7 +482,7 @@ function validateCredentials(req, res, next) {
                     reject(err);
                 })
         }
-        else {
+        else { // all other cases, take it from the url
             ssn = ssn.toLowerCase();
             resolve();
         }
@@ -410,6 +491,7 @@ function validateCredentials(req, res, next) {
             return common.validateParams({ssn: ssn}, ['ssn']);
         })
         .then(function() {
+        	// grab mail & hash(password) from db
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/credentials`,
                 method: 'GET',
@@ -424,10 +506,11 @@ function validateCredentials(req, res, next) {
             }
             var reqdata = JSON.parse(reqres.body)[0] || '';
             if (!reqdata.ssn || reqdata.ssn !== ssn) {
+            	// ssn not registered
                 return Promise.reject({apiError: 'invalid ssn'});
             }
             if (auth[0] === reqdata.mail && common.genHash(auth[1]) === reqdata.password) {
-                req.params.ssn = ssn; // DO NOT DELETE, this passes the ssn to next(). first line is not good for all cases
+                req.params.ssn = ssn; // reminder to me: DO NOT DELETE (again), this passes the ssn to next(). first line is not good for all cases
                 next(); // success
             }
             else if (auth[0] === reqdata.mail && common.genHash(auth[1]) !== reqdata.password) {
