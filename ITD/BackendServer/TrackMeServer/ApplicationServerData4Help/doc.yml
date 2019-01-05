@@ -121,6 +121,11 @@ paths:
                     type: string
                     required: true
                     description: Company's name
+                -   in: formData
+                    name: businessSector
+                    type: string
+                    required: false
+                    description: Business sector of the company
             responses:
                 201:
                     description: User successfully registered

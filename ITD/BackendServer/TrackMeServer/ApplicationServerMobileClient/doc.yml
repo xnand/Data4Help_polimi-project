@@ -179,6 +179,12 @@ paths:
                 type: string
                 required: true
                 description: MAC Address of the wearable device
+            -   in: formData
+                name: name
+                type: string
+                required: false
+                default: 'wearable {mac address}'
+                description: Name for the wearable device
             responses:
                 201:
                     description: Wearable succesfully registered
