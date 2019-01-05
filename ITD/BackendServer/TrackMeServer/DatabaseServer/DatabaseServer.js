@@ -30,6 +30,7 @@ function createCompanyTable() {
         table.increments('id').notNullable();
         table.string('vat', 11).notNullable();
         table.string('name').notNullable();
+        table.string('businessSector').default(null);
         table.string('apiKey', 40).notNullable();
         // constraints
         table.unique('id');
@@ -62,6 +63,7 @@ function createInfoPacketTable() {
         table.float('heartBeatRate');
         table.float('bloodPressSyst'); // systolic pressure
         table.float('bloodPressDias'); // diastolic pressure
+        table.boolean('emergency').default(false);
         // TODO body temp?
         // constraints
         table.foreign('wearableMac').references('macAddr').inTable('wearableDevice');

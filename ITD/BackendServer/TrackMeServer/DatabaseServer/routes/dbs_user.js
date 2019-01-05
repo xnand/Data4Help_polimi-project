@@ -218,7 +218,7 @@ router.post('/acceptRequest', function(req, res) {
         });
 });
 
-// change state of specific request to authorized
+// change state of specific request to rejected
 router.post('/rejectRequest', function(req, res) {
 	var params = req.body;
 	knex('specificRequest').update({

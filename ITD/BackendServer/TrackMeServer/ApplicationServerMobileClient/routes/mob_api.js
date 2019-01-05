@@ -254,6 +254,9 @@ router.post('/:ssn/acceptRequest', function(req, res) {
             else if (reqdata[0].state === 'authorized') {
                 return Promise.reject({apiError: 'you already accepted this request'});
             }
+            else if (reqdata[0].state === 'rejected') {
+				return Promise.reject({apiError: 'you can\'t accept a request you have previously refused'});
+			}
             // change the request status to accepted
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/acceptRequest`,
@@ -376,6 +379,10 @@ router.post('/:ssn/packet', function(req, res) {
                 return Promise.reject({apiError: 'invalid wearableMac'});
             }
             // todo check timestamp value
+			// as soon as we verified the packet is legit, check to see if an ambulance needs to be dispatched
+			if (reqdata.emergency.toLowerCase() === 'true') {
+				dispatchAmbulance(reqdata);
+			}
 			// record the packet
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/infoPacket`,
@@ -524,6 +531,10 @@ function validateCredentials(req, res, next) {
         .catch(function(err) {
             common.catchApi(err, res);
         })
+}
+
+function dispatchAmbulance(infoPacket) {
+	// todo?
 }
 
 
