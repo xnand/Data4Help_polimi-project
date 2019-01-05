@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:track_me/styles/colors.dart';
 import 'package:track_me/styles/texts.dart';
+import 'package:track_me/networkManager/network.dart';
+import 'package:track_me/models/request.dart';
+import 'package:track_me/models/apiResponse.dart';
 
 //testing lists
 final activeRequestList = List<companyTileAccepted>.generate(
     6, (i) => companyTileAccepted('Name ${i + 1}', 'Type', 'date'));
 
 final pendingRequestList = List<companyTileRequest>.generate(
-    6, (i) => companyTileRequest('Name ${i + 1}', 'Type'));
+    6, (i) => companyTileRequest('Name ${i + 1}', 'Type', i));
 
 class companyTileAccepted extends StatelessWidget {
   String companyName;
@@ -76,7 +79,6 @@ class companyTileAccepted extends StatelessWidget {
                     ],
                   ),
                 ),
-
               ],
             )),
           ),
@@ -94,15 +96,15 @@ class companyTileRequest extends StatelessWidget {
   String companyName;
   Image companyImage; //TODO how does server send images ?
   String companyType;
+  int id;
 
-  companyTileRequest(String companyName, String companyType) {
+  companyTileRequest(String companyName, String companyType, int id) {
     this.companyName = companyName;
     this.companyType = companyType;
+    this.id = id;
   }
 
-  accept() {
-    print('accepted!');
-  }
+  accept(int index) async {}
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +152,6 @@ class companyTileRequest extends StatelessWidget {
                     ],
                   ),
                 ),
-
               ],
             )),
           ),
@@ -172,8 +173,130 @@ class SharingPage extends StatefulWidget {
 }
 
 class _SharingPageState extends State<SharingPage> {
+  Widget createListView(BuildContext context, AsyncSnapshot snapshot, DismissDirection direction) {
+    DismissDirection dismissDirection = direction;
+    List<Request> requestList = snapshot.data;
+    return new ListView.builder(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        itemCount: requestList.length,
+        itemBuilder: (context, index) {
+          final item = new companyTileRequest(
+              requestList.elementAt(index).company.name, "type", index);
+          return Dismissible(
+              // Show a red background as the item is swiped away
+              movementDuration: Duration(seconds: 1),
+              secondaryBackground: Padding(
+                padding: EdgeInsets.only(top: 15, bottom: 5),
+                child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(16.0),
+                    color: Colors.greenAccent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            radius: 16,
+                            child: Image.asset('assets/icons/check.png'),
+                          ),
+                        )
+                      ],
+                    )),
+              ),
+              background: Padding(
+                padding: EdgeInsets.only(top: 15, bottom: 5),
+                child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(16.0),
+                    color: Color.fromRGBO(243, 20, 49, 0.5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            radius: 16,
+                            child: Image.asset('assets/icons/cross.png'),
+                          ),
+                        )
+                      ],
+                    )),
+              ),
+              key: Key(item.companyName),
+              direction: dismissDirection,
+              onDismissed: (direction) async {
+                //accepted request
+                if (direction == DismissDirection.endToStart) {
+                  ApiResponse response = await apiManager().acceptRequest(
+                      requestList.elementAt(index).id.toString());
+
+                  if (response.apiError == "noError") {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            "${item.companyName} following request accepted")));
+                  } else {
+                    setState(() {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text(response.apiError),
+                      ));
+                    });
+                  }
+                }
+                //delete request
+                else if (direction == DismissDirection.startToEnd) {
+                  item.refuse();
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          "${item.companyName} following request refused")));
+                }
+              },
+              child: pendingRequestList[index]);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
+    var pendingListFuture = new FutureBuilder(
+      future: apiManager().getRequests(state: "pending"),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+            return new Center(
+              child: CircularProgressIndicator(),
+            );
+          default:
+            if (snapshot.hasError)
+              return new Text('Error: ${snapshot.error}');
+            else
+              return createListView(context, snapshot, DismissDirection.horizontal);
+        }
+      },
+    );
+
+    var acceptedListFuture = new FutureBuilder(
+      future: apiManager().getRequests(state: "accepted"),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+            return new Center(
+              child: CircularProgressIndicator(),
+            );
+          default:
+            if (snapshot.hasError)
+              return new Text('Error: ${snapshot.error}');
+            else
+              return createListView(context, snapshot, DismissDirection.endToStart);
+        }
+      },
+    );
+
     return Scaffold(
         body: Container(
       child: Padding(
@@ -184,86 +307,7 @@ class _SharingPageState extends State<SharingPage> {
             SizedBox(
               height: 32.0,
             ),
-            ListView.builder(
-                physics: ClampingScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: pendingRequestList.length,
-                itemBuilder: (context, index) {
-                  final item = pendingRequestList[index];
-                  return Dismissible(
-                      // Show a red background as the item is swiped away
-                      movementDuration: Duration(seconds: 1),
-                      secondaryBackground: Padding(
-                        padding: EdgeInsets.only(top: 15, bottom: 5),
-                        child: Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(16.0),
-                            color: Colors.greenAccent,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    radius: 16,
-                                    child: Image.asset('assets/icons/check.png'),
-                                  ),
-                                )
-                              ],
-                            )),
-                      ),
-
-                      background: Padding(
-                        padding: EdgeInsets.only(top: 15, bottom: 5),
-                        child: Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(16.0),
-                            color: Color.fromRGBO(243, 20, 49, 0.5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    radius: 16,
-                                    child: Image.asset('assets/icons/cross.png'),
-                                  ),
-                                )
-                              ],
-                            )),
-
-                      ),
-                      key: Key(item.companyName),
-
-                      onDismissed: (direction) {
-                        setState(() {
-
-                          //accepted request
-                          if(direction == DismissDirection.endToStart) {
-                            item.accept();
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content:
-                                Text("${item.companyName} following request accepted")));
-                          }
-                          //delete request
-                          else if(direction == DismissDirection.startToEnd) {
-                            item.refuse();
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content:
-                                Text("${item.companyName} following request refused")));
-
-                          }
-                          pendingRequestList.removeAt(index);
-
-                        });
-
-
-                      },
-                      child: pendingRequestList[index]);
-                }),
+            pendingListFuture,
             SizedBox(height: 32.0),
             new Text(
               'Active requests',
@@ -296,12 +340,12 @@ class _SharingPageState extends State<SharingPage> {
                                   child: CircleAvatar(
                                     backgroundColor: Colors.transparent,
                                     radius: 16,
-                                    child: Image.asset('assets/icons/cross.png'),
+                                    child:
+                                        Image.asset('assets/icons/cross.png'),
                                   ),
                                 )
                               ],
                             )),
-
                       ),
                       key: Key(item.companyName),
                       direction: DismissDirection.startToEnd,
@@ -313,8 +357,8 @@ class _SharingPageState extends State<SharingPage> {
                         });
 
                         Scaffold.of(context).showSnackBar(SnackBar(
-                            content:
-                                Text("${item.companyName} subscription deleted")));
+                            content: Text(
+                                "${item.companyName} subscription deleted")));
                       },
                       child: activeRequestList[index]);
                 })

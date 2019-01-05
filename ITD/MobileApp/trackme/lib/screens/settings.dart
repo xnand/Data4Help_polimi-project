@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:track_me/screens/PageNavigator.dart';
 import 'package:track_me/styles/texts.dart';
 import 'package:track_me/screens/sharingPage.dart';
-
+import 'package:track_me/controllers/profileManager.dart';
 const _widgetHeight = 100.0;
 const _iconSize = 60.0;
 const _iconColoredBackgroundWidth = 70.0;
@@ -44,7 +44,7 @@ class CategoryItem extends StatelessWidget {
 
             onTap: () {
               Navigator.of(context).pushNamed(this.navigationTag);
-            },
+              },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
