@@ -9,7 +9,7 @@ import 'package:track_me/screens/PageNavigator.dart';
 import 'PageNavigator.dart';
 
 class LoginPage extends StatefulWidget {
-  static String tag = 'login-page';
+
 
   @override
   _LoginPageState createState() => new _LoginPageState();
@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if(response.apiError == 'noError') {
         ProfileManager().setLoginCredentials(_email, _password);
-        Navigator.of(context).pushNamed(PageNavigator.tag);
+        Navigator.of(context).pushReplacementNamed('/navigator');
       }
         else {
               final scaffold = scaffoldKey.currentState;
@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onPressed: () {
-                  Navigator.of(context).pushNamed(RegisterPage.tag);
+                  Navigator.of(context).pushNamed('/register');
                 },
                 child: Center(
                   child: Text(
@@ -153,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       onPressed: () {
-        Navigator.of(context).pushNamed(RegisterPage.tag);
+        Navigator.of(context).pushNamed('/register');
       },
     );
 

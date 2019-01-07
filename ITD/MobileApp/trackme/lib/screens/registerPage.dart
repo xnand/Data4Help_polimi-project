@@ -9,7 +9,7 @@ import 'package:track_me/models/apiResponse.dart';
 import 'package:track_me/screens/loginpage.dart';
 
 class RegisterPage extends StatefulWidget {
-  static String tag = 'register-page';
+
 
   _RegisterPageState createState() => new _RegisterPageState();
 }
@@ -85,7 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
       print(userToJson(user));
       ApiResponse response = await apiManager().registerUser(user);
-      if(response.apiError == 'noError') Navigator.of(context).pushNamed(LoginPage.tag);
+      if(response.apiError == 'noError') Navigator.of(context).pushNamed('/login');
         else{
           final scaffold = scaffoldKey.currentState;
           scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));

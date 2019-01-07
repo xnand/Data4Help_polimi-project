@@ -18,11 +18,11 @@ class TrackMe extends StatelessWidget {
 
 
   final routes = <String, WidgetBuilder>{
-    LoginPage.tag: (context) =>LoginPage(),
-    FeedPage.tag: (context) =>FeedPage(),
-    PageNavigator.tag: (context) => PageNavigator(),
-    SharingPage.tag: (context) => SharingPage(),
-    RegisterPage.tag: (context) => RegisterPage()
+    '/login': (context) =>LoginPage(),
+    '/feed': (context) =>FeedPage(),
+    '/navigator': (context) => PageNavigator(),
+    '/sharing': (context) => SharingPage(),
+    '/register': (context) => RegisterPage()
 
   };
   @override

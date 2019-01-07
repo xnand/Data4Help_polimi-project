@@ -76,9 +76,9 @@ class SettingPage extends StatelessWidget {
 
   ListView settingsList = new ListView(
     children: <Widget>[
-      new CategoryItem('Notifications', Icons.notifications_none, SharingPage.tag),
-      new CategoryItem('Sharing center', Icons.share,  SharingPage.tag),
-      new CategoryItem('Account', Icons.account_circle,  SharingPage.tag),
+      new CategoryItem('Notifications', Icons.notifications_none, '/sharing'),
+      new CategoryItem('Sharing center', Icons.share,  '/sharing'),
+      new CategoryItem('Account', Icons.account_circle,  '/sharing'),
     ],
 
   );

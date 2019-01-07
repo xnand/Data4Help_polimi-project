@@ -7,7 +7,7 @@ import 'track4run.dart';
 import 'package:track_me/styles/colors.dart';
 
 class PageNavigator extends StatefulWidget {
-  static String tag = 'navigator';
+  
   @override
 
   _PageNavigatorState createState() => new _PageNavigatorState();

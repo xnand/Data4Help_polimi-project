@@ -5,9 +5,6 @@ import 'package:track_me/networkManager/network.dart';
 import 'package:track_me/models/request.dart';
 import 'package:track_me/models/apiResponse.dart';
 
-final pendingRequestList = List<companyTileRequest>.generate(
-    6, (i) => companyTileRequest('Name ${i + 1}', 'Type', i));
-
 class companyTileAccepted extends StatelessWidget {
   String companyName;
   Image companyImage; //TODO how does server send images ?
@@ -99,9 +96,7 @@ class companyTileRequest extends StatelessWidget {
     this.companyType = companyType;
     this.id = id;
   }
-
-  accept(int index) async {}
-
+  
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
