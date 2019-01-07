@@ -146,6 +146,10 @@ router.post('/:ssn/registerWearable', function(req, res) {
             	// there is one user with this wearable registered already
                 return Promise.reject({apiError: 'wearable already registered'});
             }
+            // if user has not provided a name for the device, set one up
+			if (!params.name) {
+				params.name = `wearable ${params.macAddr}`;
+			}
             // record the wearable
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/registerWearable`,
@@ -163,6 +167,38 @@ router.post('/:ssn/registerWearable', function(req, res) {
         .catch(function(err) {
             common.catchApi(err, res);
         })
+});
+
+// get all the wearable devices registered by this user
+router.get('/:ssn/wearableDevice', function(req, res) {
+	// parse & validate parameters
+	var ssn = req.params.ssn.toLowerCase();
+	var allowed = ['macAddr', 'name'];
+	common.validateParams(req.query, allowed, allowed)
+		.then(function() {
+			var where = {
+				userSsn: ssn
+			};
+			for (var q in req.query) {
+				where[q] = req.query[q];
+			}
+			// get the requests
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice`,
+				method: 'GET',
+				qs: where
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject();
+			}
+			var reqdata = JSON.parse(reqres.body);
+			res.status(200).send(reqdata); // success
+		})
+		.catch(function(err) {
+			common.catchApi(err, res);
+		})
 });
 
 // get all request, optionally filter by query

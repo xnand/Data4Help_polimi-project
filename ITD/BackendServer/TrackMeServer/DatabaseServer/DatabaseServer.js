@@ -43,6 +43,7 @@ function createWearableDeviceTable() {
     return knex.schema.createTable('wearableDevice', function(table) {
         // columns
         table.string('macAddr', 17).notNullable();
+        table.string('name').notNullable();
         table.string('userSsn');
         // constraints
         table.unique('macAddr');

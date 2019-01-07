@@ -25,6 +25,7 @@ router.post('/register', function(req, res) {
     knex('company').insert({
         vat: params.vat,
         name: params.name,
+		businessSector: params.businessSector,
         apiKey: params.apiKey
     })
         .then(function() {
