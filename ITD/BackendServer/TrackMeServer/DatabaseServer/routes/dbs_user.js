@@ -186,9 +186,10 @@ router.post('/infoPacket', function(req, res) {
         userSsn: params.userSsn,
         geoX: params.geoX,
         geoY: params.geoY,
-        heartBeatRate: params.heartBeatRate,
-        bloodPressSyst: params.bloodPressSyst,
-        bloodPressDias: params.bloodPressDias
+        heartBeatRate: params.heartBeatRate || '',
+        bloodPressSyst: params.bloodPressSyst || '',
+        bloodPressDias: params.bloodPressDias || '',
+		emergency: params.emergency || ''
     })
         .then(function() {
             res.status(200).end();

@@ -50,6 +50,14 @@ definitions:
                         type: string
                     name:
                         type: string
+    DeviceRes:
+        type: object
+        properties:
+            macAddr:
+                type: string
+            name:
+                type: string
+
 
 
 paths:
@@ -158,7 +166,7 @@ paths:
                     schema:
                         $ref: "#/definitions/ApiError"
 
-    /{ssn}/registerWearable:
+    /{ssn}/wearableDevice:
         post:
             summary: Register wearable device
             description: ''
@@ -190,6 +198,43 @@ paths:
                     description: Wearable succesfully registered
                 400:
                     description: Wearable not registered; invalid field
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong credentials
+                    schema:
+                        $ref: "#/definitions/ApiError"
+        get:
+            summary: Get the registered wearables
+            description: "Obtain information about every registered wearable device.
+                    Can be filtered with query parameters. If no query parameter is specified, returns all the registered devices"
+            produces:
+            - 'application/json'
+            security:
+            -   basicAuth: [username:password]
+            parameters:
+            -   in: path
+                name: ssn
+                type: string
+                required: true
+                description: User's ssn
+            -   in: query
+                name: macAddr
+                type: string
+                required: false
+                description: Device's MAC address
+            -   in: query
+                name: name
+                type: string
+                required: false
+                description: Device's name
+            responses:
+                200:
+                    description: Query successful
+                    schema:
+                        $ref: "#/definitions/DeviceRes"
+                400:
+                    description: Query unsuccessful; wrong parameters
                     schema:
                         $ref: "#/definitions/ApiError"
                 401:

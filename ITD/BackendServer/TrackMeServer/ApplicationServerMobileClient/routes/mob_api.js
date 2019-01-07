@@ -115,7 +115,7 @@ router.get('/login', function(req, res) {
 router.param('ssn', validateCredentials);
 
 // register a wearable device
-router.post('/:ssn/registerWearable', function(req, res) {
+router.post('/:ssn/wearableDevice', function(req, res) {
 	// parse parameters
     var params = {};
     params.ssn = req.params.ssn;
@@ -182,7 +182,7 @@ router.get('/:ssn/wearableDevice', function(req, res) {
 			for (var q in req.query) {
 				where[q] = req.query[q];
 			}
-			// get the requests
+			// get the devices
 			return request({
 				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice`,
 				method: 'GET',
@@ -194,6 +194,9 @@ router.get('/:ssn/wearableDevice', function(req, res) {
 				return Promise.reject();
 			}
 			var reqdata = JSON.parse(reqres.body);
+			for (var i = 0; i < reqdata.length; i++) {
+				delete reqdata[i].userSsn;
+			}
 			res.status(200).send(reqdata); // success
 		})
 		.catch(function(err) {
@@ -388,11 +391,13 @@ router.post('/:ssn/packet', function(req, res) {
         'geoY',
         'heartBeatRate',
         'bloodPressSyst',
-        'bloodPressDias'
+        'bloodPressDias',
+		'emergency'
     ], [
         'heartBeatRate',
         'bloodPressSyst',
-        'bloodPressDias'
+        'bloodPressDias',
+		'emergency'
     ])
         .then(function() {
             // check that the incoming packet comes from a wearable owned by this user
@@ -416,9 +421,13 @@ router.post('/:ssn/packet', function(req, res) {
             }
             // todo check timestamp value
 			// as soon as we verified the packet is legit, check to see if an ambulance needs to be dispatched
-			if (reqdata.emergency.toLowerCase() === 'true') {
-				dispatchAmbulance(reqdata);
-			}
+			return new Promise(function(resolve, reject) {
+				if (reqdata.emergency.toLowerCase() === 'true') {
+					dispatchAmbulance(reqdata);
+				}
+				
+			})
+
 			// record the packet
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/infoPacket`,
