@@ -12,15 +12,24 @@ class DevicesPage extends StatefulWidget {
 }
 
 class _DevicesPageState extends State<DevicesPage> {
-  bool isDeleting = false;
+  bool _isDeleting = false;
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
+  String _macAddrToDelete;
 
-  void deleteWearable(String macAddr) {
-
+  void deleteWearable() async {
+    ApiResponse response = await apiManager().deleteWearable(_macAddrToDelete);
+    setState(() {
+      _isDeleting = false;
+    });
+    if (response.apiError != "noError") {
+      final scaffold = scaffoldKey.currentState;
+      scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));
+    }
   }
 
   void abort() {
     setState(() {
-      isDeleting = false;
+      _isDeleting = false;
     });
   }
 
@@ -83,7 +92,8 @@ class _DevicesPageState extends State<DevicesPage> {
               direction: DismissDirection.startToEnd,
               onDismissed: (direction) async {
                 setState(() {
-                  isDeleting = true;
+                  _macAddrToDelete = item.macAddress;
+                  _isDeleting = true;
                 });
               },
               child: item);
@@ -113,29 +123,43 @@ class _DevicesPageState extends State<DevicesPage> {
       },
     );
 
+
+
     var page = Scaffold(
-        body: Container(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: <Widget>[
-            new Text('Your devices', style: textStyles['title_text']),
-            SizedBox(
-              height: 32.0,
-            ),
-            wearableListFuture,
-          ],
+        floatingActionButton:  FloatingActionButton(
+          onPressed: (){
+          },
+          elevation: 10,
+          child: Icon(Icons.add),
+          foregroundColor: Colors.white,
+          backgroundColor: colorStyles['button_green'],
+          mini: false,
         ),
-      ),
-    ));
-    var popUpButtons =  Column(
+        key: scaffoldKey,
+        body: Container(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
+              children: <Widget>[
+                new Text('Your devices', style: textStyles['title_text']),
+                SizedBox(
+                  height: 32.0,
+                ),
+                wearableListFuture,
+              ],
+            ),
+          ),
+        ));
+    var popUpButtons = Column(
       children: <Widget>[
         SizedBox(
           height: 80,
         ),
-
         Center(
-          child: Text('Are you sure?', style: textStyles['normal_text'],),
+          child: Text(
+            'Are you sure?',
+            style: textStyles['normal_text'],
+          ),
         ),
         Expanded(
           child: Row(
@@ -152,7 +176,7 @@ class _DevicesPageState extends State<DevicesPage> {
                     elevation: 7.0,
                     child: FlatButton(
                       color: Colors.transparent,
-                      onPressed: null,
+                      onPressed: deleteWearable,
                       child: Center(
                         child: Text(
                           'CONFIRM',
@@ -202,9 +226,7 @@ class _DevicesPageState extends State<DevicesPage> {
         page,
         Container(
           alignment: AlignmentDirectional.center,
-          decoration: new BoxDecoration(
-            color: Colors.white70
-          ),
+          decoration: new BoxDecoration(color: Colors.white70),
         ),
         Center(
           child: new Container(
@@ -215,15 +237,38 @@ class _DevicesPageState extends State<DevicesPage> {
               shadowColor: Colors.black,
               elevation: 10.0,
               child: popUpButtons,
-
             ),
           ),
         )
       ],
     );
 
+    var addDevicePopUp = new Stack(
+      children: <Widget>[
+        page,
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(color: Colors.white70),
+        ),
+        Center(
+          child: new Container(
+            height: 250,
+            width: 350,
+            child: Material(
+              borderRadius: BorderRadius.circular(20.0),
+              shadowColor: Colors.black,
+              elevation: 10,
+              child: Row(
 
-    return isDeleting ? confirmation : page;
+              ),
+            ),
+          )
+        )
+      ],
+    );
+
+    return _isDeleting ? confirmation : page;
+
   }
 }
 

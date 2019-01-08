@@ -20,12 +20,14 @@ class apiManager {
       headers: {HttpHeaders.authorizationHeader: basicAuth},
     );
     if (response.statusCode == 200) {
+      await ProfileManager().clearShared();
       ProfileManager().setSSN(userFromJson(response.body).ssn);
+      ProfileManager().setLoginCredentials(email, password);
       return new ApiResponse(apiError: _noError);
     } else
       return apiResponseFromJson(response.body);
 
-    
+
   }
 
   ///register a user to TrackMe {POST}
@@ -45,7 +47,7 @@ class apiManager {
     String SSN = await ProfileManager().getSSN();
     String basicAuth = await _craftAuthString();
     String toAppend = "";
-    
+
     switch(state) {
       case "pending" : {
         toAppend = "?state=pending";
@@ -55,14 +57,14 @@ class apiManager {
         toAppend = "?state=authorized";
         break;
       }
-      
+
     }
-    
+
     final response = await http.get(
       '$_url/$SSN/request$toAppend',
       headers: {HttpHeaders.authorizationHeader: basicAuth},
     );
-    
+
     if (response.statusCode == 200) {
       List<Request> requestList = (json.decode(response.body) as List)
           .map((json) => new Request.fromJson(json))
@@ -102,7 +104,7 @@ class apiManager {
 
   }
 
-  
+
   //accept a request for the current user {POST}
   Future<ApiResponse> acceptRequest(String requestId) async {
     String SSN = await ProfileManager().getSSN();
@@ -149,9 +151,21 @@ class apiManager {
   }
 
   //delete a wearable for the current user {POST}
-  Future<ApiResponse> deleteWearable(String) {
-    
+  Future<ApiResponse> deleteWearable(String macAddr) async {
+    String SSN = await ProfileManager().getSSN();
+    String basicAuth = await _craftAuthString();
+
+    final response = await http.post(
+      "$_url/$SSN/wearableDevice/delete",
+      headers: {HttpHeaders.authorizationHeader: basicAuth},
+      body: {"macAddr" : macAddr
+      },
+    );
+    print(response.statusCode);
+    if(response.statusCode == 201)return new ApiResponse(apiError: _noError);
+    else return apiResponseFromJson(response.body);
   }
+
 
 
   //return a future list with a crafted authentication string

@@ -46,7 +46,6 @@ class _LoginPageState extends State<LoginPage> {
       ApiResponse response = await apiManager().login(_email, _password);
 
       if(response.apiError == 'noError') {
-        ProfileManager().setLoginCredentials(_email, _password);
         Navigator.of(context).pushReplacementNamed('/navigator');
       }
         else {
