@@ -30,6 +30,12 @@ class _RegisterPageState extends State<RegisterPage> {
   String _streetNr;
   String _email;
   String _password;
+  bool _isLoading;
+
+  @override
+  void initState() {
+    _isLoading = false;
+  }
 
   final formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -63,7 +69,16 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
+  Function loginPressed() {
+    return _isLoading ? null : () {
+      saveAndSubmit();
+    };
+
+  }
   void saveAndSubmit() async{
+    setState(() {
+      _isLoading = true;
+    });
     final form = formKey.currentState;
     if(form.validate()) {
       form.save();
@@ -85,11 +100,16 @@ class _RegisterPageState extends State<RegisterPage> {
 
       print(userToJson(user));
       ApiResponse response = await apiManager().registerUser(user);
-      if(response.apiError == 'noError') Navigator.of(context).pushNamed('/login');
+      if(response.apiError == 'noError') {
+        Navigator.of(context).pushNamed('/login');
+      }
         else{
           final scaffold = scaffoldKey.currentState;
           scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));
       }
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -204,7 +224,7 @@ class _RegisterPageState extends State<RegisterPage> {
           elevation: 7.0,
           child: FlatButton(
             color: Colors.transparent,
-            onPressed: saveAndSubmit,
+            onPressed: loginPressed(),
             child: Center(
               child: Text(
                 'SEND',
@@ -216,7 +236,9 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ));
-    return Material(
+
+
+    var page = Material(
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
@@ -345,5 +367,41 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+
+    var whenLoading = new Container(
+      child: new Stack(
+        children: <Widget>[
+          page,
+          new Container(
+            alignment: AlignmentDirectional.center,
+            decoration: new BoxDecoration(
+              color: Colors.white70,
+            ),
+            child: Center(
+              child: new Container(
+                child: Center(
+                  child: SizedBox(
+                    height: 80,
+                    width: 80,
+                    child: CircularProgressIndicator(
+                        strokeWidth: 10,
+                        valueColor: AlwaysStoppedAnimation<Color>(colorStyles['primary_pink'])),
+                  ),
+                ),
+                width: 300,
+                height: 200,
+                decoration: new BoxDecoration(
+                    color: colorStyles[Colors.white],
+                    borderRadius: BorderRadius.circular(18.0)
+                ),
+
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+
+    return _isLoading ? whenLoading : page;
   }
 }

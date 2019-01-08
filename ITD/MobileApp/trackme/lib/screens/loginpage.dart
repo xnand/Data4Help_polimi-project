@@ -176,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    return Scaffold(
+    var page = Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
       body: Center(
@@ -206,9 +206,44 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 16.0),
             registrationButton,
 
+
           ],
         ),
       ),
     );
+    var whenLoading = new Container(
+      child: new Stack(
+        children: <Widget>[
+          page,
+          new Container(
+            alignment: AlignmentDirectional.center,
+            decoration: new BoxDecoration(
+              color: Colors.white70,
+            ),
+            child: Center(
+              child: new Container(
+                child: Center(
+                  child: SizedBox(
+                    height: 80,
+                    width: 80,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 10,
+                      valueColor: AlwaysStoppedAnimation<Color>(colorStyles['primary_pink'])),
+                  ),
+                ),
+                width: 300,
+                height: 200,
+                decoration: new BoxDecoration(
+                  color: colorStyles[Colors.white],
+                  borderRadius: BorderRadius.circular(18.0)
+                ),
+
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+    return _isButtonDisabled ? whenLoading : page;
   }
 }

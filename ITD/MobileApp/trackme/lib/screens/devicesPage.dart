@@ -79,10 +79,10 @@ class _DevicesPageState extends State<DevicesPage> {
   @override
   Widget build(BuildContext context) {
     var wearableListFuture = new FutureBuilder(
-      future: apiManager().getRequests(state: "pending"), //TODO change to the devices get
+      future: apiManager().getWearableDevice(), //TODO change to the devices get
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
-          case ConnectionState.none:
+          case ConnectionState.none: //TODO what happen ?
           case ConnectionState.waiting:
             return new Center(
               child: CircularProgressIndicator(),

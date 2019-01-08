@@ -268,7 +268,9 @@ class _SharingPageState extends State<SharingPage> {
           case ConnectionState.none:
           case ConnectionState.waiting:
             return new Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation(colorStyles['primary_pink']),
+              ),
             );
           default:
             if (snapshot.hasError)
@@ -287,7 +289,9 @@ class _SharingPageState extends State<SharingPage> {
           case ConnectionState.none:
           case ConnectionState.waiting:
             return new Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation(colorStyles['primary_pink']),
+              ),
             );
           default:
             if (snapshot.hasError)
