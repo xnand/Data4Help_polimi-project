@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'feed.dart';
 import 'settings.dart';
 import 'automatedSOS.dart';
-import 'devices.dart';
+import 'devicesPage.dart';
 import 'track4run.dart';
 import 'package:track_me/styles/colors.dart';
 

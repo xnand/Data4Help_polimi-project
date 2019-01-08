@@ -20,12 +20,28 @@ class _LoginPageState extends State<LoginPage> {
   String _password;
   final formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+  bool _isButtonDisabled;
+
+  @override
+  void initState() {
+    _isButtonDisabled = false;
+  }
+
+  Function loginPressed() {
+    if(_isButtonDisabled) return null;
+    else return () {
+      validateAndSave();
+    };
+  }
 
   void validateAndSave() async {
     final form = formKey.currentState;
-
+    setState(() {
+      _isButtonDisabled = true;
+    });
 
     if(form.validate()) {
+
       form.save();
       ApiResponse response = await apiManager().login(_email, _password);
 
@@ -34,6 +50,9 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.of(context).pushReplacementNamed('/navigator');
       }
         else {
+              setState(() {
+                _isButtonDisabled = false;
+              });
               final scaffold = scaffoldKey.currentState;
               scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));
         }
@@ -87,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
           elevation: 7.0,
           child: FlatButton(
             color: Colors.transparent,
-            onPressed: validateAndSave,
+            onPressed: loginPressed(),
             child: Center(
               child: Text(
                 'LOGIN',
@@ -157,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    return Scaffold(
+    var page = Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
       body: Center(
@@ -187,9 +206,44 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 16.0),
             registrationButton,
 
+
           ],
         ),
       ),
     );
+    var whenLoading = new Container(
+      child: new Stack(
+        children: <Widget>[
+          page,
+          new Container(
+            alignment: AlignmentDirectional.center,
+            decoration: new BoxDecoration(
+              color: Colors.white70,
+            ),
+            child: Center(
+              child: new Container(
+                child: Center(
+                  child: SizedBox(
+                    height: 80,
+                    width: 80,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 10,
+                      valueColor: AlwaysStoppedAnimation<Color>(colorStyles['primary_pink'])),
+                  ),
+                ),
+                width: 300,
+                height: 200,
+                decoration: new BoxDecoration(
+                  color: colorStyles[Colors.white],
+                  borderRadius: BorderRadius.circular(18.0)
+                ),
+
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+    return _isButtonDisabled ? whenLoading : page;
   }
 }
