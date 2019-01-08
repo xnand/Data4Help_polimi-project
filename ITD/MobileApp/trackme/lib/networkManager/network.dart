@@ -6,42 +6,44 @@ import 'package:http/http.dart' as http;
 import 'package:track_me/models/apiResponse.dart';
 import 'package:track_me/controllers/profileManager.dart';
 import 'package:track_me/models/request.dart';
+import 'package:track_me/models/device.dart';
 
 class apiManager {
-  final url = 'http://192.168.1.141:3001/api/'; //application server url
-  final String noError = 'noError';
+  final _url = 'http://192.168.1.86:3001/api/'; //application server url
+  final String _noError = 'noError';
 
   ///implement a Basic http login with email and password
   Future<ApiResponse> login(String email, String password) async {
     String basicAuth = 'Basic ' + base64Encode(utf8.encode('$email:$password'));
     final response = await http.get(
-      '$url/login',
+      '$_url/login',
       headers: {HttpHeaders.authorizationHeader: basicAuth},
     );
     if (response.statusCode == 200) {
       ProfileManager().setSSN(userFromJson(response.body).ssn);
-      return new ApiResponse(apiError: noError);
+      return new ApiResponse(apiError: _noError);
     } else
       return apiResponseFromJson(response.body);
 
     
   }
 
-  ///register a user to TrackMe
+  ///register a user to TrackMe {POST}
   Future<ApiResponse> registerUser(User user) async {
-    final response = await http.post('$url/register',
+    final response = await http.post('$_url/register',
         headers: {HttpHeaders.contentTypeHeader: 'application/json'},
         body: userToJson(user));
 
     if (response.statusCode == 201)
-      return new ApiResponse(apiError: noError);
+      return new ApiResponse(apiError: _noError);
     else
       return apiResponseFromJson(response.body);
   }
-  //return sharingRequest for the current user
+
+  //return sharingRequest for the current user {GET}
   Future<Object> getRequests({String state}) async {
     String SSN = await ProfileManager().getSSN();
-    String basicAuth = await craftAuthString();
+    String basicAuth = await _craftAuthString();
     String toAppend = "";
     
     switch(state) {
@@ -57,54 +59,104 @@ class apiManager {
     }
     
     final response = await http.get(
-      '$url/$SSN/request$toAppend',
+      '$_url/$SSN/request$toAppend',
       headers: {HttpHeaders.authorizationHeader: basicAuth},
     );
     
     if (response.statusCode == 200) {
       List<Request> requestList = (json.decode(response.body) as List)
-          .map((e) => new Request.fromJson(e))
+          .map((json) => new Request.fromJson(json))
           .toList();
-      requestList.forEach((e) => print(e.state));
+
       return requestList;
 
     }
+
+    ApiResponse error = apiResponseFromJson(response.body);
+    return error;
+  }
+
+  //return wearable device for the user  {GET}
+  Future<Object> getWearableDevice({String macAddr}) async {
+    String SSN = await ProfileManager().getSSN();
+    String basicAuth = await _craftAuthString();
+    String toAppend = "";
+
+    if(macAddr != null)toAppend='?macAddr=$macAddr';
+
+
+    final response = await http.get(
+      '$_url/$SSN/wearableDevice$toAppend',
+      headers: {HttpHeaders.authorizationHeader: basicAuth},
+    );
+
+    if(response.statusCode == 200) {
+      List<Wearable> wearableList = (jsonDecode(response.body) as List)
+          .map((json) => new Wearable.fromJson(json))
+          .toList();
+      return wearableList;
+    }
+    ApiResponse error = apiResponseFromJson(response.body);
+    return error;
+
   }
 
   
-
+  //accept a request for the current user {POST}
   Future<ApiResponse> acceptRequest(String requestId) async {
     String SSN = await ProfileManager().getSSN();
-    String basicAuth = await craftAuthString();
+    String basicAuth = await _craftAuthString();
 
     final response = await http.post(
-      "$url/$SSN/acceptRequest",
+      "$_url/$SSN/acceptRequest",
       headers: {HttpHeaders.authorizationHeader: basicAuth},
       body: {"id" : requestId},
     );
-    if(response.statusCode == 200)return new ApiResponse(apiError: noError);
+    if(response.statusCode == 200)return new ApiResponse(apiError: _noError);
     else return apiResponseFromJson(response.body);
   }
-  
+
+  //reject a request for the current user {POST}
   Future<ApiResponse> rejectRequest(String requestId) async {
     String SSN = await ProfileManager().getSSN();
-    String basicAuth = await craftAuthString();
+    String basicAuth = await _craftAuthString();
 
     final response = await http.post(
-      "$url/$SSN/rejectRequest",
+      "$_url/$SSN/rejectRequest",
       headers: {HttpHeaders.authorizationHeader: basicAuth},
-      body: {"id" : requestId},
+      body: {"id" : requestId
+      },
     );
-    if(response.statusCode == 200)return new ApiResponse(apiError: noError);
+    if(response.statusCode == 200)return new ApiResponse(apiError: _noError);
     else return apiResponseFromJson(response.body);
   }
 
+
+  Future<ApiResponse> registerWearable(String macAddr, String name) async {
+    String SSN = await ProfileManager().getSSN();
+    String basicAuth = await _craftAuthString();
+
+    final response = await http.post(
+      "$_url/$SSN/wearableDevice",
+      headers: {HttpHeaders.authorizationHeader: basicAuth},
+      body: {"macAddr" : macAddr,
+             "name" : name
+      },
+    );
+    if(response.statusCode == 200)return new ApiResponse(apiError: _noError);
+    else return apiResponseFromJson(response.body);
+  }
+
+
+
+
   //return a future list with a crafted authentication string
-  Future<String> craftAuthString() async {
+  Future<String> _craftAuthString() async {
     String email = await ProfileManager().getEmail();
     String password = await ProfileManager().getPassword();
 
     String basicAuth = 'Basic ' + base64Encode(utf8.encode('$email:$password'));
     return basicAuth;
   }
+
 }

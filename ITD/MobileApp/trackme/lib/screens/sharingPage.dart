@@ -164,6 +164,7 @@ class SharingPage extends StatefulWidget {
 }
 
 class _SharingPageState extends State<SharingPage> {
+
   Widget createListView(BuildContext context, AsyncSnapshot snapshot,
       DismissDirection direction) {
     DismissDirection dismissDirection = direction;

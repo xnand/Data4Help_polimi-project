@@ -20,12 +20,28 @@ class _LoginPageState extends State<LoginPage> {
   String _password;
   final formKey = new GlobalKey<FormState>();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+  bool _isButtonDisabled;
+
+  @override
+  void initState() {
+    _isButtonDisabled = false;
+  }
+
+  Function loginPressed() {
+    if(_isButtonDisabled) return null;
+    else return () {
+      validateAndSave();
+    };
+  }
 
   void validateAndSave() async {
     final form = formKey.currentState;
-
+    setState(() {
+      _isButtonDisabled = true;
+    });
 
     if(form.validate()) {
+
       form.save();
       ApiResponse response = await apiManager().login(_email, _password);
 
@@ -34,6 +50,9 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.of(context).pushReplacementNamed('/navigator');
       }
         else {
+              setState(() {
+                _isButtonDisabled = false;
+              });
               final scaffold = scaffoldKey.currentState;
               scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));
         }
@@ -87,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
           elevation: 7.0,
           child: FlatButton(
             color: Colors.transparent,
-            onPressed: validateAndSave,
+            onPressed: loginPressed(),
             child: Center(
               child: Text(
                 'LOGIN',
