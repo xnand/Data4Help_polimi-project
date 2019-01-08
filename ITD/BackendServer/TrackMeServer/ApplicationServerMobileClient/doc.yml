@@ -242,6 +242,39 @@ paths:
                     schema:
                         $ref: "#/definitions/ApiError"
 
+    /{ssn}/wearableDevice/delete:
+        post:
+            summary: Unregister a wearable device
+            description: ''
+            consumes:
+                - 'application/x-www-form-urlencoded'
+            produces:
+                - 'application/json'
+            security:
+                -   basicAuth: [username:password]
+            parameters:
+                -   in: path
+                    name: ssn
+                    type: string
+                    required: true
+                    description: User's ssn
+                -   in: formData
+                    name: macAddr
+                    type: string
+                    required: true
+                    description: MAC Address of the wearable device
+            responses:
+                201:
+                    description: Wearable succesfully unregistered
+                400:
+                    description: Wearable not unregistered; invalid field
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong credentials
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
     /{ssn}/request:
         get:
             summary: "Request information"
