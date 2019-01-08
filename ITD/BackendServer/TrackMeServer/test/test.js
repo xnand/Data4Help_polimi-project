@@ -14,7 +14,7 @@ var testUser = {
 	name: 'TestUserName',
 	surname: 'TestUserSurname',
 	sex: 'male',
-	birthDate: '12 24 2000',
+	birthDate: '24 12 2000',
 	country: 'italy',
 	region: 'lombardia',
 	city: 'milano',
@@ -83,6 +83,22 @@ describe('Login user', function() {
 				});
 				new Date(res.body.birthDate).getTime().should.equal(new Date(testUser.birthDate).getTime());
 				// mail and password are tested with authentication
+				done();
+			})
+	})
+});
+
+describe('Register wearable', function() {
+	it('registers a wearable device', function(done) {
+		chai.request(ApplicationServerMobileClient)
+			.post(`/api/${testUser.ssn.toLowerCase()}/wearableDevice`)
+			.auth(testUser.mail, testUser.password)
+			.send({
+				macAddr: 'aa:bb:cc:dd:ee:ff',
+				name: 'test wearable'
+			})
+			.end(function(err, res) {
+				res.should.have.status(201);
 				done();
 			})
 	})

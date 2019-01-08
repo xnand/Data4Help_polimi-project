@@ -12,6 +12,7 @@ import random
 import string
 import datetime
 import json
+from time import sleep
 
 # config options:
 maxUsersToGenerate = 40
@@ -66,7 +67,7 @@ def registerWearable(ssn, n):
     for i in range(0,5):
         mac += randomWord(2, string.digits + 'abcdef') + ':'
     mac += randomWord(2, string.digits + 'abcdef')
-    post = requests.post('{}/{}/registerWearable'.format(appServerMobileClient, ssn), {
+    post = requests.post('{}/{}/wearableDevice'.format(appServerMobileClient, ssn), {
         'macAddr': mac
     }, auth = requests.auth.HTTPBasicAuth('mail{}@gmail.com'.format(n), 'password{}'.format(n)))
     if post.status_code != 201:

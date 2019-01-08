@@ -204,6 +204,57 @@ router.get('/:ssn/wearableDevice', function(req, res) {
 		})
 });
 
+// unregister a wearable device
+router.post('/:ssn/wearableDevice/delete', function(req, res) {
+	// parse parameters
+	var params = {};
+	params.ssn = req.params.ssn;
+	Object.keys(req.body).forEach(function(k) {
+		params[k] = req.body[k].toLowerCase();
+	});
+	// validate parameters
+	common.validateParams(params, [
+		'macAddr'
+	])
+		.then(function() {
+			params.macAddr = params.macAddr.replace(/[ -]/g, '');
+			// check that the wearable with this mac address is registered
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice`,
+				method: 'GET',
+				qs: {
+					macAddr: params.macAddr
+				}
+			});
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject({apiError: 'invalid macAddr'});
+			}
+			var reqdata = JSON.parse(reqres.body)[0] || '';
+			if (reqdata.userSsn !== params.ssn) {
+				// this wearable is not registered to this user
+				return Promise.reject({apiError: 'you can\'t remove this device'});
+			}
+			// unregister the wearable
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/unregisterWearable`,
+				method: 'POST',
+				json: true,
+				body: params
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200) {
+				return Promise.reject();
+			}
+			res.status(201).end(); // success
+		})
+		.catch(function(err) {
+			common.catchApi(err, res);
+		})
+});
+
 // get all request, optionally filter by query
 router.get('/:ssn/request', function(req, res) {
 	// parse & validate parameters

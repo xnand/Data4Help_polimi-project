@@ -177,6 +177,21 @@ router.post('/registerWearable', function(req, res) {
         });
 });
 
+// unregister a wearable device
+router.post('/unregisterWearable', function(req, res) {
+	var params = req.body;
+	knex('wearableDevice').delete().where({
+		macAddr: params.macAddr,
+	})
+		.then(function() {
+			res.status(200).end();
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
+});
+
 // record a info packet
 router.post('/infoPacket', function(req, res) {
     var params = req.body;
