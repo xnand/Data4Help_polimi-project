@@ -12,6 +12,17 @@ class DevicesPage extends StatefulWidget {
 }
 
 class _DevicesPageState extends State<DevicesPage> {
+  bool isDeleting = false;
+
+  void deleteWearable(String macAddr) {
+
+  }
+
+  void abort() {
+    setState(() {
+      isDeleting = false;
+    });
+  }
 
   Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
     List<Wearable> wearablesList = snapshot.data;
@@ -71,39 +82,154 @@ class _DevicesPageState extends State<DevicesPage> {
               key: Key(item.macAddress),
               direction: DismissDirection.startToEnd,
               onDismissed: (direction) async {
-                //delete device
+                setState(() {
+                  isDeleting = true;
+                });
               },
               child: item);
         });
   }
+
   @override
   Widget build(BuildContext context) {
     var wearableListFuture = new FutureBuilder(
-      future: apiManager().getWearableDevice(), //TODO change to the devices get
+      future: apiManager().getWearableDevice(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none: //TODO what happen ?
           case ConnectionState.waiting:
             return new Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(colorStyles['primary_pink']),
+              ),
             );
           default:
             if (snapshot.hasError)
               return new Text('Error: ${snapshot.error}');
             else
-              return createListView(
-                  context, snapshot);
+              return createListView(context, snapshot);
         }
       },
     );
-  }
 
+    var page = Scaffold(
+        body: Container(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: <Widget>[
+            new Text('Your devices', style: textStyles['title_text']),
+            SizedBox(
+              height: 32.0,
+            ),
+            wearableListFuture,
+          ],
+        ),
+      ),
+    ));
+    var popUpButtons =  Column(
+      children: <Widget>[
+        SizedBox(
+          height: 80,
+        ),
+
+        Center(
+          child: Text('Are you sure?', style: textStyles['normal_text'],),
+        ),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Container(
+                  height: 40,
+                  width: 150,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(20),
+                    shadowColor: Colors.green,
+                    color: colorStyles['button_green'],
+                    elevation: 7.0,
+                    child: FlatButton(
+                      color: Colors.transparent,
+                      onPressed: null,
+                      child: Center(
+                        child: Text(
+                          'CONFIRM',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto'),
+                        ),
+                      ),
+                    ),
+                  )),
+              SizedBox(
+                width: 20,
+              ),
+              Container(
+                  height: 40,
+                  width: 150,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(20),
+                    shadowColor: Colors.green,
+                    color: colorStyles['button_green'],
+                    elevation: 7.0,
+                    child: FlatButton(
+                      color: Colors.transparent,
+                      onPressed: abort,
+                      child: Center(
+                        child: Text(
+                          'ABORT',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto'),
+                        ),
+                      ),
+                    ),
+                  )),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 40,
+        )
+      ],
+    );
+    var confirmation = new Stack(
+      children: <Widget>[
+        page,
+        Container(
+          alignment: AlignmentDirectional.center,
+          decoration: new BoxDecoration(
+            color: Colors.white70
+          ),
+        ),
+        Center(
+          child: new Container(
+            height: 250,
+            width: 350,
+            child: Material(
+              borderRadius: BorderRadius.circular(20),
+              shadowColor: Colors.black,
+              elevation: 10.0,
+              child: popUpButtons,
+
+            ),
+          ),
+        )
+      ],
+    );
+
+
+    return isDeleting ? confirmation : page;
+  }
 }
 
 class deviceTile extends StatelessWidget {
   String deviceName;
   Image deviceImage; //TODO how does server send images ?
-  String deviceType;
   String macAddress;
 
   deviceTile(String deviceName, String macAddress) {
@@ -146,7 +272,7 @@ class deviceTile extends StatelessWidget {
                         ),
                       ),
                       new Text(
-                        deviceType,
+                        deviceName,
                         style: new TextStyle(
                           color: Colors.grey,
                           fontWeight: FontWeight.w400,

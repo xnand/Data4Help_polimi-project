@@ -41,7 +41,7 @@ class apiManager {
   }
 
   //return sharingRequest for the current user {GET}
-  Future<Object> getRequests({String state}) async {
+  Future<dynamic> getRequests({String state}) async {
     String SSN = await ProfileManager().getSSN();
     String basicAuth = await _craftAuthString();
     String toAppend = "";
@@ -77,7 +77,7 @@ class apiManager {
   }
 
   //return wearable device for the user  {GET}
-  Future<Object> getWearableDevice({String macAddr}) async {
+  Future<dynamic> getWearableDevice({String macAddr}) async {
     String SSN = await ProfileManager().getSSN();
     String basicAuth = await _craftAuthString();
     String toAppend = "";
@@ -94,6 +94,7 @@ class apiManager {
       List<Wearable> wearableList = (jsonDecode(response.body) as List)
           .map((json) => new Wearable.fromJson(json))
           .toList();
+
       return wearableList;
     }
     ApiResponse error = apiResponseFromJson(response.body);
@@ -131,7 +132,7 @@ class apiManager {
     else return apiResponseFromJson(response.body);
   }
 
-
+  //register a wearable for the current user {POST}
   Future<ApiResponse> registerWearable(String macAddr, String name) async {
     String SSN = await ProfileManager().getSSN();
     String basicAuth = await _craftAuthString();
@@ -147,7 +148,10 @@ class apiManager {
     else return apiResponseFromJson(response.body);
   }
 
-
+  //delete a wearable for the current user {POST}
+  Future<ApiResponse> deleteWearable(String) {
+    
+  }
 
 
   //return a future list with a crafted authentication string

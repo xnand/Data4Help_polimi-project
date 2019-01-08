@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       onSaved: (email) => _email = email,
-      initialValue: 'mail4@gmail.com',
+      initialValue: 'mail14@gmail.com',
       validator: (value) => value.isEmpty ? 'Email can\'t be empy': null,
       decoration: InputDecoration(
           labelText: 'Email',
@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final password = TextFormField(
       autofocus: false,
-      initialValue: 'password4',
+      initialValue: 'password14',
       obscureText: true,
       validator: (value) => value.isEmpty ? 'Password can\'t be empy': null,
       onSaved: (password) => _password = password,
