@@ -30,7 +30,7 @@ var testUser1 = {
     name: 'TestUserName1',
     surname: 'TestUserSurname1',
     sex: 'female',
-    birthDate: '12 13 2005',
+    birthDate: '12 12 2005',
     country: 'italy',
     region: 'lombardia',
     city: 'milano',

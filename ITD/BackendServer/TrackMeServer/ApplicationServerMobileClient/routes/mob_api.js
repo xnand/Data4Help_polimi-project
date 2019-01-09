@@ -492,7 +492,7 @@ router.post('/:ssn/packet', function(req, res) {
 			}
 			// as soon as we verified the packet is legit, check to see if an ambulance needs to be dispatched
 			return new Promise(function (resolve) {
-				if (params.emergency.toLowerCase() === 'true') {
+				if (params.emergency && params.emergency.toLowerCase() === 'true') {
 					dispatchAmbulance(params)
 						.then(function(eta) {
 							emergencyData.eta = eta;
