@@ -1,0 +1,5 @@
+<resources>
+    <string-array name="android_wear_capabilities">
+        <item>infopacket_transmission</item>
+    </string-array>
+</resources>
