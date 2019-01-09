@@ -58,7 +58,8 @@ var testRegisterWearable1={
 
 var testCompany={
 	name: 'HealthyResearch',
-	vat: 'testVat'
+	vat: 'testVat',
+	businessSector: 'Health'
 };
 
 var testSpecificRequest={
@@ -345,7 +346,6 @@ describe('Send a new infopacket', function () {
                 done();
             });
 	});
-
 });
 
 describe('Get requested data',function () {
@@ -406,3 +406,12 @@ describe('Forward a group request', function(){
     });
 });
 
+describe('Get requested data od a group request', function(){
+	it('get requested data of previously group request',function(){
+		chai.request(ApplicationServerData4Help)
+			.get(`/api/groupRequest?apiKey=${testSpecificRequest.apiKey}&id=${testGroupRequest.idRequest}`)
+			.end(function (err, res) {
+				res.should.have.status(200)
+            });
+	});
+});
