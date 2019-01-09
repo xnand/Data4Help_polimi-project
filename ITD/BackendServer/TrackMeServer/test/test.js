@@ -14,7 +14,7 @@ var testUser = {
 	name: 'TestUserName',
 	surname: 'TestUserSurname',
 	sex: 'male',
-	birthDate: '24 12 2000',
+	birthDate: '12 12 2000',
 	country: 'italy',
 	region: 'lombardia',
 	city: 'milano',
@@ -47,8 +47,13 @@ var ssn={
 };
 
 var testRegisterWearable={
-	name: 'testNameWearable',
-	macAddr: 'aa:bb:cc:dd:ee:ff'
+    macAddr: 'aa:bb:cc:dd:ee:ff',
+	name: 'testNameWearable'
+};
+
+var testRegisterWearable1={
+    macAddr: 'ff:ee:dd:cc:bb:aa',
+    name: 'testNameWearable1'
 };
 
 var testCompany={
@@ -63,13 +68,14 @@ var testSpecificRequest={
 };
 
 var testPacket={
-	ts: '09/01/2019 11:47:59',
+	ts: "09/01/2019 11:47:59",
     wearableMac: testRegisterWearable.macAddr,
+    userSsn: testUser.ssn,
 	geoX: '12.4922260',
 	geoY: '41.8902300',
 	heartBeatRate: '70',
 	bloodPressSyst: '100',
-	bloodPressDias: '80'
+	bloodPressDias: '80',
 };
 
 var testPacket1={
@@ -154,22 +160,74 @@ describe('Login user', function() {
 	})
 });
 
-describe('Register wearable', function() {
+describe('Register wearable device', function() {
 	it('resiters a wearable device', function (done) {
 		chai.request(ApplicationServerMobileClient)
-			.post(`/api/${testUser.ssn.toLowerCase()}/registerWearable`)
+			.post(`/api/${testUser.ssn.toLowerCase()}/wearableDevice`)
 			.auth(testUser.mail, testUser.password)
 			.send(testRegisterWearable)
 			.end(function(err, res){
 				res.should.have.status(201);
 				done();
         });
-    })
+    });
+	it('register an other wearable device',function(done){
+        chai.request(ApplicationServerMobileClient)
+            .post(`/api/${testUser.ssn.toLowerCase()}/wearableDevice`)
+            .auth(testUser.mail, testUser.password)
+            .send(testRegisterWearable1)
+            .end(function(err, res){
+                res.should.have.status(201);
+                done();
+            });
+	});
+	it('obtains information about one registered wearable device',function (done) {
+		chai.request(ApplicationServerMobileClient)
+			.get(`/api/${testUser.ssn.toLowerCase()}/wearableDevice?macAddr=${testRegisterWearable.macAddr}&name=${testRegisterWearable.name}`)
+			.auth(testUser.mail,testUser.password)
+			.end(function (err, res) {
+				res.should.have.status(200);
+				done();
+            });
+    });
+	it('obtains information about all registered wearable device',function (done){
+        chai.request(ApplicationServerMobileClient)
+            .get(`/api/${testUser.ssn.toLowerCase()}/wearableDevice`)
+            .auth(testUser.mail,testUser.password)
+            .end(function (err, res) {
+                res.should.have.status(200);
+                done();
+            });
+    });
+	it('deletes a wearable device', function(done){
+		chai.request(ApplicationServerMobileClient)
+			.post(`/api/${testUser.ssn.toLowerCase()}/wearableDevice/delete`)
+			.auth(testUser.mail, testUser.password)
+			.send({
+				macAddr:testRegisterWearable1.macAddr
+            })
+			.end(function(err, res){
+				res.should.have.status(201);
+				done();
+			})
+	});
+    it('deletes a wearable device that does not exist', function(done){
+        chai.request(ApplicationServerMobileClient)
+            .post(`/api/${testUser.ssn.toLowerCase()}/wearableDevice/delete`)
+            .auth(testUser.mail, testUser.password)
+            .send({
+                macAddr:testRegisterWearable1.macAddr
+            })
+            .end(function(err, res){
+                res.should.have.status(400);
+                done();
+            })
+    });
 });
 
 
 describe('Request', function(){
-	it('shows a request', function (done){
+	it('shows all request', function (done){
 		chai.request(ApplicationServerMobileClient)
 			.get(`/api/${testUser.ssn.toLowerCase()}/request`)
 			.auth(testUser.mail, testUser.password)
@@ -241,6 +299,18 @@ describe('Specific Request', function () {
 	});
 });
 
+describe('Request',function(){
+	it('shows a specific request', function (done) {
+		chai.request(ApplicationServerMobileClient)
+			.get(`/api/${testUser.ssn.toLowerCase()}/request?id=${testSpecificRequest.idRequest}`)
+			.auth(testUser.mail, testUser.password)
+			.end(function(err, res){
+				res.should.have.status(200);
+				done();
+			});
+    });
+});
+
 describe('Accept request', function(){
     it('accepts a request ', function(done){
         chai.request(ApplicationServerMobileClient)
@@ -275,6 +345,7 @@ describe('Send a new infopacket', function () {
                 done();
             });
 	});
+
 });
 
 describe('Get requested data',function () {
@@ -318,7 +389,7 @@ describe('Forward a group request', function(){
 		chai.request(ApplicationServerData4Help)
 			.post(`/api/groupRequest?apiKey=${testSpecificRequest.apiKey}`)
 			.send({
-				"filter[s]":testFilter
+				filter:testFilter
             })
 			.end(function (err,res) {
 				res.should.have.status(201)

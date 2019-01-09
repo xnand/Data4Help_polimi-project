@@ -110,7 +110,7 @@ app.post('/send', (req, res) => {
 var debug = require('debug')('trackmeserver:server');
 var http = require('http');
 
-var port = normalizePort(process.env.PORT || 3000); // todo change port and maybe put some config file
+var port = normalizePort(process.env.PORT || 3004); // todo change port and maybe put some config file
 var ip = process.env.allIP || process.env.appServerD4HIP || '127.0.0.1';
 app.set('port', port, ip);
 
