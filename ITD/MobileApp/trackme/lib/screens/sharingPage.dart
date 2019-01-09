@@ -11,8 +11,7 @@ class companyTileAccepted extends StatelessWidget {
   String companyType;
   String sharingSince;
 
-  companyTileAccepted(
-      String companyName, String companyType, String sharingSince) {
+  companyTileAccepted(String companyName, String companyType, String sharingSince) {
     this.companyName = companyName;
     this.companyType = companyType;
     this.sharingSince = sharingSince;
@@ -96,7 +95,7 @@ class companyTileRequest extends StatelessWidget {
     this.companyType = companyType;
     this.id = id;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
@@ -164,7 +163,6 @@ class SharingPage extends StatefulWidget {
 }
 
 class _SharingPageState extends State<SharingPage> {
-
   Widget createListView(BuildContext context, AsyncSnapshot snapshot,
       DismissDirection direction) {
     DismissDirection dismissDirection = direction;
@@ -269,7 +267,8 @@ class _SharingPageState extends State<SharingPage> {
           case ConnectionState.waiting:
             return new Center(
               child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation(colorStyles['primary_pink']),
+                valueColor:
+                    new AlwaysStoppedAnimation(colorStyles['primary_pink']),
               ),
             );
           default:
@@ -290,7 +289,8 @@ class _SharingPageState extends State<SharingPage> {
           case ConnectionState.waiting:
             return new Center(
               child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation(colorStyles['primary_pink']),
+                valueColor:
+                    new AlwaysStoppedAnimation(colorStyles['primary_pink']),
               ),
             );
           default:
