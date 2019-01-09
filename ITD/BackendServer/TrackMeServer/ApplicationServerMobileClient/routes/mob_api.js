@@ -428,6 +428,7 @@ router.post('/:ssn/rejectRequest', function(req, res) {
 // register a infoPacket
 router.post('/:ssn/packet', function(req, res) {
 	// parse & validate parameters
+	var emergencyData = {};
 	var ssn = req.params.ssn.toLowerCase();
     var params = {};
     Object.keys(req.body).forEach(function(k) {
@@ -462,23 +463,48 @@ router.post('/:ssn/packet', function(req, res) {
             })
         })
         .then(function(reqres) {
-            if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
-                return Promise.reject();
-            }
-            var reqdata = JSON.parse(reqres.body)[0] || '';
-            if (!reqdata.userSsn || reqdata.userSsn !== params.userSsn) {
-            	// no such wearable or wearable has a different user associated
-                return Promise.reject({apiError: 'invalid wearableMac'});
-            }
-            // todo check timestamp value
-			// as soon as we verified the packet is legit, check to see if an ambulance needs to be dispatched
-			return new Promise(function(resolve, reject) {
-				if (reqdata.emergency.toLowerCase() === 'true') {
-					dispatchAmbulance(reqdata);
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject();
+			}
+			var reqdata = JSON.parse(reqres.body)[0] || '';
+			if (!reqdata.userSsn || reqdata.userSsn !== params.userSsn) {
+				// no such wearable or wearable has a different user associated
+				return Promise.reject({apiError: 'invalid wearableMac'});
+			}
+			// check that is not a duplicate packet
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/infoPacket`,
+				method: 'GET',
+				qs: {
+					userSsn: params.userSsn,
+					wearableMac: params.wearableMac,
+					ts: params.ts
 				}
-				
 			})
-
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200) {
+				return Promise.reject();
+			}
+			var reqdata = JSON.parse(reqres.body)[0] || '';
+			if (reqdata.ts) {
+				return Promise.reject({apiError: 'no duplicate packets allowed'});
+			}
+			// as soon as we verified the packet is legit, check to see if an ambulance needs to be dispatched
+			return new Promise(function (resolve) {
+				if (params.emergency.toLowerCase() === 'true') {
+					dispatchAmbulance(params)
+						.then(function(eta) {
+							emergencyData.eta = eta;
+							resolve();
+						})
+						.catch(resolve);
+				} else {
+					resolve();
+				}
+			})
+		})
+		.then(function() {
 			// record the packet
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/infoPacket`,
@@ -491,7 +517,20 @@ router.post('/:ssn/packet', function(req, res) {
             if (!reqres || reqres.statusCode !== 200) {
                 return Promise.reject();
             }
-            res.status(201).end(); // success
+            // success
+            res.status(201);
+            if (params.emergency === 'true') {
+            	if (emergencyData.eta) {
+            		res.send({apiMsg: `emergency detected; an ambulance should arrive at location in ${emergencyData.eta} minutes`});
+				}
+            	else {
+            		// todo queue emergencies and poll dispatcher service
+            		res.send({apiMsg: `emergency detected; can not dispatch ambulance to location, dispatcher service not reachable`});
+				}
+			}
+            else {
+            	res.end();
+			}
             // check if there is a subscription we need to send this data to
             var promises = [];
             ['specificRequest', 'groupRequest'].forEach(function(t) {
@@ -510,7 +549,7 @@ router.post('/:ssn/packet', function(req, res) {
         .then(function(queryRes) {
             // send data to subscribed companies
             delete params.userSsn;
-            delete params.wearableMac; // todo yes? no? maybe?
+            delete params.wearableMac;
             var forwards = [];
             for (var i = 0; i < 2; i++) {
                 if (queryRes[i].body && queryRes[i].body.length > 0) {
@@ -629,8 +668,46 @@ function validateCredentials(req, res, next) {
         })
 }
 
-function dispatchAmbulance(infoPacket) {
-	// todo?
+function dispatchAmbulance(params) {
+	// handle the parameter the dispatcher expects
+	return new Promise(function(resolve, reject) {
+		var dispatcherInfo = {};
+		dispatcherInfo.location = {};
+		dispatcherInfo.person = {};
+		dispatcherInfo.personParameters = {
+			heartBeatRate: params.heartBeatRate || 'unknown',
+			bloodPressDias: params.bloodPressDias || 'unknown',
+			bloodPressSyst: params.bloodPressSyst || 'unknown'
+		};
+		dispatcherInfo.location.x = params.geoX;
+		dispatcherInfo.location.y = params.geoY;
+
+		request({
+			url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user`,
+			method: 'GET',
+			qs: {
+				ssn: params.userSsn
+			}
+		})
+			.then(function(reqres) {
+				if (reqres.statusCode === 200) {
+					dispatcherInfo.person = JSON.parse(reqres.body)[0]
+				}
+				return request({
+					url: `http://${config.address.ambulanceDispatcherSim}:${config.port.ambulanceDispatcherSim}/dispatchAmbulance`,
+					method: 'POST',
+					json: true,
+					body: dispatcherInfo
+				})
+			})
+			.then(function(reqres) {
+				resolve(reqres.body.eta);
+			})
+			.catch(function(err) {
+				console.log(err);
+				reject();
+			})
+	});
 }
 
 
