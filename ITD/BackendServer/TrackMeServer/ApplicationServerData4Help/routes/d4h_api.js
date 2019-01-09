@@ -45,7 +45,7 @@ router.post('/register', function(req, res) {
             if (!reqres || reqres.statusCode !== 200) {
                 return Promise.reject();
             }
-            res.status(201).send({apiKey: params.apiKey}); // success
+            res.status(201).send({apiKey:params.apiKey}); // success
         })
         .catch(function(err) {
             common.catchApi(err, res);

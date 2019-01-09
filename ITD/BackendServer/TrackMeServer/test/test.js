@@ -25,6 +25,72 @@ var testUser = {
 	password: 'TestUserPassword*&@#(!&'
 };
 
+var testUser1 = {
+    ssn: 'TestUserSSN12346',
+    name: 'TestUserName1',
+    surname: 'TestUserSurname1',
+    sex: 'female',
+    birthDate: '12 13 2005',
+    country: 'italy',
+    region: 'lombardia',
+    city: 'milano',
+    zipcode: '20100',
+    street: 'test user street',
+    streetNr: '1',
+    mail: 'testusermail1@test.com',
+    password: 'TestUserPassword1*&@#(!&'
+};
+
+
+var ssn={
+	ssn:testUser.ssn
+};
+
+var testRegisterWearable={
+	name: 'testNameWearable',
+	macAddr: 'aa:bb:cc:dd:ee:ff'
+};
+
+var testCompany={
+	name: 'HealthyResearch',
+	vat: 'testVat'
+};
+
+var testSpecificRequest={
+    apiKey: '',
+	ssn: testUser.ssn,
+    idRequest: ''
+};
+
+var testPacket={
+	ts: '09/01/2019 11:47:59',
+    wearableMac: testRegisterWearable.macAddr,
+	geoX: '12.4922260',
+	geoY: '41.8902300',
+	heartBeatRate: '70',
+	bloodPressSyst: '100',
+	bloodPressDias: '80'
+};
+
+var testPacket1={
+    ts: '09/01/2019 18:12:40',
+    wearableMac: testRegisterWearable.macAddr,
+    geoX: '12.4922260',
+    geoY: '41.8902300',
+    heartBeatRate: '70',
+    bloodPressSyst: '100',
+    bloodPressDias: '80'
+};
+
+var testFilter={
+	ageStart:36,
+	ageEnd1:12
+}
+
+var testGroupRequest={
+	idRequest: ''
+};
+
 describe('Register user', function() {
 	it('registers a user into the system', function(done) {
 		chai.request(ApplicationServerMobileClient)
@@ -89,17 +155,183 @@ describe('Login user', function() {
 });
 
 describe('Register wearable', function() {
-	it('registers a wearable device', function(done) {
+	it('resiters a wearable device', function (done) {
 		chai.request(ApplicationServerMobileClient)
-			.post(`/api/${testUser.ssn.toLowerCase()}/wearableDevice`)
+			.post(`/api/${testUser.ssn.toLowerCase()}/registerWearable`)
 			.auth(testUser.mail, testUser.password)
-			.send({
-				macAddr: 'aa:bb:cc:dd:ee:ff',
-				name: 'test wearable'
-			})
-			.end(function(err, res) {
+			.send(testRegisterWearable)
+			.end(function(err, res){
 				res.should.have.status(201);
 				done();
-			})
-	})
+        });
+    })
 });
+
+
+describe('Request', function(){
+	it('shows a request', function (done){
+		chai.request(ApplicationServerMobileClient)
+			.get(`/api/${testUser.ssn.toLowerCase()}/request`)
+			.auth(testUser.mail, testUser.password)
+			.end(function(err, res){
+				res.should.have.status(200);
+				done();
+			});
+	});
+});
+
+describe('Accept request', function(){
+	it('accepts a request that doesn\'t exists', function(done){
+		chai.request(ApplicationServerMobileClient)
+            .post(`/api/${testUser.ssn.toLowerCase()}/acceptRequest`)
+            .auth(testUser.mail, testUser.password)
+			.send({
+				id:testSpecificRequest.idRequest
+            })
+			.end(function(err, res){
+                res.should.have.status(400);
+                done();
+			});
+	});
+});
+
+describe('Company Registration', function(){
+	it('a company registers at the service', function(done){
+		chai.request(ApplicationServerData4Help)
+			.post(`/api/register`)
+			.send(testCompany)
+			.end(function (err, res) {
+                res.should.have.status(201);
+                testSpecificRequest.apiKey=res.body.apiKey;
+                done();
+            });
+	});
+	it('does not allow duplicate vat', function (done) {
+			chai.request(ApplicationServerData4Help)
+				.post(`/api/register`)
+				.send(testCompany)
+				.end(function(err, res){
+					res.should.have.status(400);
+					done();
+			});
+        });
+});
+
+describe('Specific Request', function () {
+	it('a company sends specific request to a user', function (done) {
+		chai.request(ApplicationServerData4Help)
+			.post(`/api/specificRequest?apiKey=${testSpecificRequest.apiKey}`)
+			.send({
+				targetSsn: testSpecificRequest.ssn
+			})
+			.end(function(err, res){
+				res.should.have.status(201);
+				testSpecificRequest.idRequest=res.body.specificRequestId.toString();
+				done();
+			});
+    });
+
+	it('a company gets informations about all the registered specific requests', function(done){
+        chai.request(ApplicationServerData4Help)
+            .get(`/api/specificRequest?apiKey=${testSpecificRequest.apiKey}`)
+            .end(function(err, res){
+                res.should.have.status(200);
+                done();
+            });
+	});
+});
+
+describe('Accept request', function(){
+    it('accepts a request ', function(done){
+        chai.request(ApplicationServerMobileClient)
+            .post(`/api/${testUser.ssn.toLowerCase()}/acceptRequest`)
+            .auth(testUser.mail, testUser.password)
+            .send({id:testSpecificRequest.idRequest})
+            .end(function(err, res){
+                res.should.have.status(200);
+                done()
+            });
+    });
+});
+
+describe('Send a new infopacket', function () {
+	it('registers a packet containing information about user’s body', function(done){
+		chai.request(ApplicationServerMobileClient)
+			.post(`/api/${testUser.ssn.toLowerCase()}/packet`)
+			.auth(testUser.mail, testUser.password)
+			.send(testPacket)
+			.end(function (err, res) {
+				res.should.have.status(201);
+				done();
+            });
+	});
+	it('does not allow packet with same timestamp', function(done){
+        chai.request(ApplicationServerMobileClient)
+            .post(`/api/${testUser.ssn.toLowerCase()}/packet`)
+            .auth(testUser.mail, testUser.password)
+            .send(testPacket)
+            .end(function (err, res) {
+                res.should.have.status(400);
+                done();
+            });
+	});
+});
+
+describe('Get requested data',function () {
+	it('get requested data of a previously request', function (done) {
+		chai.request(ApplicationServerData4Help)
+			.get(`/api/specificRequest/data?apiKey=${testSpecificRequest.apiKey}&id=${testSpecificRequest.idRequest}`)
+			.end(function (err, res) {
+				res.should.have.status(200);
+				done();
+            });
+    });
+});
+
+describe('Register user1', function() {
+    it('registers a user into the system', function (done) {
+        chai.request(ApplicationServerMobileClient)
+            .post('/api/register')
+            .send(testUser1)
+            .end(function (err, res) {
+                res.should.have.status(201);
+                done();
+            });
+    });
+});
+
+describe('Send a new infopacket', function () {
+    it('registers a packet containing information about user’s body', function (done) {
+        chai.request(ApplicationServerMobileClient)
+            .post(`/api/${testUser.ssn.toLowerCase()}/packet`)
+            .auth(testUser.mail, testUser.password)
+            .send(testPacket1)
+            .end(function (err, res) {
+                res.should.have.status(201);
+                done();
+            });
+    });
+});
+
+describe('Forward a group request', function(){
+	it('forwards a request for anonymous data about a large group of customers', function () {
+		chai.request(ApplicationServerData4Help)
+			.post(`/api/groupRequest?apiKey=${testSpecificRequest.apiKey}`)
+			.send({
+				"filter[s]":testFilter
+            })
+			.end(function (err,res) {
+				res.should.have.status(201)
+				testGroupRequest.idRequest=res.body.groupRequestId
+				done();
+            });
+    });
+	it('get informations about all the registered group requests', function () {
+		chai.request(ApplicationServerData4Help)
+			.get(`/api/groupRequest?apiKey=${testSpecificRequest.apiKey}`)
+			.end(function (err, res) {
+				res.should.have.status(200)
+            });
+    });
+});
+
