@@ -99,6 +99,7 @@ textarea { /* Stili specifici per la teaxtarea */
   width: 100%; /* Larghezza */
   font-size: 12px;
   height: 30px;
+  resize: none;
 
 }
 
@@ -324,7 +325,7 @@ input[type="month"] {
 
 textarea {
   overflow: auto;
-  resize: vertical;
+  resize: none;
 }
 
 fieldset {
@@ -2180,11 +2181,17 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
 
 .form-group {
   margin-bottom: 1rem;
+
 }
 
 .form-text {
   display: block;
   margin-top: 0.25rem;
+}
+
+.custom-trackme-label {
+  color: #4e555b;
+  font-weight: normal;
 }
 
 .form-row {
@@ -9058,6 +9065,10 @@ a.text-dark:hover, a.text-dark:focus {
   .table-bordered th,
   .table-bordered td {
     border: 1px solid #ddd !important;
+  }
+
+  .tell-about-you {
+
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */

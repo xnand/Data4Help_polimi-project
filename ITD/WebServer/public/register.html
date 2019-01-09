@@ -6,7 +6,7 @@
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light navbar-fixed-top" style="background-color:#009788" >
+<nav class="navbar navbar-expand-lg navbar-light navbar-fixed-top" style="background-color:#009788">
     <div class="container" style="max-width:1300px; width:100%">
         <a class="navbar-brand" style="width: 40px; height: 40px; background-image: url(images/beautifulHeart.png); background-size: contain; background-repeat:no-repeat" data-holder-rendered="true" href="index.html"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
@@ -37,27 +37,39 @@
             <img src="images/white.png" alt="brand" style="width:100%; max-height:100px"/></a>
         </div>
         <div class="container" style="align:center; max-width: 500px; width: 100%">
-        <textarea name="businessName" id="businessName" cols="30" rows="1" onfocus="this.value=''">Business Name</textarea>
-        <div class="container"  style="max-height:400px" align="center">
-            <img src="images/white.png" alt="brand" style="width:100%; max-height:50px"/></a>
-        </div>
-        <textarea name="vat" id="vat" cols="30" rows="1" onfocus="this.value=''">VAT</textarea>
-        <div class="container"  style="max-height:400px" align="center">
-            <img src="images/white.png" alt="brand" style="width:100%; max-height:50px"/></a>
-        </div>
-        <textarea name="email" id="email" cols="30" rows="1" onfocus="this.value=''">Email</textarea>
+            <div class="form-group">
+                <label class="custom-trackme-label" for="businessName">Business name</label>
+                <textarea name="businessName" id="businessName" cols="30" rows="1"></textarea>
+            </div>
+            <div class="container"  style="max-height:400px" align="center">
+                <img src="images/white.png" alt="brand" style="width:100%; max-height:50px"/></a>
+            </div>
+            <div class="form-group">
+                <label class="custom-trackme-label" for="businessName">VAT</label>
+                <textarea name="vat" id="vat" cols="30" rows="1" "></textarea>
+            </div>
+            <div class="container"  style="max-height:400px" align="center">
+                <img src="images/white.png" alt="brand" style="width:100%; max-height:50px"/></a>
+            </div>
+            <div class="form-group">
+                <label class="custom-trackme-label" for="businessName">Email</label>
+                <textarea  name="email" id="email" cols="30" rows="1"></textarea>
+            </div>
         </div>
         <div class="container"  style="max-height:400px" align="center">
             <img src="images/white.png" alt="brand" style="width:100%; max-height:50px"/></a>
         </div>
         <div class="container" style="align:center; max-width: 550px; width: 100%">
-        <textarea name="message" id="message" cols="30" rows="10" style="border: 1px solid; border-radius: 10px; border-color: #DB001E; background-color: rgba(0,65,51,0.07) ; height: 50px; width: 100%" onfocus="this.value=''">Tell us why you want to use our services.</textarea>
+            <div class="form-group">
+                <label class="custom-trackme-label" for="businessName"> Tell us why you want to use our services:</label>
+            <textarea maxlength="500" class="tell-about-you" name="message" id="message" cols="30" rows="10" style="border: 1px solid; border-radius: 10px; border-color: #DB001E; background-color: rgba(0,65,51,0.07) ; height: 200px; width: 100%"> </textarea>
+            </div>
         </div>
         <div class="container"  style="max-height:400px" align="center">
             <img src="images/white.png" alt="brand" style="width:100%; max-height:50px"/></a>
         </div>
         <div class="container" style="align:center; max-width: 200px; width: 100%">
-        <input type="button" id="" name="" value="SEND" onClick="Modulo()"/>
+            <input type="button"  class="btn" id="" name="" value="SEND" onClick="Modulo()"/>
         </div>
     </div>
 </form>
