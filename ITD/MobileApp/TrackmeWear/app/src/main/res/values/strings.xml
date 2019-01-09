@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">trackme_companion_app</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Sensors Simulator</string>
+    <string name="heart_rate">Hearth Rate</string>
+    <string name="diastolic">Diastolic</string>
+    <string name="systolic">Systolic</string>
+    <string name="blood_pressure"> Blood pressure</string>
+</resources>

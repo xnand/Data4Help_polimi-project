@@ -1,0 +1,7 @@
+<resources>
+    <string name="hello_world">Sensors Simulator</string>
+    <string name="heart_rate">Hearth Rate</string>
+    <string name="diastolic">Diastolic</string>
+    <string name="systolic">Systolic</string>
+    <string name="blood_pressure"> Blood pressure</string>
+</resources>
