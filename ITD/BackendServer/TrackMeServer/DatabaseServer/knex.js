@@ -1,6 +1,6 @@
 var config = require('../common/config.json');
 var dbConnection = {};
-if (config.postgres.useHeroku !== 'false' || process.env.POSTGRES_USEHEROKU !== 'false') {
+if (config.postgres.useHeroku === 'true' || process.env.POSTGRES_USEHEROKU === 'true') {
     dbConnection = {
         host: 'ec2-54-247-74-131.eu-west-1.compute.amazonaws.com',
         user: 'hkuexxpfzlulri',
