@@ -16,11 +16,11 @@ android {
         }
     }
 
-    signingConfigs {
-        debug {
-            storeFile file("/home/andrei/.android/debug.keystore")
-        }
-    }
+//    signingConfigs {
+//        debug {
+//            storeFile file("/home/andrei/.android/debug.keystore")
+//        }
+//    }
 }
 
 

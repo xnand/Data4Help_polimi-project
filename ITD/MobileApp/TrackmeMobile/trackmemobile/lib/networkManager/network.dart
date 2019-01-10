@@ -9,7 +9,7 @@ import 'package:trackmemobile/models/request.dart';
 import 'package:trackmemobile/models/device.dart';
 
 class apiManager {
-  final _url = 'http://192.168.1.101:3001/api/'; //application server url
+  final _url = 'http://192.168.1.86:3001/api/'; //application server url
   final String _noError = 'noError';
 
   ///implement a Basic http login with email and password
