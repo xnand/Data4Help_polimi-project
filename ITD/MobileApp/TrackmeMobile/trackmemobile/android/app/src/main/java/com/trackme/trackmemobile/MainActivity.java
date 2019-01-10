@@ -17,24 +17,39 @@ import com.google.android.gms.wearable.Wearable;
 public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "com.trackme.trackmemobile/packet";
     private Activity activity = this;
+    final InfoPacketHandler infoPacketHandler = new InfoPacketHandler();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     GeneratedPluginRegistrant.registerWith(this);
+      new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(new ComunicationPlugin(activity));
 
-    new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(
-            new MethodCallHandler() {
-              @Override
-              public void onMethodCall(MethodCall call, Result result) {
-                if (call.method.equals("setupPacketHandler")) {
-                  Wearable.getMessageClient(activity).addListener(new InfoPacketHandler());
-                  System.out.println("fankulo");
-                }
-                else {
-                  result.notImplemented();
-                }
-              }
-            });
+
   }
+
+
+
+
+}
+
+class ComunicationPlugin implements MethodCallHandler {
+    Activity activity;
+    final InfoPacketHandler infoPacketHandler;
+
+    ComunicationPlugin(Activity activity) {
+        this.infoPacketHandler = new InfoPacketHandler();
+        this.activity = activity;
+    }
+
+    @Override
+    public void onMethodCall(MethodCall call, Result result) {
+        switch (call.method) {
+            case "setupPacketHandler" : Wearable.getMessageClient(activity).addListener(infoPacketHandler);
+                break;
+
+            case "getMessage" : result.success(infoPacketHandler.getMessage());
+                break;
+        }
+    }
 }

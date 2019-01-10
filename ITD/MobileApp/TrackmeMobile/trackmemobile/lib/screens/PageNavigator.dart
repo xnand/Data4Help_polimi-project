@@ -6,9 +6,11 @@ import 'automatedSOS.dart';
 import 'devicesPage.dart';
 import 'track4run.dart';
 import 'package:trackmemobile/styles/colors.dart';
+import 'dart:io';
+import 'dart:async';
 
 class PageNavigator extends StatefulWidget {
-  
+
   @override
 
   _PageNavigatorState createState() => new _PageNavigatorState();
@@ -16,8 +18,10 @@ class PageNavigator extends StatefulWidget {
 }
 
 class _PageNavigatorState extends State<PageNavigator> {
-
+  final platform =   MethodChannel('com.trackme.trackmemobile/packet');
   int _currentIndex = 2;
+  bool isInit = false;
+
   final List<Widget> _children = [
     DevicesPage(),
     Track4RunPage(),
@@ -66,12 +70,23 @@ class _PageNavigatorState extends State<PageNavigator> {
     );
   }
 
-  void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-      // call java method to set up packet handler
-      const platform = const MethodChannel('com.trackme.trackmemobile/packet');
+  void onTabTapped(int index) async {
+    if(isInit == false) {
+
       platform.invokeMethod('setupPacketHandler');
+      const oneSec = Duration(milliseconds: 1000);
+      new Timer.periodic(oneSec, (Timer t) => platform.invokeMethod('getMessage'));
+      print("no i sleep");
+    }
+    setState(() {
+      isInit = true;
+      _currentIndex = index;
+
+      // call java method to set up packet handler
+
     });
+
+
+
   }
 }
