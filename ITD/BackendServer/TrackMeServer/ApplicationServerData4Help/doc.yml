@@ -336,3 +336,77 @@ paths:
                     description: Not authorized; wrong API Key
                     schema:
                         $ref: "#/definitions/ApiError"
+
+    /specificRequest/subscribe:
+        post:
+            summary: Subscribe to an authorized specific request
+            consumes:
+                - 'application/x-www-form-urlencoded'
+            produces:
+                - 'application/json'
+            parameters:
+                -   in: query
+                    name: apiKey
+                    type: string
+                    required: true
+                    description: Company's API Key
+                -   in: formData
+                    name: requestId
+                    type: string
+                    required: true
+                    description: ID of the authorized specific request to subscribe to
+                -   in: formData
+                    name: forwardingLink
+                    type: string
+                    required: true
+                    description: "Link/address of a reachable web service to which newly collected data will be sent.
+                    HTTP POST method will be used, and the listening web service will need to respond to every POST request
+                    with a 200 status code, otherwise the subscription will not be activated or will be disabled."
+            responses:
+                201:
+                    description: Subscription succesfully activated
+                400:
+                    description: Subscription not activated; invalid parameter
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong API Key
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
+    /groupRequest/subscribe:
+        post:
+            summary: Subscribe to an authorized group request
+            consumes:
+                - 'application/x-www-form-urlencoded'
+            produces:
+                - 'application/json'
+            parameters:
+                -   in: query
+                    name: apiKey
+                    type: string
+                    required: true
+                    description: Company's API Key
+                -   in: formData
+                    name: requestId
+                    type: string
+                    required: true
+                    description: ID of the authorized group request to subscribe to
+                -   in: formData
+                    name: forwardingLink
+                    type: string
+                    required: true
+                    description: "Link/address of a reachable web service to which newly collected data will be sent.
+                        HTTP POST method will be used, and the listening web service will need to respond to every POST request
+                        with a 200 status code, otherwise the subscription will not be activated or will be disabled."
+            responses:
+                201:
+                    description: Subscription succesfully activated
+                400:
+                    description: Subscription not activated; invalid parameter
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong API Key
+                    schema:
+                        $ref: "#/definitions/ApiError"

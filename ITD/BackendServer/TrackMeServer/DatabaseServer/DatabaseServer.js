@@ -4,6 +4,8 @@ var usersRouter = require('./routes/dbs_user');
 var companyRouter = require('./routes/dbs_company');
 var requestRouter = require('./routes/dbs_request');
 var config = require('../common/config.json');
+var port = normalizePort(process.env.PORT_DATABASESERVER || config.port.databaseServer);
+var ip = process.env.ADDRESS_DATABASESERVER || config.address.databaseServer;
 
 function createUserTable() {
     return knex.schema.createTable('user', function(table) {
@@ -204,17 +206,9 @@ app.get('/dropALL', function(req, res) {
 module.exports = app;
 
 // server setup stuff ---------------------------------------------
-
-
-debug = require('debug')('trackmeserver:server');
 var http = require('http');
-
-var port = normalizePort(process.env.PORT || config.port.databaseServer);
-var ip = process.env.allIP || process.env.dbserverIP || config.address.databaseServer || '127.0.0.1';
 app.set('port', port);
-
 var server = http.createServer(app);
-
 server.listen(port, ip);
 server.on('error', onError);
 server.on('listening', onListening);
@@ -222,11 +216,9 @@ server.on('listening', onListening);
 function normalizePort(val) {
     var port = parseInt(val, 10);
     if (isNaN(port)) {
-        // named pipe
         return val;
     }
     if (port >= 0) {
-        // port number
         return port;
     }
     return false;
@@ -239,7 +231,6 @@ function onError(error) {
     var bind = typeof port === 'string'
         ? 'Pipe ' + port
         : 'Port ' + port;
-    // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
             console.error(bind + ' requires elevated privileges');
@@ -255,10 +246,5 @@ function onError(error) {
 }
 
 function onListening() {
-    var addr = server.address();
-    app.emit("appStarted");
-    var bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
-    console.log(`listening on http://${ip}:${port}`);
+    console.log(`DatabaseServer listening on http://${ip}:${port}`);
 }
