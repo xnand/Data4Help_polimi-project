@@ -204,7 +204,7 @@ router.post('/infoPacket', function(req, res) {
         heartBeatRate: params.heartBeatRate || '',
         bloodPressSyst: params.bloodPressSyst || '',
         bloodPressDias: params.bloodPressDias || '',
-		emergency: params.emergency || ''
+		emergency: params.emergency || false
     })
         .then(function() {
             res.status(200).end();
