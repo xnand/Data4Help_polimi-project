@@ -1,5 +1,4 @@
-function Modulo() {
-    // Variabili associate ai campi del modulo
+function Module(a) {
     var businessName = document.modulo.businessName.value;
     var vat = document.modulo.vat.value;
     var email = document.modulo.email.value;
@@ -26,7 +25,7 @@ function Modulo() {
         return false;
     }
 
-    else if ((message == "") || (message == "undefined")||(message == "Tell us why you want to use our services.")) {
+    else if ((message == "") || (message == "undefined")||(message == "Tell us why you want to use our services:")||message == "Write your questions here:") {
         alert("All fields are mandatory.");
         document.modulo.message.focus();
         return false;
@@ -40,8 +39,12 @@ function Modulo() {
 
      else {
         alert("Message will now be sent.");
-
-        document.modulo.action = "/send";
+        if(a==0){
+            document.modulo.action = "/send";
+        }
+        else{
+            document.modulo.action = "/sendInfo";
+        }
         document.modulo.submit();
     }
 }

@@ -14,4 +14,12 @@ router.get('/register', function(req, res, next) {
     res.render('register', { title: 'TrackMe Registration' });
 });
 
+router.get('/faq', function(req, res, next) {
+    res.render('faq', { title: 'TrackMe FAQ' });
+});
+
+router.get('/contacts', function(req, res, next) {
+    res.render('contacts', { title: 'TrackMe Contacts' });
+});
+
 module.exports = router;
