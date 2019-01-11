@@ -408,7 +408,7 @@ paths:
                 name: ts
                 type: string
                 required: true
-                description: Timestamp, in "DD/MM/YYYY HH:MM:SS" format; no two packets with same timestamp can be registered
+                description: Timestamp, in "MM/DD/YYYY HH:MM:SS" format; no two packets with same timestamp can be registered
             -   in: formData
                 name: wearableMac
                 type: string

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-# python script to populate the database with random, but plausible data
 # required modules can be installed with a package manager on linux or pip/pip3 on linux/windows/osx
 # like "[sudo] pip[3] install _modulename_"
 # required (non builtin) modules are:
@@ -12,118 +11,164 @@ import random
 import string
 import datetime
 import json
-from time import sleep
 
 # config options:
-maxUsersToGenerate = 40
-maxDevicesPerUser = 4
-maxPacketsPerDevice = 10
-maxCompaniesToGenerate = 10
-probCompanySpecReq = 0.25
+config = None
+configFilePath = '../common/config.json'
+with open(configFilePath, 'r') as c:
+    config = json.loads(c.read())
 # backend server location(s)
-databaseServer = 'http://127.0.0.1:3000'
-appServerMobileClient = 'http://127.0.0.1:3001/api'
-appServerData4Help = 'http://127.0.0.1:3002/api'
+databaseServer = 'http://{}:{}/api'.format(config['address']['databaseServer'], config['port']['databaseServer'])
+appServerMobileClient = 'http://{}:{}/api'.format(config['address']['applicationServerMobileClient'], config['port']['applicationServerMobileClient'])
+appServerData4Help = 'http://{}:{}/api'.format(config['address']['applicationServerData4Help'], config['port']['applicationServerData4Help'])
 # milan coordinates
-# ul = [45.572524, 8.884990]
-# ur = [45.572524, 8.884990]
-# dl = [45.328044, 8.915986]
-# dr = [45.328044, 8.915986]
 lat = [45.572524, 45.328044]
 long = [8.884990, 8.915986]
 
-apiKeys = {}
-SSNs = {}
+users = []
+companies = []
 
-def registerUser(n):
-    birthDate = randomDate(datetime.date(1960, 1, 1), datetime.date.today())
-    ssn = randomWord(16, string.digits + string.ascii_lowercase)
-    postData = {
-        'ssn': ssn,
-        'name': 'name{}'.format(n),
-        'surname': 'surname{}'.format(n),
-        'sex': random.choice(['male', 'female']),
-        'birthDate': '{}/{}/{}'.format(birthDate.month, birthDate.day, birthDate.year),
-        'country': 'italy',
-        'region': 'lombardia',
-        'city': 'milan',
-        'zipcode': '{}'.format(20100 + n % 5),
-        'street': 'street{}'.format(n),
-        'streetNr': '{}'.format(random.randint(0, 255)),
-        'mail': 'mail{}@gmail.com'.format(n),
-        'password': 'password{}'.format(n)
-    }
-    post = requests.post(appServerMobileClient + '/register', postData)
-    if post.status_code != 201:
-        print('user {} NOT registered'.format(n))
-        print(postData)
-        print(post.text)
-        raise Exception
-    SSNs[n] = ssn
-    return ssn
+class User:
+    def __init__(self):
+        global users
+        self.wearables = []
+        self.sentPackets = []
+        self.n = len(users)
+        self.ssn = randomWord(16)
+        self.name = randomWord(10,string.ascii_letters)
+        self.surname = randomWord(10,string.ascii_letters)
+        self.sex = random.choice(['male', 'female'])
+        self.birthDate = randomDate(datetime.date(1960, 1, 1), datetime.date.today())
+        self.country = 'italy'
+        self.region = 'lombardia'
+        self.city = 'milano'
+        self.zipcode = '{}'.format(20100 + self.n % 5)
+        self.street = 'street{}'.format(self.n % 13)
+        self.streetNr = '{}'.format(random.randint(0, 255))
+        self.mail = 'mail{}@gmail.com'.format(self.n)
+        self.password = 'password{}'.format(self.n)
 
-def registerWearable(ssn, n):
-    mac = ''
-    for i in range(0,5):
-        mac += randomWord(2, string.digits + 'abcdef') + ':'
-    mac += randomWord(2, string.digits + 'abcdef')
-    post = requests.post('{}/{}/wearableDevice'.format(appServerMobileClient, ssn), {
-        'macAddr': mac
-    }, auth = requests.auth.HTTPBasicAuth('mail{}@gmail.com'.format(n), 'password{}'.format(n)))
-    if post.status_code != 201:
-        print('device {} of user {} not registered'.format(mac, n))
-        print(post.text)
-        raise Exception
-    return mac
+    def register(self):
+        postData = {
+            'ssn': self.ssn,
+            'name': self.name,
+            'surname': self.surname,
+            'sex': self.sex,
+            'birthDate': '{}/{}/{}'.format(self.birthDate.month, self.birthDate.day, self.birthDate.year),
+            'country': self.country,
+            'region': self.region,
+            'city': self.city,
+            'zipcode': self.zipcode,
+            'street': self.street,
+            'streetNr': self.streetNr,
+            'mail': self.mail,
+            'password': self.password
+        }
+        r = requests.post(appServerMobileClient + '/register', postData)
+        return r
 
-def sendInfoPacket(ssn, mac, n):
-    rDate = randomDate(datetime.date(2017, 1, 1), datetime.date.today())
-    rTime = randomTime()
-    postData = {
-        'ts': '{}/{}/{} {}:{}:{}'.format(rDate.month, rDate.day, rDate.year, rTime.hour, rTime.minute, rTime.second),
-        'wearableMac': mac,
-        'userSsn': ssn,
-        'geoX': random.uniform(lat[0], lat[1]),
-        'geoY': random.uniform(long[0], long[1]),
-        'heartBeatRate': round(random.uniform(40.0, 120.0), 2),
-        'bloodPressSyst': round(random.uniform(70.0, 190.0), 2),
-        'bloodPressDias': round(random.uniform(40.0, 100.0), 2)
-    }
-    post = requests.post('{}/{}/packet'.format(appServerMobileClient, ssn), postData,
-                         auth = requests.auth.HTTPBasicAuth('mail{}@gmail.com'.format(n), 'password{}'.format(n)))
-    if post.status_code != 201:
-        print('packet of user {} not sent'.format(n))
-        print(post.text)
-        print(postData)
-        raise Exception
+    def addWearable(self):
+        s = None
+        while s != 201:
+            w = Wearable()
+            r = requests.post('{}/{}/wearableDevice'.format(appServerMobileClient, self.ssn), {
+                'macAddr': w.macAddr
+            }, auth = requests.auth.HTTPBasicAuth(self.mail, self.password))
+            s = r.status_code
+        self.wearables.append(w)
 
-def registerCompany(n):
-    postData = {
-        'vat': randomWord(11, string.digits + string.ascii_lowercase),
-        'name': 'company{}'.format(n)
-    }
-    post = requests.post('{}/register'.format(appServerData4Help), postData)
-    if post.status_code != 201:
-        print('company {} not registered'.format(n))
-        print(post.text)
-        print(postData)
-        raise Exception
-    apiKey = json.loads(post.text)['apiKey']
-    apiKeys[n] = apiKey
-    return apiKey
+    def acceptRequest(self, requestId):
+        return requests.post('{}/{}/acceptRequest'.format(appServerMobileClient, self.ssn), {
+            'id': requestId
+        }, auth = requests.auth.HTTPBasicAuth(self.mail, self.password))
 
-def specificRequest(companyKey, userSsn):
-    postData = {'targetSsn': userSsn}
-    qs = {'apiKey': companyKey}
-    post = requests.post('{}/specificRequest'.format(appServerData4Help), postData, params = qs)
-    if post.status_code != 201:
-        print('specificRequest for user {} not forwarded'.format(userSsn))
-        print(post.text)
-        print(postData)
-        print(qs)
-        raise Exception
+    def rejectRequest(self, requestId):
+        return requests.post('{}/{}/rejectRequest'.format(appServerMobileClient, self.ssn), {
+            'id': requestId
+        }, auth = requests.auth.HTTPBasicAuth(self.mail, self.password))
 
-def randomWord(length, alpha):
+
+class Wearable:
+    def __init__(self):
+        self.macAddr = randomWord(12, string.digits + 'abcdef')
+        self.sentPackets = []
+
+    def sendPacket(self, user):
+        s = None
+        while s != 201:
+            packet = InfoPacket(self, user)
+            r = requests.post('{}/{}/packet'.format(appServerMobileClient, user.ssn), {
+                'ts': packet.ts,
+                'wearableMac': self.macAddr,
+                'userSsn': user.ssn,
+                'geoX': packet.geoX,
+                'geoY': packet.geoY,
+                'heartBeatRate': packet.heartBeatRate,
+                'bloodPressSyst': packet.bloodPressSyst,
+                'bloodPressDias': packet.bloodPressDias
+            }, auth = requests.auth.HTTPBasicAuth(user.mail, user.password))
+            s = r.status_code
+        self.sentPackets.append(packet)
+        user.sentPackets.append(packet)
+
+
+class InfoPacket:
+    def __init__(self, wearable, user):
+        rDate = randomDate(datetime.date(2017, 1, 1), datetime.date.today())
+        rTime = randomTime()
+        self.ts = '{}/{}/{} {}:{}:{}'.format(rDate.month, rDate.day, rDate.year, rTime.hour, rTime.minute, rTime.second),
+        self.wearableMac = wearable.macAddr
+        self.userSsn = user.ssn
+        self.geoX = random.uniform(lat[0], lat[1])
+        self.geoY = random.uniform(long[0], long[1])
+        self.heartBeatRate = round(random.uniform(40.0, 120.0), 2)
+        self.bloodPressSyst = round(random.uniform(70.0, 190.0), 2)
+        self.bloodPressDias = round(random.uniform(40.0, 100.0), 2)
+
+
+class Company:
+    def __init__(self):
+        self.vat = randomWord(11)
+        self.name = 'company {}'.format(randomWord(5, string.ascii_letters))
+        self.apiKey = None
+        self.specificRequests = []
+        self.groupRequests = []
+
+    def register(self):
+        while True:
+            p = requests.post('{}/register'.format(appServerData4Help), {
+                'vat': self.vat,
+                'name': self.name
+            })
+            if p.status_code == 201:
+                break
+        self.apiKey = json.loads(p.text)['apiKey']
+        return p
+
+    def makeSpecReq(self, user):
+        r = SpecificRequest(self, user)
+        p = requests.post('{}/specificRequest'.format(appServerData4Help), {
+            'targetSsn': user.ssn
+        }, params = {
+            'apiKey': self.apiKey
+        })
+        if p.status_code == 201:
+            r.id = json.loads(p.text)['specificRequestId']
+            self.specificRequests.append(r)
+
+    def makeGroupReq(self):
+        pass
+
+
+class SpecificRequest:
+    def __init__(self, company, user):
+        self.company = company
+        self.user = user
+        self.id = None
+
+# no group request for the moment since they're a little annoying to do
+
+def randomWord(length, alpha = string.digits + string.ascii_lowercase):
     return ''.join(random.choice(alpha) for i in range(length))
 
 def randomDate(start, end):
@@ -138,28 +183,58 @@ def trueFalse(prob):
     return True if random.randint(0,100) < prob * 100 else False
 
 # reset/clean the db
-requests.get(databaseServer + '/dropALL')
-# register users, devices and packets
-for i in range(1, maxUsersToGenerate):
-    try:
-        ssn = registerUser(i)
-        for j in range(1, random.randint(1, maxDevicesPerUser)):
-            mac = registerWearable(ssn, i)
-            for k in range(1, random.randint(1, maxPacketsPerDevice)):
-                sendInfoPacket(ssn, mac, i)
-    except Exception as e:
-        print(e)
+requests.get('http://{}:{}/dropALL'.format(config['address']['databaseServer'], config['port']['databaseServer']))
+# initial set up
+while len(users) <= 10:
+    u = User()
+    if u.register().status_code != 201:
         continue
-# register companies, make specific requests to previous users
-for i in range(1, maxCompaniesToGenerate):
-    try:
-        registerCompany(i)
-        for j in range(1, maxUsersToGenerate):
-            if trueFalse(probCompanySpecReq):
-                try:
-                    specificRequest(apiKeys[i], SSNs[j])
-                except:
-                    continue
-    except Exception as e:
-        print(e)
+    users.append(u)
+    u.addWearable()
+    u.wearables[0].sendPacket(u)
+while len(companies) <= 5:
+    c = Company()
+    if c.register().status_code != 201:
         continue
+    companies.append(c)
+    c.makeSpecReq(random.choice(users))
+
+print('initial data set up')
+print('randomizing data insertion indefinitely; press ctrl+c to stop')
+# randomize from now on
+while True:
+    r = random.randint(0, 6)
+    if r == 0:
+        u = User()
+        if u.register().status_code != 201:
+            continue
+        users.append(u)
+    elif r == 1:
+        random.choice(users).addWearable()
+    elif r == 2:
+        u = random.choice(users)
+        l = len(u.wearables)
+        if l == 0:
+            continue
+        w = random.choice(u.wearables)
+        w.sendPacket(u)
+    elif r == 3:
+        c = Company()
+        if c.register().status_code != 201:
+            continue
+        companies.append(c)
+    elif r == 4:
+        c = random.choice(companies)
+        c.makeSpecReq(random.choice(users))
+    elif r == 5:
+        c = random.choice(companies)
+        if len(c.specificRequests) == 0:
+            continue
+        sr = random.choice(c.specificRequests)
+        sr.user.acceptRequest(sr.id)
+    elif r == 6:
+        c = random.choice(companies)
+        if len(c.specificRequests) == 0:
+            continue
+        sr = random.choice(c.specificRequests)
+        sr.user.rejectRequest(sr.id)
