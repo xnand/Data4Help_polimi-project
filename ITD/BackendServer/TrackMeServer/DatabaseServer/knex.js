@@ -1,6 +1,6 @@
 var config = require('../common/config.json');
 var dbConnection = {};
-if (config.postgres.useHeroku === 'true' || process.env.USEHEROKUPG) {
+if (config.postgres.useHeroku === 'true' || process.env.POSTGRES_USEHEROKU === 'true') {
     dbConnection = {
         host: 'ec2-54-247-74-131.eu-west-1.compute.amazonaws.com',
         user: 'hkuexxpfzlulri',
@@ -11,10 +11,10 @@ if (config.postgres.useHeroku === 'true' || process.env.USEHEROKUPG) {
 }
 else {
     dbConnection = {
-        host: process.env.DATABASE_URL || config.address.dbms ||"127.0.0.1",
-        user: config.postgres.databaseUser,
-        password: process.env.DATABASE_PASSWORD || config.postgres.databasePassword || "",
-        database: config.postgres.databaseName
+        host: process.env.ADDRESS_POSTGRES || config.address.postgres ||"127.0.0.1",
+        user: process.env.POSTGRES_DATABASEUSER || config.postgres.databaseUser,
+        password: process.env.POSTGRES_DATABASEPASSWORD || config.postgres.databasePassword,
+        database: process.env.POSTGRES_DATABASENAME || config.postgres.databaseName
     }
 }
 

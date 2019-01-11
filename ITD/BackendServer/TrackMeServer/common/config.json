@@ -3,14 +3,14 @@
     "databaseServer": "3000",
     "applicationServerMobileClient": "3001",
     "applicationServerData4Help": "3002",
-    "dbms": "23773",
+    "postgres": "23773",
     "ambulanceDispatcherSim": "3003"
   },
   "address": {
     "databaseServer": "127.0.0.1",
     "applicationServerMobileClient": "127.0.0.1",
     "applicationServerData4Help": "127.0.0.1",
-    "dbms": "127.0.0.1",
+    "postgres": "127.0.0.1",
     "ambulanceDispatcherSim": "127.0.0.1"
   },
   "postgres": {
@@ -19,5 +19,5 @@
     "databaseUser": "trackme",
     "databasePassword": ""
   },
-  "minUsersGroupRequest": 1
+  "minUsersGroupRequest": 3
 }

@@ -353,10 +353,45 @@ paths:
                     schema:
                         $ref: "#/definitions/ApiError"
 
+    /{ssn}/rejectRequest:
+        post:
+            summary: Reject a specific request
+            description: ''
+            consumes:
+                - 'application/x-www-form-urlencoded'
+            produces:
+                - 'application/json'
+            security:
+                -   basicAuth: [username:password]
+            parameters:
+                -   in: path
+                    name: ssn
+                    type: string
+                    required: true
+                    description: User's ssn
+                -   in: formData
+                    name: id
+                    type: string
+                    required: true
+                    description: Request's id
+            responses:
+                200:
+                    description: Request succesfully rejected
+                400:
+                    description: Request not rejected; invalid field
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not rejected; wrong credentials
+                    schema:
+                        $ref: "#/definitions/ApiError"
+
     /{ssn}/packet:
         post:
             summary: Register an infoPacket in the system
-            description: Register a packet containing information about user's body, obtained from a wearable device, in the system
+            description: "Register a packet containing information about user's body, obtained from a wearable device, in the system.
+            If the 'emergency' field is set, an ambulance will be dispatched to the location indicated by geoX and geoY parameters:
+            an acknowledgement and the estimated time of arrival will be provided in the response body"
             consumes:
             - 'application/x-www-form-urlencoded'
             produces:
@@ -401,6 +436,12 @@ paths:
                 name: bloodPressDias
                 type: string
                 description: User's diastolic blood pressure measurement
+            -   in: formData
+                name: emergency
+                type: string
+                required: false
+                default: 'false'
+                description: 'Set to "true" is parameters indicate an emergency and an ambulance needs to be dispatched'
             responses:
                 201:
                     description: Packet successfully registered

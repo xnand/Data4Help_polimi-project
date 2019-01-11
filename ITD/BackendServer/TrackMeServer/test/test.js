@@ -92,7 +92,7 @@ var testPacket1={
 var testFilter={
 	ageStart:36,
 	ageEnd1:12
-}
+};
 
 var testGroupRequest={
 	idRequest: ''

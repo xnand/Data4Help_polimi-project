@@ -493,13 +493,15 @@ router.post('/:ssn/packet', function(req, res) {
 			// as soon as we verified the packet is legit, check to see if an ambulance needs to be dispatched
 			return new Promise(function (resolve) {
 				if (params.emergency && params.emergency.toLowerCase() === 'true') {
+					// todo check that the parameters are outside of safety threshold
 					dispatchAmbulance(params)
 						.then(function(eta) {
 							emergencyData.eta = eta;
 							resolve();
 						})
 						.catch(resolve);
-				} else {
+				}
+				else {
 					resolve();
 				}
 			})
@@ -574,9 +576,8 @@ router.post('/:ssn/packet', function(req, res) {
                 })
                     .catch(function() {
                     	// forwardingLink not reachable
-                        console.log(link);
-                        // todo disable subscription?
-						// todo
+                        console.log(`${link} not reachable`);
+                        // todo disable subscription
                     })
             }
         })
@@ -617,7 +618,7 @@ function validateCredentials(req, res, next) {
                     if (!reqdata.ssn) {
                         return Promise.reject({apiError: `email ${auth[0]} is not registered`});
                     }
-                    ssn = reqdata.ssn; //todo checks ??
+                    ssn = reqdata.ssn;
                     resolve();
                 })
                 .catch(function(err) {
