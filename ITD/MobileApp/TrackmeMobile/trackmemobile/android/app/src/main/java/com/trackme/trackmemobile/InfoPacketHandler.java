@@ -1,5 +1,6 @@
 package com.trackme.trackmemobile;
 
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -24,13 +26,27 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-
+//a Singleton implementation of the packet handler
 public class InfoPacketHandler extends AppCompatActivity implements MessageClient.OnMessageReceivedListener {
 
+    private static InfoPacketHandler instance;
     private BlockingQueue<JSONObject> messagesQueue;
-    InfoPacketHandler() {
+
+    private InfoPacketHandler() {
         this.messagesQueue = new ArrayBlockingQueue<>(10);
     }
+
+    public static InfoPacketHandler getInstance() {
+        if(instance == null) {
+            instance = new InfoPacketHandler();
+        }
+        return instance;
+    }
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,9 +77,10 @@ public class InfoPacketHandler extends AppCompatActivity implements MessageClien
 
     }
 
-    public String getMessage () {
-        System.out.println("called");
-        return messagesQueue.remove().toString();
+    public JSONObject getMessage () {
+
+        return messagesQueue.remove();
+
 
     }
 
@@ -79,33 +96,62 @@ public class InfoPacketHandler extends AppCompatActivity implements MessageClien
 
 }
 
-class NetworkUtil  {
-    String credentials =  "user : password";
+class NetworkUtil extends AsyncTask<String, Void, Void > {
 
-    void post() throws UnsupportedEncodingException {
+    private boolean  sendFlag = true;
+    private final  String basicUrl = "http://192.168.1.86:3001/api/";
 
+    NetworkUtil() {
+
+    }
+
+
+    private void post(String SSN, String email, String password) throws UnsupportedEncodingException {
+
+        //generate the basicAuth string
+        String credentials =  email + ":" + password;
         byte[] data = credentials.getBytes("UTF-8");
-        String payload = "Basic" + Base64.encodeToString(data, Base64.DEFAULT);
+        String authString = "Basic " + Base64.encodeToString(data, Base64.NO_WRAP);
 
+        //packet specific information
         BufferedReader httpResponseReader = null;
+        String packet = null;
+
+        try {
+             packet = craftToSendString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         try {
             // Connect to the web server endpoint
-            URL serverUrl = new URL("http://httpbin.org/basic-auth/user/passwd");
+            URL serverUrl = new URL(basicUrl + SSN + "/packet");
             HttpURLConnection urlConnection = (HttpURLConnection) serverUrl.openConnection();
+            urlConnection.setRequestProperty("Authorization", authString);
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-            // Set HTTP method as GET
-            urlConnection.setRequestMethod("GET");
+            // Set HTTP method as POST
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestMethod("POST");
 
-            // Include the HTTP Basic Authentication payload
-            urlConnection.addRequestProperty("Authorization", payload);
+            // Include the HTTP Basic Authentication authString
 
+
+            // Writing the post data to the HTTP request body
+            BufferedWriter httpRequestBodyWriter = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
+
+            httpRequestBodyWriter.write(packet);
+            httpRequestBodyWriter.close();
+            System.out.println(urlConnection.getResponseCode());
             // Read response from web server, which will trigger HTTP Basic Authentication request to be sent.
-            httpResponseReader =
-                    new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-            String lineRead;
-            while((lineRead = httpResponseReader.readLine()) != null) {
-                System.out.println(lineRead);
+//            httpResponseReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+            // Reading from the HTTP response body
+            Scanner httpResponseScanner = new Scanner(urlConnection.getInputStream());
+            while(httpResponseScanner.hasNextLine()) {
+                System.out.println(httpResponseScanner.nextLine());
             }
+            httpResponseScanner.close();
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -121,6 +167,49 @@ class NetworkUtil  {
         }
 
 
+    }
+
+    private String craftToSendString() throws JSONException {
+        String payload;
+        JSONObject packet = InfoPacketHandler.getInstance().getMessage();
+
+        //POST fields
+        String ts = packet.getString("ts");
+        String wearableMac = packet.getString("wearableMac");
+        String geoX = packet.getString("geoX");
+        String geoY = packet.getString("geoY");
+        String hearbeatRate =  packet.getString("heartBeatRate");
+        String bloodPressSyst = packet.getString("bloodPressSyst");
+        String bloodPressDias = packet.getString("bloodPressDias");
+
+        payload=
+                "ts=" + ts + "&" +
+                "wearableMac=" + wearableMac + "&" +
+                "geoX=" + geoX + "&" +
+                "geoY=" + geoY + "&" +
+                "heartBeatRate=" + hearbeatRate + "&" +
+                "bloodPressSyst=" + bloodPressSyst + "&" +
+                "bloodPressDias=" + bloodPressDias;
+
+        return payload;
+    }
+
+
+    //this function send periodically packet to the server
+    @Override
+    protected Void doInBackground(String... strings) {
+
+            try {
+                post(strings[0], strings[1], strings[2]);       ///SSN, email, password
+                Thread.sleep(1000);
+                sendFlag = false;
+            } catch (Exception e) {
+                System.err.print(e);
+            }
+
+
+
+        return null;
     }
 }
 

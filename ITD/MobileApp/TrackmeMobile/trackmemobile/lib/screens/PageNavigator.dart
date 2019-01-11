@@ -8,6 +8,7 @@ import 'track4run.dart';
 import 'package:trackmemobile/styles/colors.dart';
 import 'dart:io';
 import 'dart:async';
+import 'package:trackmemobile/controllers/profileManager.dart';
 
 class PageNavigator extends StatefulWidget {
 
@@ -77,7 +78,11 @@ class _PageNavigatorState extends State<PageNavigator> {
 //      const oneSec = Duration(milliseconds: 1000);
 //      new Timer.periodic(oneSec, (Timer t) => platform.invokeMethod('getMessage'));
 //      print("no i sleep");
-    platform.invokeMethod("startService");
+    platform.invokeMethod("startService", <String, String> {
+      'SSN' : await ProfileManager().getSSN(),
+      'email' : await ProfileManager().getEmail(),
+      'password' : await ProfileManager().getPassword()
+    });
     }
     setState(() {
       isInit = true;

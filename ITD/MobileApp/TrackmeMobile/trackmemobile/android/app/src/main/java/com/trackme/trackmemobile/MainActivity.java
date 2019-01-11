@@ -40,7 +40,7 @@ class CommunicationPlugin implements MethodCallHandler {
     final NetworkUtil networkUtil = new NetworkUtil();
 
     CommunicationPlugin(Activity activity) {
-        this.infoPacketHandler = new InfoPacketHandler();
+        this.infoPacketHandler = InfoPacketHandler.getInstance();
         this.activity = activity;
 
 }
@@ -54,9 +54,12 @@ class CommunicationPlugin implements MethodCallHandler {
                 break;
 
             case "startService" :
+                final String SSN = call.argument("SSN");
+                final String email = call.argument("email");
+                final String password = call.argument("password");
                 try {
-                    networkUtil.post();
-                } catch (UnsupportedEncodingException e) {
+                    networkUtil.execute(SSN, email, password);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
