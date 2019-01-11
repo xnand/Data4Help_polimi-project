@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.wearable.activity.WearableActivity;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -24,7 +25,8 @@ public class MainActivity extends WearableActivity {
     private SeekBar systolicSlider;
     private SeekBar diastolicSlider;
 
-    private static final String INFOPACKET_CAPABILITY = "infopacket_transmission";
+    private TextView heartBeatIndicator;
+    private TextView pressureIndicator;
 
 
     final int MAX_HEART_BEAT = 180;
@@ -35,18 +37,21 @@ public class MainActivity extends WearableActivity {
     final int MIN_SYSTOLIC = 70;
     final int STEP = 1;
 
+    private static final String INFOPACKET_CAPABILITY = "infopacket_transmission";
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        heartBeatSlider = findViewById(R.id.heartBeatSlider);
-        systolicSlider = findViewById(R.id.systolicSlider);
-        diastolicSlider = findViewById(R.id.diastolicSlider);
+        initView();
+        setListeners();
 
-        heartBeatSlider.setMax((MAX_HEART_BEAT - MIN_HEART_BEAT)/STEP);
-        systolicSlider.setMax((MAX_SYSTOLIC - MIN_SYSTOLIC)/STEP);
-        diastolicSlider.setMax((MAX_DIASTOLIC - MIN_DIASTOLIC)/STEP);
+
+
 
         // Enables Always-on
         setAmbientEnabled();
@@ -114,12 +119,12 @@ public class MainActivity extends WearableActivity {
             sendTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    System.out.println("packet NOT sent :(");
+                    //System.out.println("packet NOT sent :(");
                 }
             });
         } else {
             // Unable to retrieve node with transcription capability
-            System.out.println("no nodes :((");
+            //System.out.println("no nodes :((");
         }
     }
 
@@ -156,6 +161,79 @@ public class MainActivity extends WearableActivity {
                 }
             }
         }
+    }
+
+    private void initView() {
+        heartBeatSlider = findViewById(R.id.heartBeatSlider);
+        systolicSlider = findViewById(R.id.systolicSlider);
+        diastolicSlider = findViewById(R.id.diastolicSlider);
+
+        heartBeatSlider.setMax((MAX_HEART_BEAT - MIN_HEART_BEAT)/STEP);
+        systolicSlider.setMax((MAX_SYSTOLIC - MIN_SYSTOLIC)/STEP);
+        diastolicSlider.setMax((MAX_DIASTOLIC - MIN_DIASTOLIC)/STEP);
+
+        heartBeatIndicator = findViewById(R.id.heartBeatIndicator);
+        pressureIndicator = findViewById(R.id.pressureIndicator);
+
+        heartBeatSlider.setProgress(60);
+        diastolicSlider.setProgress((MAX_DIASTOLIC - MIN_DIASTOLIC)/2);
+        systolicSlider.setProgress((MAX_SYSTOLIC - MIN_SYSTOLIC)/2);
+
+        heartBeatIndicator.setText(String.valueOf(heartBeatSlider.getProgress()));
+        pressureIndicator.setText((diastolicSlider.getProgress() + MIN_DIASTOLIC )+ " / " + (systolicSlider.getProgress() + MIN_SYSTOLIC));
+    }
+
+    void setListeners() {
+        heartBeatSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                heartBeatIndicator.setText(String.valueOf(heartBeatSlider.getProgress() + MIN_HEART_BEAT));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                //TODO change the value of the infopacket here
+            }
+        });
+
+        diastolicSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                pressureIndicator.setText((diastolicSlider.getProgress() + MIN_DIASTOLIC )+ " / " + (systolicSlider.getProgress() + MIN_SYSTOLIC));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        systolicSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                pressureIndicator.setText((diastolicSlider.getProgress() + MIN_DIASTOLIC )+ " / " + (systolicSlider.getProgress() + MIN_SYSTOLIC));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
 }

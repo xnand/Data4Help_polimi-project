@@ -26,20 +26,46 @@
                     android:layout_height="wrap_content"
                     android:text="@string/hello_world" android:textColor="@android:color/holo_green_dark"
                     android:gravity="center"/>
-            <TextView
-                    android:text="@string/heart_rate"
+            <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/textView" android:textColor="@color/black"
-                    android:gravity="center_horizontal" android:paddingTop="10dp"/>
+                    android:layout_height="wrap_content">
+                <TextView
+                        android:text="@string/heart_rate"
+                        android:layout_width="32dp"
+                        android:layout_height="match_parent" android:id="@+id/textView" android:textColor="@color/black"
+                        android:gravity="center_horizontal" android:paddingTop="10dp" android:layout_weight="1"/>
+                <TextView
+                        android:text="70"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" android:id="@+id/heartBeatIndicator"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|center" android:textColor="@color/blue"
+                        android:paddingTop="10dp"/>
+
+            </LinearLayout>
             <SeekBar
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:id="@+id/heartBeatSlider"
             />
-            <TextView
-                    android:text="@string/blood_pressure"
+            <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/textView2" android:textColor="@color/black"
-                    android:gravity="center" android:paddingTop="5dp"/>
+                    android:layout_height="37dp">
+                <TextView
+                        android:text="@string/blood_pressure"
+                        android:layout_width="52dp"
+                        android:layout_height="match_parent" android:id="@+id/textView2"
+                        android:textColor="@color/black"
+                        android:gravity="center" android:paddingTop="5dp" android:textSize="12sp"
+                        android:layout_weight="1"/>
+                <TextView
+                        android:text="80 / 120"
+                        android:layout_height="match_parent" android:id="@+id/pressureIndicator"
+                        android:layout_weight="1"
+                        android:textColor="@color/blue" android:textAlignment="center"
+                        android:paddingTop="10dp" android:layout_width="36dp"/>
+            </LinearLayout>
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
@@ -57,7 +83,7 @@
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" android:layout_weight="1">
+                    android:layout_height="0dp" android:layout_weight="1">
                 <TextView
                         android:text="@string/systolic"
                         android:layout_width="2dp"

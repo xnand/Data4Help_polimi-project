@@ -73,10 +73,11 @@ class _PageNavigatorState extends State<PageNavigator> {
   void onTabTapped(int index) async {
     if(isInit == false) {
 
-      platform.invokeMethod('setupPacketHandler');
-      const oneSec = Duration(milliseconds: 1000);
-      new Timer.periodic(oneSec, (Timer t) => platform.invokeMethod('getMessage'));
-      print("no i sleep");
+//      platform.invokeMethod('setupPacketHandler');
+//      const oneSec = Duration(milliseconds: 1000);
+//      new Timer.periodic(oneSec, (Timer t) => platform.invokeMethod('getMessage'));
+//      print("no i sleep");
+    platform.invokeMethod("startService");
     }
     setState(() {
       isInit = true;
