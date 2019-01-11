@@ -15,7 +15,7 @@ function getRegExp(k) {
             return /^[0-9a-z]{16}$/;
         case 'name':
         case 'surname':
-            return /^[0-9a-z']{1,32}$/;
+            return /^[0-9a-z' ]{1,32}$/;
         case 'sex':
             return /^[mf].*$/;
         case 'birthDate':

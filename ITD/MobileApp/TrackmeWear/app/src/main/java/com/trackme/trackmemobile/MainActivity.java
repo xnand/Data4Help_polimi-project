@@ -151,7 +151,9 @@ public class MainActivity extends WearableActivity {
                 updateCapabilityInfo(capabilityInfo);
                 try {
                     JSONObject json = new JSONObject();
-                    json.put("heartBeatRate", 150);
+                    json.put("heartRate", heartBeatSlider.getProgress() + MIN_HEART_BEAT);
+                    json.put("systolic", systolicSlider.getProgress() + MIN_SYSTOLIC);
+                    json.put("diastolic", diastolicSlider.getProgress() + MIN_DIASTOLIC);
                     sendInfoPacket(json.toString().getBytes());
                     sleep(1000);
                 } catch (InterruptedException e) {

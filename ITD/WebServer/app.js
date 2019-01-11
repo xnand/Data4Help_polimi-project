@@ -106,6 +106,62 @@ app.post('/send', (req, res) => {
 
 });
 
+app.post('/sendInfo', (req, res) => {
+    const output = `
+    <p>Question</p>
+    <h3>Contact Details</h3>
+    <ul>  
+      <li>Business Name: ${req.body.businessName}</li>
+      <li>Vat: ${req.body.vat}</li>
+      <li>Email: ${req.body.email}</li>
+    </ul>
+    <h3>Question</h3>
+    <p>${req.body.message}</p>
+  `;
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+            user: 'wtrackme@gmail.com',
+            pass: 'Data4.Help'
+        },
+        tls:{
+            rejectUnauthorized:false
+        }
+    });
+
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: '"Web Server TrackMe" <wtrackme@gmail.com>', // sender address
+        to: 'wtrackme@gmail.com', // list of receivers
+        subject: 'Question', // Subject line
+        text: 'Write your questions here', // plain text body
+        html: output // html body
+    };
+
+    //validation email field
+    var a= new String(req.body.email);
+
+    if(!req.body.businessName==""&&!req.body.vat==""&&(a.indexOf("@")!=-1&&(a.indexOf(".")!=-1)&&(a.lastIndexOf("@"))<a.lastIndexOf("."))){
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+            console.log('Message sent: %s', info.messageId);
+            res.render('contacts');
+        });
+    }
+    else{
+        console.log('Message not sent');
+        res.render('contacts');
+    }
+
+});
+
 // server setup stuff ---------------------------------------------
 var debug = require('debug')('trackmeserver:server');
 var http = require('http');

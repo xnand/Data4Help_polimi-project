@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>TrackMe Registation</title>
+    <title>TrackMe Contacts</title>
     <link href="stylesheets/style.css" rel="stylesheet" type="text/css">
 </head>
 
@@ -15,10 +15,10 @@
                 <div class="row">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item"> <a class="nav-link" href="index.html">HOME<span class="sr-only">(current)</span></a> </li>
-                        <li class="nav-item active"> <a class="nav-link" href="register.html">REGISTER</a></li>
+                        <li class="nav-item"> <a class="nav-link" href="register.html">REGISTER</a></li>
                         <li class="nav-item"> <a class="nav-link" href="/documentation">DOCUMENTATION</a></li>
                         <li class="nav-item"> <a class="nav-link" href="faq.html">FAQ</a></li>
-                        <li class="nav-item"> <a class="nav-link" href="contacts.html">CONTACTS</a></li>
+                        <li class="nav-item active"> <a class="nav-link" href="contacts.html">CONTACTS</a></li>
                     </ul>
                 </div>
             </div>
@@ -27,8 +27,8 @@
 </nav>
 
 <div class="container"  style="max-height:350px" align="center">
-    <img src="images/data4HelpBrand.png" alt="brand" style="max-width:600px; width:100%; max-height:350px"/></a>
-    <h6 style="color: rgba(0, 31, 27, 0.78)">Register your company and start <br> using our data mining services</h6>
+    <img src="images/beautifulBrand.png" alt="brand" style="max-width:600px; width:100%; max-height:350px"/></a>
+    <h6 style="color: rgba(0, 31, 27, 0.78)">Ask informations</h6>
 </div>
 
 <form action="/send" method="post" name="modulo">
@@ -46,7 +46,7 @@
             </div>
             <div class="form-group">
                 <label class="custom-trackme-label" for="businessName">VAT</label>
-                <textarea name="vat" id="vat" cols="30" rows="1"></textarea>
+                <textarea name="vat" id="vat" cols="30" rows="1" "></textarea>
             </div>
             <div class="container"  style="max-height:400px" align="center">
                 <img src="images/white.png" alt="brand" style="width:100%; max-height:50px"/></a>
@@ -61,15 +61,15 @@
         </div>
         <div class="container" style="align:center; max-width: 550px; width: 100%">
             <div class="form-group">
-                <label class="custom-trackme-label" for="businessName"> Tell us why you want to use our services:</label>
-            <textarea maxlength="500" class="tell-about-you" name="message" id="message" cols="30" rows="10" style="border: 1px solid; border-radius: 10px; border-color: #DB001E; background-color: rgba(0,65,51,0.07) ; height: 200px; width: 100%"> </textarea>
+                <label class="custom-trackme-label" for="businessName"> Write your questions here:</label>
+                <textarea maxlength="500" class="tell-about-you" name="message" id="message" cols="30" rows="10" style="border: 1px solid; border-radius: 10px; border-color: #DB001E; background-color: rgba(0,65,51,0.07) ; height: 200px; width: 100%"> </textarea>
             </div>
         </div>
         <div class="container"  style="max-height:400px" align="center">
             <img src="images/white.png" alt="brand" style="width:100%; max-height:50px"/></a>
         </div>
         <div class="container" style="align:center; max-width: 200px; width: 100%">
-            <input type="button"  class="btn" id="" name="" value="SEND" onClick="Module(0)"/>
+            <input type="button"  class="btn" id="" name="" value="SEND" onClick="Module(1)"/>
         </div>
     </div>
 </form>

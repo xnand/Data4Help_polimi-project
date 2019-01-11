@@ -114,6 +114,11 @@ h1, h2, h3, h4, h5, h6, h7 {
   margin-bottom: 0.5rem;
 }
 
+h6b, h7b{
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
 p {
   margin-top: 0;
   margin-bottom: 1rem;
@@ -388,8 +393,8 @@ template {
   display: none !important;
 }
 
-h1, h2, h3, h4, h5, h6, h7,
-.h1, .h2, .h3, .h4, .h5, .h6, .h7 {
+h1, h2, h3, h4, h5, h6, h7, h6b, h7b
+.h1, .h2, .h3, .h4, .h5, .h6, .h7, .h6b, h7b {
   margin-bottom: 0.5rem;
   font-family: inherit;
   font-weight: 500;
@@ -423,10 +428,22 @@ h6, .h6 {
   font-size: 1rem;
 }
 
+h6b, .h6b {
+  font-size: 1rem;
+  color:black;
+}
+
 h7, .h7 {
   font-size: 0.8rem;
   line-height: 1rem;
   font-weight: 300;
+}
+
+h7b, .h7b {
+  font-size: 0.8rem;
+  line-height: 1rem;
+  font-weight: 300;
+  color:black;
 }
 
 .lead {
