@@ -4,6 +4,7 @@ var bb = require("bluebird");
 var request = bb.promisify(require('request'));
 var config = require('../../common/config.json');
 var common = require('../../common/common');
+var minUsersGroupRequest = process.env.MINUSERSGROUPREQUEST || config.minUsersGroupRequest;
 
 
 // register a company
@@ -272,10 +273,10 @@ router.post('/groupRequest', function(req, res) {
 			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
 				return Promise.reject();
 			}
-			if (reqres.body.length < config.minUsersGroupRequest) {
+			if (reqres.body.length < minUsersGroupRequest) {
 				// too few users to guarantee anonymity
 				// maybe register the request too?
-			    return Promise.reject({apiError: `request automatically rejected; filters too restrictive, at least ${config.minUsersGroupRequest} users must be included`});
+			    return Promise.reject({apiError: `request automatically rejected; filters too restrictive, at least ${minUsersGroupRequest} users must be included`});
             }
 			// record the request
 			params.companyId = companyId;

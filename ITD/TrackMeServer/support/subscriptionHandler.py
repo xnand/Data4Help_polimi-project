@@ -3,7 +3,12 @@ import json
 import signal
 import sys
 
-bindAddr = '127.0.0.1'
+# to use this you must start the script and subscribe on a authorized
+# request giving 'http://bindAddr:bindPort' as forwardingLink,
+# where bindAddr and bindPort are the values of the two variables
+# defined below
+
+bindAddr = '127.0.0.1' # i discourage to change this one
 bindPort = 1337
 dumpFileName = 'subscription.json'
 
