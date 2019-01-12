@@ -24,9 +24,10 @@ A more directory named "common" contains two files used by the components:
 One more directory names "support" contains files useful for development and evaluation. Three python scripts and a standalone node (javascript) file. The python scripts are written and tested for python 3 version 3.7.2 and require the "requests" package:
 
 \begin{description}
-	\item[cleanDatabase.py] Simply performs a GET to /dropALL on the DatabaseServer component to reset the database tables (see the further DatabaseServer component description).
+	\item[cleanDatabase.py] Simply performs a GET to /dropALL on the DatabaseServer component to reset the database tables (see the DatabaseServer component description below).
 	\item[populateDatabase.py] This script uses the ApplicationServerMobileClient and ApplicationServerData4Help components to register random model data in the system.
-	\item[subscriptionHandler.py] A simple server to listen and write data to simulate a company subscription's funcionality
+	\item[subscriptionHandler.py] A simple server to listen and write data to simulate a company subscription's funcionality.
+	\item[AmulanceDispatcherSimulator/dispatcher.js] Node JS server that simulates the external ambulance dispatcher simulator, required for AutomatedSOS funcionality.
 \end{description}
 
 Every main component javascript file sets up the environment and binds the service to the address provided by the config file (or environment variable).
@@ -45,6 +46,21 @@ As the DatabaseServer component, the main file set up the environment and binds 
 
 The doc.yml is the source code of the documentation, read by swagger when starting the component through the swagger-jsdoc node module.
 
+\subsubsection{WebServer}
+
+todo
+
+\subsection{MobileApp}
+
+todo
+
+\subsubsection{TrackmeMobile}
+
+todo
+
+\subsubsection{TrackmeWear}
+
+todo
 
 
 \end{document}

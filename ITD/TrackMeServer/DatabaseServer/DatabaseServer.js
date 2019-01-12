@@ -8,7 +8,7 @@ var port = normalizePort(process.env.PORT_DATABASESERVER || config.port.database
 var ip = process.env.ADDRESS_DATABASESERVER || config.address.databaseServer;
 
 function createUserTable() {
-    return knex.schema.createTableIfNotExists('user', function(table) {
+    return knex.schema.createTable('user', function(table) {
         // columns
         table.string('ssn', 16).primary().notNullable();
         table.string('name', 32).notNullable();
@@ -27,7 +27,7 @@ function createUserTable() {
 }
 
 function createCompanyTable() {
-    return knex.schema.createTableIfNotExists('company', function(table) {
+    return knex.schema.createTable('company', function(table) {
         // columns
         table.increments('id').notNullable();
         table.string('vat', 11).notNullable();
@@ -42,7 +42,7 @@ function createCompanyTable() {
 }
 
 function createWearableDeviceTable() {
-    return knex.schema.createTableIfNotExists('wearableDevice', function(table) {
+    return knex.schema.createTable('wearableDevice', function(table) {
         // columns
         table.string('macAddr', 17).notNullable();
         table.string('name').notNullable();
@@ -56,7 +56,7 @@ function createWearableDeviceTable() {
 }
 
 function createInfoPacketTable() {
-    return knex.schema.createTableIfNotExists('infoPacket', function(table) {
+    return knex.schema.createTable('infoPacket', function(table) {
         // columns
         table.timestamp('ts', true).notNullable(); // true = no timezone
         table.string('wearableMac');
@@ -76,7 +76,7 @@ function createInfoPacketTable() {
 }
 
 function createSpecificRequestTable() {
-    return knex.schema.createTableIfNotExists('specificRequest', function(table) {
+    return knex.schema.createTable('specificRequest', function(table) {
         // columns
         table.increments('id');
         table.integer('companyId').unsigned();
@@ -94,7 +94,7 @@ function createSpecificRequestTable() {
 }
 
 function createGroupRequestTable() {
-    return knex.schema.createTableIfNotExists('groupRequest', function(table) {
+    return knex.schema.createTable('groupRequest', function(table) {
         // columns
         table.increments('id');
         table.integer('companyId').unsigned();
@@ -112,7 +112,7 @@ function createGroupRequestTable() {
 }
 
 function createFilterTable() {
-    return knex.schema.createTableIfNotExists('filter', function(table) {
+    return knex.schema.createTable('filter', function(table) {
         // columns
         table.increments('id');
         table.integer('requestId').unsigned(); // groupRequest only
@@ -133,7 +133,7 @@ function createFilterTable() {
 }
 
 function createUserCredentialsTable() {
-    return knex.schema.createTableIfNotExists('userCredentials', function(table) {
+    return knex.schema.createTable('userCredentials', function(table) {
         // columns
         table.string('ssn', 16).primary().notNullable();
         table.string('mail').notNullable();
@@ -187,10 +187,10 @@ app.use('/user', usersRouter);
 app.use('/company', companyRouter);
 app.use('/request', requestRouter);
 
-// createTables();
-
-// remember to give this to postgres after the database has been created:
-// ALTER DATABASE trackmedb SET datestyle TO "ISO, DMY";
+// create all tables if table 'user' does not exist = first launch
+knex('user').select()
+    .then()
+    .catch(createTables);
 
 // TODO if debug
 app.get('/dropALL', function(req, res) {
