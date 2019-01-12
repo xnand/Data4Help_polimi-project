@@ -1,5 +1,36 @@
 \documentclass[../main.tex]{subfiles}
 
 \begin{document}
-delvelop frameworks
+
+\subsection{Frameworks and programming languages}
+
+With regard to the Component View presented in the Design Document, various frameworks and programming languages were adopted for development, depending on the component and the platform on which it runs on.
+
+\subsubsection{Web server, Application Servers and Database Server}
+
+These components form the back-end of the system.
+
+Node JS with express and Javascript were used for development, and all the exchanged data that forms the model of the system is stored in a database. This combination performs very well in asynchronous and event-driven operations, and is exceptionally suited for applications where a large number of users operate simultaneously with short data payloads (eg. sending user's body parameters), while also having very good performance with larger data payloads (eg. company accessing a large group of customer's data). The two Application server and the Database server components expose a REST API that allows them to communicate with each other and with the Mobile client component. Also, this allows the service to be used with different interfaces without any problem. For example, the Application Server Data4Help API that exposes functions for companies, could be used with any software or framework and/or programming language capable of communicating through standard HTTP protocol, or even with any modern web browser. This holds true for the Application Server Mobile Client, though the functionality that handles user's parameters gathered from a wearable device limits the usage of certain functions to an interface developed specifically for TrackMe's service.
+
+All data is exchanged in JSON format, being platform independent and well supported by all frameworks.
+
+Furthermore, this approach does not require a constantly open network connection between a user's device and the server for the entire interaction process, thus partially avoiding problems with limited simultaneous open connections and allowing a fair queueing mechanism in case of overloading.
+
+\subsubsection{Mobile client}
+
+todo
+
+
+
+\subsection{Middleware software}
+
+Various middleware platforms were used:
+
+{\begin{description}
+	\item [Knex.js] Query builder for managing the DBMS, used in the Database Server for creating database tables, creating, deleting, updating columns and querying the database. Also allows changing DBMS software editing just its connection settings.
+	\item [PostgresQL] DataBase Management System.
+	\item [Mocha, Chai] Testing frameworks integrating well with Node js and express.
+\end{description}}
+
+
 \end{document}
