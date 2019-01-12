@@ -2,47 +2,52 @@
 
 \begin{document}
 
-\subsection{Requirements Implemented}	
+\subsection{Implemented goals and requirements}
+
+	All goals and requirements of Data4Help and AutomatedSOS have been implemented, at least partially, in the prototype.
 
 	\vspace{1cm}
 
 	{\bf Data4Help}
-	
+
 	\vspace{0.5cm}
-	
+
 	\begin{description}
+		\item [G1]  Third parties shall be able to make requests for accessing single customer data.
+		\item [G2]  Third parties shall be able to make requests for accessing aggregate anonymous data specifiying filters.
+		\item [G3]  Third parties shall be able to access stored data, for which a request has been approved.
+		\item [G4]  Third parties shall be able to subscribe to new data, for which a request has been approved.
+		\item [G5]  Users shall be able to accept or refuse requests for their data from third parties.
+		\item [G6]  Access to customers data from a third party, for which a request does not exist, or has been rejected, shall be denied.
+
 		\item [R1] The system must forward any request from a company to single customer's data to the corresponding user.
-	
 		\item [R2] The system must reject any request for data regarding a group of customers when it cannot guarantee the anonimity of its components.
-	
 		\item [R3] The system must periodically collect and store customer's data.
-		
 		\item [R4] The system must periodically update the accessible data with the newly collected one
-	
-		\item [R5] The system must notify the user of the request and permit him to accept or refuse it.
-	
+		\item [R5 *] The system must notify the user of the request and permit him to accept or refuse it.
 		\item [R6] The system must update the request status with the answer provided by the user.
-	
 		\item [R7] The system must be able to identify which data can be accessed for each third party company.
-	
+
 	\end{description}
 
 \vspace{8mm}
-	
+
 
 	{\bf AutomatedSOS}
 
 	\vspace{0.5cm}
 
 	\begin{description}
-		\item [R8] The system must continuously check the data read from customers subscribed to AutomatedSOS.
+		\item [G7 *]  From the time a customer's parameters indicate a health emergency status, an ambulance shall be dispatched to his location in less than 5 seconds.
+		\item [G8]  When an ambulance is dispatched, the customer shall be notified of its arrival.
 
-		\item [R9] In case the data indicate an emergency for a customer, the system must dispatch the closest ambulance to his location.
-	
+		\item [R8] The system must continuously check the data read from customers subscribed to AutomatedSOS.
+		\item [R9 *] In case the data indicate an emergency for a customer, the system must dispatch the closest ambulance to his location.
 		\item [R10] After an ambulance is dispatched, the system must notify the customer of its arrival.
-	
+
 	\end{description}
 
-\subsection{Requirements not Implemented}	
+
+\textbf{*} Partial implementation
 
 \end{document}
