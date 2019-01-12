@@ -15,9 +15,9 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import com.trackme.trackmemobile.MakeInfopacket;
 
 public class MainActivity extends WearableActivity {
 
@@ -113,7 +113,8 @@ public class MainActivity extends WearableActivity {
 
                 @Override
                 public void onSuccess(Integer integer) {
-                    System.out.println("packet sent!");
+
+
                 }
             });
             sendTask.addOnFailureListener(new OnFailureListener() {
@@ -150,10 +151,8 @@ public class MainActivity extends WearableActivity {
                 }
                 updateCapabilityInfo(capabilityInfo);
                 try {
-                    JSONObject json = new JSONObject();
-                    json.put("heartRate", heartBeatSlider.getProgress() + MIN_HEART_BEAT);
-                    json.put("systolic", systolicSlider.getProgress() + MIN_SYSTOLIC);
-                    json.put("diastolic", diastolicSlider.getProgress() + MIN_DIASTOLIC);
+                    JSONObject json = craftJSON();
+
                     sendInfoPacket(json.toString().getBytes());
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -236,6 +235,24 @@ public class MainActivity extends WearableActivity {
 
             }
         });
+    }
+
+    private JSONObject craftJSON() throws JSONException {
+        JSONObject json = new JSONObject();
+
+        String tp = MakeInfopacket.craftTimeStamp();
+        String macAddr = MakeInfopacket.getMacAddress(getApplicationContext());
+        String geoX = MakeInfopacket.getGeoX(getApplicationContext());
+
+
+        json.put("heartRate", heartBeatSlider.getProgress() + MIN_HEART_BEAT);
+        json.put("systolic", systolicSlider.getProgress() + MIN_SYSTOLIC);
+        json.put("diastolic", diastolicSlider.getProgress() + MIN_DIASTOLIC);
+        json.put("tp", tp );
+        json.put("macAddr", macAddr);
+        json.put("geoX", geoX);
+        System.out.println(geoX);
+        return json;
     }
 
 }
