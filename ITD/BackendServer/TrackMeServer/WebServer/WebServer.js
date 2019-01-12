@@ -3,6 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cons = require('consolidate');
+var config = require('../common/config');
 
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
@@ -27,21 +28,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// swagger documentation
-const swaggerJSDoc = require('swagger-jsdoc');
-const options = {
-    definition: {
-        swagger: '2.0',
-        info: {
-            title: 'Application Server Data4Help',
-            version: '1.0.0',
-        },
-    },
-    apis: ['./D4Hdoc.yml'],
-};
-const swaggerSpec = swaggerJSDoc(options);
-const swaggerUi = require('swagger-ui-express');
-app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get('/documentation', function(req, res) {
+    res.redirect(`http://${config.address.applicationServerData4Help}:${config.port.applicationServerData4Help}/docs`)
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -166,8 +155,8 @@ app.post('/sendInfo', (req, res) => {
 var debug = require('debug')('trackmeserver:server');
 var http = require('http');
 
-var port = normalizePort(process.env.PORT || 3004); // todo change port and maybe put some config file
-var ip = process.env.allIP || process.env.appServerD4HIP || '127.0.0.1';
+var port = normalizePort(process.env.PORT_WEBSERVER || config.port.webServer);
+var ip = process.env.ADDRESS_WEBSERVER || config.address.webServer;
 app.set('port', port, ip);
 
 var server = http.createServer(app);
@@ -211,13 +200,7 @@ function onError(error) {
 
 function onListening() {
     var addr = server.address();
-    var bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
     console.log(`listening on http://${ip}:${port}`);
-    if (swaggerSpec) {
-        console.log(`documentation available on http://${ip}:${port}/documentation`)
-    }
 }
 
 

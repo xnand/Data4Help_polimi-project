@@ -4,14 +4,16 @@
     "applicationServerMobileClient": "3001",
     "applicationServerData4Help": "3002",
     "postgres": "23773",
-    "ambulanceDispatcherSim": "3003"
+    "ambulanceDispatcherSim": "3003",
+    "webServer": "3004"
   },
   "address": {
     "databaseServer": "127.0.0.1",
     "applicationServerMobileClient": "127.0.0.1",
     "applicationServerData4Help": "127.0.0.1",
     "postgres": "127.0.0.1",
-    "ambulanceDispatcherSim": "127.0.0.1"
+    "ambulanceDispatcherSim": "127.0.0.1",
+    "webServer": "127.0.0.1"
   },
   "postgres": {
     "useHeroku": "false",
