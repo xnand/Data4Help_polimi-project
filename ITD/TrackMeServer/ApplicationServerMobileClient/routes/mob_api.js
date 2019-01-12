@@ -523,7 +523,10 @@ router.post('/:ssn/packet', function(req, res) {
             res.status(201);
             if (params.emergency === 'true') {
             	if (emergencyData.eta) {
-            		res.send({apiMsg: `emergency detected; an ambulance should arrive at location in ${emergencyData.eta} minutes`});
+            		res.send({
+						apiMsg: `emergency detected; an ambulance should arrive at location in ${emergencyData.eta} minutes`,
+						eta: emergencyData.eta
+            		});
 				}
             	else {
             		// todo queue emergencies and poll dispatcher service
