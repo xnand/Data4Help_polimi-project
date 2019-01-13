@@ -50,7 +50,7 @@ The doc.yml is the source code of the documentation, read by swagger when starti
 
 todo
 
-\subsection{MobileApp}
+\subsection{MobileApp & WearOS app}
 MobileApp is composed of two submodule, Flutter code and the android platform specific code.
 
 \subsubsection{Flutter code}
@@ -78,8 +78,10 @@ as shown in Fig. 1, the structure of the code is pretty simple
 \subsubsection{Platform specific code (Java)}
 Is composed of two macro classes located in \\ "../MobileApp/TrackmeMobile/trackmemobile/android/app/src/main/java/com/trackme/trackmemobile"
 \begin{description}
-	\item[MainActivity.java] launch the application and contains a CommunicationPlugin class that handle the platform call made by Flutter.
-	\item[InfoPacketHandler.java] handle the connection with the WearOS device, receive the infoPackets on a nonBlockingQueue of fixed size and dispatch the received infoPacket to the TrackMe mobile application server (Fig2)
+	\item[MainActivity.java] Launch the application and contains a CommunicationPlugin class that handle the platform call made by Flutter.
+	\item[InfoPacketHandler.java] Handle the connection with the WearOS device, receive the infoPackets on a nonBlockingQueue of fixed size
+	 and dispatch the received infoPacket to the TrackMe mobile application server (Fig2), the system is capable of handling a wearsOS device disconnection
+	 or a Mobile app disconnection. 
 \end{description}
 
 \begin{figure}[H]
@@ -90,8 +92,16 @@ Is composed of two macro classes located in \\ "../MobileApp/TrackmeMobile/track
 \end{figure}
 
 \subsubsection{TrackmeWear}
+The WearOS app was not planned in advance. During the development the team encountered an unexpected problem: for some reason it is impossible to simulate live monitoring sensors on a WearOS device emulator (see reference).
+After some discussion about the problem, it was decided to develop a small companion application to simulate live monitoring sensors, in particular hearbeat, systolic and diastolic blood pressure.
+Thus, The application establish a connection with the smartphone and start an infinite stream of infoPackets with a THR of 1 packet/second, data is sent through a simulated bluetooth protocol. The user can modify data values using the sliders on the screen of the
+WearOS device. This simple app is written totally in Java.
 
-todo
+\begin{description}
+	\item[MainActivity.java] Start the application, handle the connection with the smartphone and initialize and update the screen with the sliders.
+	\item[MakeInfoPacket.jave] A collection of static methods to craft the infoPacket.
+	\item[MobileWearableService] connect to the Smartphone.
+\end{description}
 
 \subsection{Notable algorithms}
 
@@ -106,6 +116,10 @@ The source code is commented and should not be difficult to follow and understan
 	 are two different groups, respectively group 1 and 2. Multiple filters can be specified per group, and if no number is specified it is assumed to be number 1. Each filter inside the group is in a logical AND relation with all the other filters in the same group, while the different groups are in logical OR relation with all the other groups. So, the example above would search for users that (are at least 18 years old) OR (are at most 25 years old AND live in risorgimento street).
 	\item Subscriptions for authorized requests require that the company set a server capable of receiving data from TrackMe's server, sent as POST requests containing user's data in JSON format, and must respond to every request with status code 200 (an example of such server is provided in TrackMeServer/support/subscriptionHandler.py). It must provide a reachable link to such service when subscribing. If such server is not reachable or won't respond at the moment of subscribing, the operation will fail. If the subscription is succesfully activated, and the company's server then stops satisfying the above requirements, the subscription will be automatically deactivated.
 	
+	\subsubsection{Blood pressure}
+	Although the specific of the project states that "an ambulance must be dispatched in t<5 seconds from the start of an emergency", 
+	we thought it was mandatory to implement a system capable of discerning between an emergency and a casual fluctuation in the readings.\\
+	A simple yet effective solution would be a Threshold system where //TODO
 \end{itemize}
 
 \end{document}
