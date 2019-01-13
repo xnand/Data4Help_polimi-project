@@ -131,10 +131,10 @@ router.post('/:ssn/wearableDevice', function(req, res) {
             params.macAddr = params.macAddr.replace(/[ -]/g, '');
             // check that the wearable with this mac address is not already registered
             return request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice`,
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/allWearableDevice`,
                 method: 'GET',
                 qs: {
-                    macAddr: params.macAddr
+                    macAddr: params.macAddr,
                 }
             });
         })
@@ -143,7 +143,7 @@ router.post('/:ssn/wearableDevice', function(req, res) {
                 return Promise.reject({apiError: 'invalid macAddr'});
             }
             var reqdata = JSON.parse(reqres.body)[0] || '';
-            if (reqdata.userSsn) {
+            if (reqdata.userSsn && reqdata.active === true) {
             	// there is one user with this wearable registered already
                 return Promise.reject({apiError: 'wearable already registered'});
             }
