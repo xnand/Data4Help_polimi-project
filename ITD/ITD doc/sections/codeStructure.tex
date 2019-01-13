@@ -12,7 +12,7 @@ The root directory of the source code is "ITD". Inside of it there are three fol
 
 \subsection{TrackMeServer}
 
-The four modules inside this directory all share the same basic structure: inside the component's directory (eg. ApplicationServerMobileClient) there is the main javascript file to be launched with node (eg. ApplicationServerMobileClient.js), the documentation source for the component if available (doc.yml), and a routes directory that futher defines funcionalities provided by the component.
+The macro components presented in the Design Document, except for the Mobile App, are the four different modules found in this directory, while the inner components take the form of functions and REST endpoints. All the four modules share the same basic structure: inside the component's directory (eg. ApplicationServerMobileClient) there is the main javascript file to be launched with node (eg. ApplicationServerMobileClient.js), the documentation source for the component if available (doc.yml), and a routes directory that futher defines funcionalities provided by the component.
 
 The directory named "common" contains two files used by the components:
 
@@ -74,7 +74,7 @@ The source code is commented and should not be difficult to follow and understan
 
 	 are two different groups, respectively group 1 and 2. Multiple filters can be specified per group, and if no number is specified it is assumed to be number 1. Each filter inside the group is in a logical AND relation with all the other filters in the same group, while the different groups are in logical OR relation with all the other groups. So, the example above would search for users that (are at least 18 years old) OR (are at most 25 years old AND live in risorgimento street).
 	\item Subscriptions for authorized requests require that the company set a server capable of receiving data from TrackMe's server, sent as POST requests containing user's data in JSON format, and must respond to every request with status code 200 (an example of such server is provided in TrackMeServer/support/subscriptionHandler.py). It must provide a reachable link to such service when subscribing. If such server is not reachable or won't respond at the moment of subscribing, the operation will fail. If the subscription is succesfully activated, and the company's server then stops satisfying the above requirements, the subscription will be automatically deactivated.
-	
+
 \end{itemize}
 
 \end{document}
