@@ -117,6 +117,10 @@ class _DevicesPageState extends State<DevicesPage> {
           default:
             if (snapshot.hasError)
               return new Text('Error: ${snapshot.error}');
+            else if(snapshot.data is ApiResponse) {
+              ApiResponse error = snapshot.data;
+              return new Text('Error : ${error.apiError}');
+            }
             else
               return createListView(context, snapshot);
         }

@@ -3,8 +3,10 @@ import 'package:trackmemobile/styles/colors.dart';
 import 'package:trackmemobile/networkManager/network.dart';
 import 'package:trackmemobile/models/apiResponse.dart';
 import 'package:trackmemobile/controllers/channelController.dart';
-
+import 'package:trackmemobile/utils/validators.dart';
 import 'PageNavigator.dart';
+
+
 
 class LoginPage extends StatefulWidget {
 
@@ -34,12 +36,12 @@ class _LoginPageState extends State<LoginPage> {
 
   void validateAndSave() async {
     final form = formKey.currentState;
-    setState(() {
-      _isButtonDisabled = true;
-    });
+
 
     if(form.validate()) {
-
+      setState(() {
+        _isButtonDisabled = true;
+      });
       form.save();
       ApiResponse response = await apiManager().login(_email, _password);
 
@@ -71,12 +73,12 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final email = TextFormField(
-
+      key: Key('emailField'),
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       onSaved: (email) => _email = email,
-      initialValue: 'mail21@gmail.com',
-      validator: (value) => value.isEmpty ? 'Email can\'t be empy': null,
+      initialValue: '',
+      validator: EmailFIeldValidator.validate,
       decoration: InputDecoration(
           labelText: 'Email',
 
@@ -85,10 +87,11 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final password = TextFormField(
+      key: Key('passwordField'),
       autofocus: false,
-      initialValue: 'password21',
+      initialValue: '',
       obscureText: true,
-      validator: (value) => value.isEmpty ? 'Password can\'t be empty': null,
+      validator: PasswordFieldValidator.validate,
       onSaved: (password) => _password = password,
       decoration: InputDecoration(
           labelText: 'Password',
@@ -104,6 +107,7 @@ class _LoginPageState extends State<LoginPage> {
           color: colorStyles['button_green'],
           elevation: 7.0,
           child: FlatButton(
+            key: Key('loginButton'),
             color: Colors.transparent,
             onPressed: loginPressed(),
             child: Center(
@@ -137,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
               elevation: 0,
 
               child: FlatButton(
-
+                key: Key('registerButton'),
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onPressed: () {

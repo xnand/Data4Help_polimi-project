@@ -6,7 +6,7 @@ import 'package:trackmemobile/styles/colors.dart';
 import 'package:trackmemobile/models/user.dart';
 import 'package:trackmemobile/networkManager/network.dart';
 import 'package:trackmemobile/models/apiResponse.dart';
-import 'package:trackmemobile/screens/loginpage.dart';
+import 'package:trackmemobile/utils/validators.dart';
 
 class RegisterPage extends StatefulWidget {
 
@@ -122,7 +122,7 @@ class _RegisterPageState extends State<RegisterPage> {
       autofocus: false,
       onSaved: (email) => _email = email,
       initialValue: 'testmail@gmail.it',
-      validator: (value) => value.isEmpty ? 'Email can\'t be empy' : null,
+      validator: EmailFIeldValidator.validate,
       decoration: InputDecoration(
           labelText: 'Email',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -133,7 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
       autofocus: false,
       initialValue: 'testpsw',
       obscureText: true,
-      validator: (value) => value.isEmpty ? 'Password can\'t be empy' : null,
+      validator: PasswordFieldValidator.validate,
       onSaved: (password) => _password = password,
       decoration: InputDecoration(
           labelText: 'Password',
@@ -169,7 +169,7 @@ class _RegisterPageState extends State<RegisterPage> {
       autofocus: false,
       onSaved: (name) => _name = name,
       initialValue: null,
-      validator: (value) => value.isEmpty ? 'name can\'t be empy' : null,
+      validator: NameFieldValidator.validate,
       decoration: InputDecoration(
           labelText: 'Name',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -182,7 +182,7 @@ class _RegisterPageState extends State<RegisterPage> {
       autofocus: false,
       onSaved: (surname) => _surname = surname,
       initialValue: null,
-      validator: (value) => value.isEmpty ? 'surname can\'t be empy' : null,
+      validator: SurnameFieldValidator.validate,
       decoration: InputDecoration(
           labelText: 'Surname',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -195,7 +195,7 @@ class _RegisterPageState extends State<RegisterPage> {
       autofocus: false,
       onSaved: (street) => _street = street,
       initialValue: null,
-      validator: (value) => value.isEmpty ? 'street can\'t be empy' : null,
+      validator: StreetFieldValidator.validate,
       decoration: InputDecoration(
           labelText: 'Street',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -208,7 +208,7 @@ class _RegisterPageState extends State<RegisterPage> {
       autofocus: false,
       onSaved: (region) => _region = region,
       initialValue: null,
-      validator: (value) => value.isEmpty ? 'Region can\'t be empy' : null,
+      validator: RegionFieldValidator.validate,
       decoration: InputDecoration(
           labelText: 'Region',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
