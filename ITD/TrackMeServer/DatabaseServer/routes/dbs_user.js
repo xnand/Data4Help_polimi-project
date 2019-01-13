@@ -190,10 +190,11 @@ router.post('/registerWearable', function(req, res) {
 		.then(function(queryres) {
 			if (queryres.length > 0 && queryres[0].active === false) {
 				// wearable previously registered then deactivated
-				console.log('ye');
-				return knex('wearableDevice').update({
-					active: true
-				})
+				var update = {active: true};
+				if (params.name) {
+					update.name = params.name
+				}
+				return knex('wearableDevice').update(update)
 					.where({
 					macAddr: params.macAddr,
 				})
