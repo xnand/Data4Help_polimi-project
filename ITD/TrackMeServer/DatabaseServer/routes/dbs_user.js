@@ -53,13 +53,13 @@ router.post('/advancedSearch', function(req, res) {
 					birth = new Date();
 					birth.setYear(birth.getFullYear() - filters[filterKey][fieldKey]);
 					where[0] += '"birthDate" <= ?';
-					where.push(dateFormat(birth, 'dd/mm/yyyy'));
+					where.push(dateFormat(birth, 'mm/dd/yyyy'));
 					break;
 				case 'ageEnd':
 					birth = new Date();
 					birth.setYear(birth.getFullYear() - filters[filterKey][fieldKey]);
 					where[0] += '"birthDate" >= ?';
-					where.push(dateFormat(birth, 'dd/mm/yyyy'));
+					where.push(dateFormat(birth, 'mm/dd/yyyy'));
 					break;
 				default:
 					where[0] += `"${fieldKey}" = ?`;

@@ -2,6 +2,8 @@ var config = require('../common/config');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var should = chai.should();
+var bb = require("bluebird");
+var request = bb.promisify(require('request'));
 // var expect = chai.expect;
 var ApplicationServerMobileClient = `http://${config.address.applicationServerMobileClient}:${config.port.applicationServerMobileClient}`;
 var ApplicationServerData4Help = `http://${config.address.applicationServerData4Help}:${config.port.applicationServerData4Help}`;
@@ -536,7 +538,7 @@ describe('Forward a group request', function(){
 	it('forwards a request for anonymous data about a not enough large group of customers', function (done) {
 		chai.request(ApplicationServerData4Help)
 			.post(`/api/groupRequest?apiKey=${testSpecificRequest.apiKey}`)
-			.send({ageStart:50})
+			.send({ageStart:'50'})
 			.end(function (err,res) {
 				res.should.have.status(400);
 				testGroupRequest.idRequest=res.body.groupRequestId;
@@ -544,14 +546,30 @@ describe('Forward a group request', function(){
             });
     });
     it('forwards a request for anonymous data about a large group of customers', function (done) {
-        chai.request(ApplicationServerData4Help)
-            .post(`/api/groupRequest?apiKey=${testSpecificRequest.apiKey}`)
-            .send({ageStart:10})
-            .end(function (err,res) {
-                res.should.have.status(201);
-                testGroupRequest.idRequest=res.body.groupRequestId;
-                done();
-            });
+    	var baseSsn = 'TestUserSSN123';
+    	var user = testUser;
+    	var promises = [];
+    	for (var i = 0; i <= config.minUsersGroupRequest + 3; i++) {
+    		user.ssn = baseSsn + (i).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+    		user.mail = 'mail' + (i).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false}) + '@gmail.com';
+    		promises.push(request({
+				url: `${ApplicationServerMobileClient}/api/register`,
+				method: 'POST',
+				json: true,
+				body: user
+			}));
+		}
+    	Promise.all(promises)
+			.then(function() {
+				chai.request(ApplicationServerData4Help)
+					.post(`/api/groupRequest?apiKey=${testSpecificRequest.apiKey}`)
+					.send({ageStart:'10'})
+					.end(function (err,res) {
+						res.should.have.status(201);
+						testGroupRequest.idRequest=res.body.groupRequestId;
+						done();
+					});
+			}
     });
 	it('get informations about all the registered group requests', function (done) {
 		chai.request(ApplicationServerData4Help)
