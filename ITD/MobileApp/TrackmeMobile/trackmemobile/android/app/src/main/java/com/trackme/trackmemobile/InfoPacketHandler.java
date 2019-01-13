@@ -5,32 +5,33 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import com.google.android.gms.common.util.Base64Utils;
 import com.google.android.gms.wearable.MessageClient;
 import com.google.android.gms.wearable.MessageEvent;
-import com.google.android.gms.wearable.Wearable;
-import com.trackme.trackmemobile.InfoPacketHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 
 //a Singleton implementation of the packet handler
+//packet are sent using a FIFO policy to the application server
 public class InfoPacketHandler extends AppCompatActivity implements MessageClient.OnMessageReceivedListener {
 
     private static InfoPacketHandler instance;
     private BlockingQueue<JSONObject> messagesQueue;
+    private String macAddr = null;
+
+    public void setMacAddr(String macAddr) {
+        this.macAddr = macAddr;
+    }
+
+
+
 
     private InfoPacketHandler() {
         this.messagesQueue = new ArrayBlockingQueue<>(10);
@@ -65,7 +66,7 @@ public class InfoPacketHandler extends AppCompatActivity implements MessageClien
             j = new JSONObject(new String(messageEvent.getData()));
             if(messagesQueue != null) {
                 putMessage(j);
-                System.out.println(messagesQueue.remainingCapacity());
+
             } //fill the queue
 
             //System.out.println("got heart beat rate " + j.get("heartBeatRate"));
@@ -94,18 +95,21 @@ public class InfoPacketHandler extends AppCompatActivity implements MessageClien
         return "service started";
     }
 
+    public String getMacAddr() {
+        return macAddr;
+    }
 }
 
 class NetworkUtil extends AsyncTask<String, Void, Void > {
 
     private boolean  sendFlag = true;
-    private final  String basicUrl = "http://192.168.1.86:3001/api/";
+    private final  String basicUrl = "http://192.168.1.86:3001/api/";  //TODO metterlo da qualche parte
 
     NetworkUtil() {
 
     }
 
-
+    //http://'application server url'/api/packet {POST}
     private void post(String SSN, String email, String password) throws UnsupportedEncodingException {
 
         //generate the basicAuth string
@@ -168,20 +172,26 @@ class NetworkUtil extends AsyncTask<String, Void, Void > {
 
 
     }
-
+        //this function generate the string containing the  that will be sent to the server
     private String craftToSendString() throws JSONException {
+
         String payload;
         JSONObject packet = InfoPacketHandler.getInstance().getMessage();
-
+        if(InfoPacketHandler.getInstance().getMacAddr() == null) {
+            InfoPacketHandler.getInstance().setMacAddr(packet.getString("macAddr"));
+        }
+        System.out.println(packet.toString());
         //POST fields
         String ts = packet.getString("ts");
-        String wearableMac = packet.getString("wearableMac");
+        String wearableMac = packet.getString("macAddr");
         String geoX = packet.getString("geoX");
         String geoY = packet.getString("geoY");
-        String hearbeatRate =  packet.getString("heartBeatRate");
-        String bloodPressSyst = packet.getString("bloodPressSyst");
-        String bloodPressDias = packet.getString("bloodPressDias");
+        String hearbeatRate =  packet.getString("heartRate");
+        String bloodPressSyst = packet.getString("systolic");
+        String bloodPressDias = packet.getString("diastolic");
 
+
+        //payload if in application/x-www-form-urlencoded format
         payload=
                 "ts=" + ts + "&" +
                 "wearableMac=" + wearableMac + "&" +
@@ -198,15 +208,16 @@ class NetworkUtil extends AsyncTask<String, Void, Void > {
     //this function send periodically packet to the server
     @Override
     protected Void doInBackground(String... strings) {
+            while (sendFlag = true) {
+                try {
 
-            try {
-                post(strings[0], strings[1], strings[2]);       ///SSN, email, password
-                Thread.sleep(1000);
-                sendFlag = false;
-            } catch (Exception e) {
-                System.err.print(e);
+                    post(strings[0], strings[1], strings[2]);       ///SSN, email, password
+                    Thread.sleep(1000);
+
+                } catch (Exception e) {
+                    System.err.print(e);
+                }
             }
-
 
 
         return null;

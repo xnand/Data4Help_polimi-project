@@ -4,6 +4,7 @@ import 'screens/feed.dart';
 import 'screens/PageNavigator.dart';
 import 'screens/sharingPage.dart';
 import 'screens/registerPage.dart';
+import 'screens/addDevicePage.dart';
 import 'package:flutter/services.dart';
 
 void main() {
@@ -22,7 +23,8 @@ class TrackMe extends StatelessWidget {
     '/feed': (context) =>FeedPage(),
     '/navigator': (context) => PageNavigator(),
     '/sharing': (context) => SharingPage(),
-    '/register': (context) => RegisterPage()
+    '/register': (context) => RegisterPage(),
+    '/addDevice' : (context) => AddDevicePage()
 
   };
   @override

@@ -62,7 +62,10 @@ class CommunicationPlugin implements MethodCallHandler {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                break;
 
+            case "getMacAddr" :
+                result.success(InfoPacketHandler.getInstance().getMacAddr());
         }
     }
 }
