@@ -591,10 +591,11 @@ router.post('/:ssn/packet', function(req, res) {
 });
 
 // grab a company image
-router.get('/:ssn/companyImage/:id', function(req, res) {
+router.get('/companyImage', function(req, res) {
+	var id = req.query.id;
 	var stream = intoStream('');
 	stream.headers = req.headers;
-	stream.pipe(request.get(`http://${config.address.databaseServer}:${config.port.databaseServer}/company/image/${req.params.id}`)).pipe(res);
+	stream.pipe(request.get(`http://${config.address.databaseServer}:${config.port.databaseServer}/company/image/${id}`)).pipe(res);
 });
 
 // grab email & password from the 'authorization' header and check them against the registered users
