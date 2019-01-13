@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:trackmemobile/styles/colors.dart';
 import 'package:trackmemobile/controllers/channelController.dart';
-import 'dart:async';
+import 'package:trackmemobile/models/apiResponse.dart';
+import 'package:trackmemobile/ProfileManager/network.dart';
+
 class AddDevicePage extends StatefulWidget {
   @override
   _AddDevicePage createState() => new _AddDevicePage();
@@ -14,8 +16,31 @@ class AddDevicePage extends StatefulWidget {
 
 class _AddDevicePage extends State<AddDevicePage> {
   final formKey = new GlobalKey<FormState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
   String _macAddr = "";
+  String _name = "";
   ChannelController chCtrll = new ChannelController();
+  bool _isLoading = false;
+
+
+  void validateAndSave() async {
+    final form = formKey.currentState;
+    if(form.validate() && _macAddr != "") {
+      _isLoading = true;
+      ApiResponse response = await apiManager().registerWearable(_macAddr, _name);
+      if(response.apiError == 'noError') {
+        Navigator.of(context).pop();
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        final scaffold = scaffoldKey.currentState;
+        scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));
+      }
+    } else {
+
+    }
+  }
 
   @override
   void initState() {
@@ -27,6 +52,7 @@ class _AddDevicePage extends State<AddDevicePage> {
     @override
     Widget build(BuildContext context) {
       var page = Scaffold(
+        key: scaffoldKey,
         backgroundColor: colorStyles['primary_pink'],
         body: Container(
           padding: EdgeInsets.all(32.0),
@@ -43,8 +69,8 @@ class _AddDevicePage extends State<AddDevicePage> {
                   ),
                   SizedBox(height: 50),
                   TextFormField(
-                    validator: (value) =>
-                    value.isEmpty ? "name can't be empty" : null,
+                    onSaved: (value) => _name = value,
+                    validator: (value) => value.isEmpty ? "device name can't be empty" : null,
                     decoration: InputDecoration(
 
                       fillColor: Colors.white,
@@ -64,7 +90,7 @@ class _AddDevicePage extends State<AddDevicePage> {
                         elevation: 7.0,
                         child: FlatButton(
                           color: Colors.transparent,
-                          onPressed: () {},
+                          onPressed: validateAndSave,
                           child: Center(
                             child: Text(
                               'CONFIRM',
@@ -115,7 +141,7 @@ class _AddDevicePage extends State<AddDevicePage> {
         ),
       );
 
-      return page;
+      return _isLoading ? whenLoading : page;
   }
 
 }

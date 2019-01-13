@@ -13,6 +13,8 @@ class CategoryItem extends StatelessWidget {
   String categoryName;
   IconData categoryIcon;
   String navigationTag;
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
+
 
   CategoryItem(String categoryName, IconData categoryIcon, String navigationTag) {
     this.categoryName = categoryName;
@@ -23,6 +25,7 @@ class CategoryItem extends StatelessWidget {
   CategoryItem.defaultIcon(String categoryName,) {
     this.categoryName = categoryName;
     this.categoryIcon = Icons.cake;
+
   }
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,11 @@ class CategoryItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(80),
 
             onTap: () {
-              Navigator.of(context).pushNamed(this.navigationTag);
+              if(navigationTag != 'noImpl') {
+                Navigator.of(context).pushNamed(this.navigationTag);
+              } else {
+                Scaffold.of(context).showSnackBar(SnackBar(content: Text('$categoryName functionality is not yet implemented')));
+              }
               },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -74,11 +81,12 @@ class CategoryItem extends StatelessWidget {
 
 class SettingPage extends StatelessWidget {
 
+
   ListView settingsList = new ListView(
     children: <Widget>[
-      new CategoryItem('Notifications', Icons.notifications_none, '/sharing'),
+      new CategoryItem('Notifications', Icons.notifications_none, 'noImpl'),
       new CategoryItem('Sharing center', Icons.share,  '/sharing'),
-      new CategoryItem('Account', Icons.account_circle,  '/sharing'),
+      new CategoryItem('Account', Icons.account_circle,  'noImpl'),
     ],
 
   );
