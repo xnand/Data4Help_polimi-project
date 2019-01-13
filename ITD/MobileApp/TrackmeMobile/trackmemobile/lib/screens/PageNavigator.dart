@@ -6,7 +6,7 @@ import 'automatedSOS.dart';
 import 'devicesPage.dart';
 import 'track4run.dart';
 import 'package:trackmemobile/styles/colors.dart';
-import 'package:trackmemobile/controllers/profileManager.dart';
+import 'package:trackmemobile/ProfileManager/profileStateManager.dart';
 import 'package:trackmemobile/controllers/channelController.dart';
 
 class PageNavigator extends StatefulWidget {

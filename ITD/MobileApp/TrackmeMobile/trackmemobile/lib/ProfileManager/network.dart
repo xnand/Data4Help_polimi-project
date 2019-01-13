@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:trackmemobile/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:trackmemobile/models/apiResponse.dart';
-import 'package:trackmemobile/controllers/profileManager.dart';
+import 'package:trackmemobile/ProfileManager/profileStateManager.dart';
 import 'package:trackmemobile/models/request.dart';
 import 'package:trackmemobile/models/device.dart';
 

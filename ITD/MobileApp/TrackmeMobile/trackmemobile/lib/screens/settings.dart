@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trackmemobile/screens/PageNavigator.dart';
 import 'package:trackmemobile/styles/texts.dart';
 import 'package:trackmemobile/screens/sharingPage.dart';
-import 'package:trackmemobile/controllers/profileManager.dart';
+import 'package:trackmemobile/ProfileManager/profileStateManager.dart';
 const _widgetHeight = 100.0;
 const _iconSize = 60.0;
 const _iconColoredBackgroundWidth = 70.0;

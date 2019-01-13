@@ -18,7 +18,15 @@ Furthermore, this approach does not require a constantly open network connection
 
 \subsubsection{Mobile client}
 
-todo
+TrackMe mobile client was developed for the Android Platform with a combination of the new Google's mobile app SDK "Flutter 1.0" and Platform specific code.
+Flutter is an app SDK for crafting high-quality native experiences on iOS and Android using the Dart programming language.
+Thanks to flutter, TrackMe could be shipped also on IOS with minimum effort being almost all the code written in Dart sharable between platforms. 
+ Java was used for the WearOS application and for the interaction between TrackMe smartphone app and WearOS device.
+ In particular, the reception of infopackets and the subroutine that send infopacket to the Mobile Client were necessarily developed using Android specific code.
+ The former because currently there's no Dart library specifically developed for the communication between a smartdevice and the handleheld counterpart, 
+ the latter because during development it has been noticed that Flutter was not well suited to handle continuos tasks in background.
+
+
 
 
 
@@ -33,5 +41,12 @@ Various middleware platforms were used:
 	\item [Swagger] For generating interactive documentation of the REST APIs.
 \end{description}}
 
+\subsection{Dart Plugin}
+{\begin{description}
+	\item [Shared preferences 0.4.3] Wraps NSUserDefaults (on iOS) and SharedPreferences (on Android), providing a persistent store for simple data.
+	\item [http 0.12.0] A set of high-level functions and classes that make it easy to consume HTTP resources.
+	\item [datetime\textunderscore picker\textunderscore formfield 0.1.7] Two Flutter widgets that wrap a TextFormField and integrates the date and/or time picker dialogs.
+	\item [country\textunderscore code\textunderscore picker 1.1.1] A flutter package for showing a country code selector.
+\end{description}}
 
 \end{document}

@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:trackmemobile/ProfileManager/network.dart';
 import 'package:trackmemobile/screens/loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:trackmemobile/models/apiResponse.dart';
-import 'package:trackmemobile/networkManager/network.dart';
 import 'package:trackmemobile/models/user.dart';
 
 ///a class used to test the GUI behavior
