@@ -128,6 +128,7 @@ class _DevicesPageState extends State<DevicesPage> {
     var page = Scaffold(
         floatingActionButton:  FloatingActionButton(
           onPressed: (){
+            Navigator.of(context).pushNamed('/addDevice');
           },
           elevation: 10,
           child: Icon(Icons.add),

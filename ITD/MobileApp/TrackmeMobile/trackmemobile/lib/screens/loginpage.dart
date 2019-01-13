@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:trackmemobile/styles/colors.dart';
 import 'package:trackmemobile/networkManager/network.dart';
-import 'package:trackmemobile/controllers/profileManager.dart';
-import 'registerPage.dart';
 import 'package:trackmemobile/models/apiResponse.dart';
-import 'package:trackmemobile/screens/PageNavigator.dart';
+import 'package:trackmemobile/controllers/channelController.dart';
 
 import 'PageNavigator.dart';
 
@@ -46,6 +44,8 @@ class _LoginPageState extends State<LoginPage> {
       ApiResponse response = await apiManager().login(_email, _password);
 
       if(response.apiError == 'noError') {
+        ChannelController chCtrll = new ChannelController();
+        chCtrll.startPacketManagerService();
         Navigator.of(context).pushReplacementNamed('/navigator');
       }
         else {
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
       autofocus: false,
       initialValue: 'password21',
       obscureText: true,
-      validator: (value) => value.isEmpty ? 'Password can\'t be empy': null,
+      validator: (value) => value.isEmpty ? 'Password can\'t be empty': null,
       onSaved: (password) => _password = password,
       decoration: InputDecoration(
           labelText: 'Password',

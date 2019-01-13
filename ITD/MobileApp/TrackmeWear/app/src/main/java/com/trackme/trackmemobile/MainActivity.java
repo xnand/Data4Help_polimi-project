@@ -17,7 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import com.trackme.trackmemobile.MakeInfopacket;
 
 public class MainActivity extends WearableActivity {
 
@@ -113,7 +112,7 @@ public class MainActivity extends WearableActivity {
 
                 @Override
                 public void onSuccess(Integer integer) {
-
+                    System.out.println("sent");
 
                 }
             });
@@ -240,18 +239,18 @@ public class MainActivity extends WearableActivity {
     private JSONObject craftJSON() throws JSONException {
         JSONObject json = new JSONObject();
 
-        String tp = MakeInfopacket.craftTimeStamp();
+        String ts = MakeInfopacket.craftTimeStamp();
         String macAddr = MakeInfopacket.getMacAddress(getApplicationContext());
-        String geoX = MakeInfopacket.getGeoX(getApplicationContext());
-
+        String geoX = MakeInfopacket.getGeoX();
+        String geoY = MakeInfopacket.getGeoY();
 
         json.put("heartRate", heartBeatSlider.getProgress() + MIN_HEART_BEAT);
         json.put("systolic", systolicSlider.getProgress() + MIN_SYSTOLIC);
         json.put("diastolic", diastolicSlider.getProgress() + MIN_DIASTOLIC);
-        json.put("tp", tp );
+        json.put("ts", ts );
         json.put("macAddr", macAddr);
         json.put("geoX", geoX);
-        System.out.println(geoX);
+        json.put("geoY", geoY);
         return json;
     }
 
