@@ -122,7 +122,7 @@ The application makes use of the following externally developed services:
 
 	\item [Ambulance dispatching system] For the AutomatedSOS service, the system uses external software in order to be able to communicate with the ambulances and to track their position.
 
-	\item [Google Fit APIs] For communication between smartphone and wearable devices.
+	\item [Wear OS APIs] For communication between smartphone and wearable devices.
 	\item [watchOS APIs] For communication between smartphone and watchOS (Apple) wearable devices.
 \end{description}
 
@@ -727,13 +727,6 @@ Software that's on devices will be updated through the appropriate app store, as
 \subsubsection{Portability}
 
 Our smartphone application must be available for Android and iOS platforms. Cross platform developing tools can be used to achieve this.
-As shown in the figure below, android market is characterized by a great fragmentation in OS versions. The application will target the Lollipop API (android lollipop 5.0) to ensure compatibility with most devices.\\
-Communication between the application and the wearable device will be held by the Google Fit API for Android and Wear OS API for iOS (see reference in introduction).\\
-Using Google Fit API will ensure compatibility with smart devices running different OS than Android (ie: TizenOS)
-\begin{figure}[H]
-	\center
-	\includegraphics[scale=0.35]{images/statista_androidFragmentation.jpg}
-	\caption{Android OS versions distribution (statista.com)}
-\end{figure}
+As shown in the figure below, android market is characterized by a great fragmentation in OS versions. The application will target the Android API level 27, to have access to all needed feature to communicate with the wearable device. A lower target API version would allow for a larger compatibility with devices, but would also result in far poorer API capabilities, support, and quality of resources for development, since the wearable market is quite new and the programming platform supporting it has seen major changes in the last near period.
 
 \end{document}

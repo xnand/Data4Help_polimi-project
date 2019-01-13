@@ -31,7 +31,7 @@ fontsize=16
       <x>780</x>
       <y>435</y>
       <w>285</w>
-      <h>165</h>
+      <h>315</h>
     </coordinates>
     <panel_attributes>User
 --
@@ -39,6 +39,11 @@ fontsize=16
 +Name
 +Surname
 +BirthDate
++Sex
++Heigth
++Weigth
++Mail
++Password
 --
 </panel_attributes>
     <additional_attributes/>
@@ -49,7 +54,7 @@ fontsize=16
       <x>1920</x>
       <y>450</y>
       <w>360</w>
-      <h>210</h>
+      <h>240</h>
     </coordinates>
     <panel_attributes>InfoPacket
 --
@@ -58,6 +63,7 @@ fontsize=16
 +BloodPressure
 +geoX
 +geoY
+
 --</panel_attributes>
     <additional_attributes/>
   </element>
@@ -219,22 +225,6 @@ m2=1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>390</x>
-      <y>570</y>
-      <w>285</w>
-      <h>150</h>
-    </coordinates>
-    <panel_attributes>BodyInfo
---
-+Sex
-+Heigth
-+Weigth
---</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
       <x>360</x>
       <y>435</y>
       <w>150</w>
@@ -243,18 +233,6 @@ m2=1</panel_attributes>
     <panel_attributes>Disease
 --</panel_attributes>
     <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>660</x>
-      <y>585</y>
-      <w>195</w>
-      <h>150</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
-m2=1</panel_attributes>
-    <additional_attributes>110.0;10.0;110.0;70.0;10.0;70.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -315,15 +293,15 @@ receives v</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>975</x>
-      <y>585</y>
+      <y>735</y>
       <w>240</w>
-      <h>750</h>
+      <h>600</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=0..n
 m2=1
 accepts or refuses</panel_attributes>
-    <additional_attributes>10.0;480.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;380.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -480,6 +458,7 @@ m1=1..n
     <panel_attributes>Subscription
 --
 +ForwardingAddr
+
 --</panel_attributes>
     <additional_attributes/>
   </element>

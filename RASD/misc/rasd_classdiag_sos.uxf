@@ -31,7 +31,7 @@ fontsize=16
       <x>688</x>
       <y>640</y>
       <w>304</w>
-      <h>176</h>
+      <h>336</h>
     </coordinates>
     <panel_attributes>User
 --
@@ -39,6 +39,11 @@ fontsize=16
 +Name
 +Surname
 +BirthDate
++Sex
++Heigth
++Weigth
++Mail
++Password
 --
 </panel_attributes>
     <additional_attributes/>
@@ -237,15 +242,15 @@ m2=1
     <id>Relation</id>
     <coordinates>
       <x>928</x>
-      <y>800</y>
+      <y>960</y>
       <w>336</w>
-      <h>448</h>
+      <h>288</h>
     </coordinates>
     <panel_attributes>lt=-
 receives v
 m1=1
 m2=0..n
 </panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;250.0;190.0;250.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0;190.0;150.0</additional_attributes>
   </element>
 </diagram>
