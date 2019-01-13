@@ -12,16 +12,16 @@ The root directory of the source code is "ITD". Inside of it there are three fol
 
 \subsection{TrackMeServer}
 
-The four modules inside this directory all share the same basic structure: inside the component's directory (eg. ApplicationServerMobileClient) there is the main javascript file to be launched with node (eg. ApplicationServerMobileClient.js), the documentation source for the component if available (doc.yml), and a routes directory that futher defined funcionalities provided by the component.
+The four modules inside this directory all share the same basic structure: inside the component's directory (eg. ApplicationServerMobileClient) there is the main javascript file to be launched with node (eg. ApplicationServerMobileClient.js), the documentation source for the component if available (doc.yml), and a routes directory that futher defines funcionalities provided by the component.
 
-A more directory named "common" contains two files used by the components:
+The directory named "common" contains two files used by the components:
 
 \begin{description}
 	\item[config.json] Contains configuration variables that can or must be set for the components to work, and can be overridden by environment variables (see chapter 6).
 	\item[common.js] Contains functions often used by all other components; they are defined here to avoid code repetition and ease the development process.
 \end{description}
 
-One more directory names "support" contains files useful for development and evaluation. Three python scripts and a standalone node (javascript) file. The python scripts are written and tested for python 3 version 3.7.2 and require the "requests" package:
+One more directory named "support" contains files useful for development and evaluation. Three python scripts and a standalone node (javascript) file. The python scripts are written and tested for python 3 version 3.7.2 and require the "requests" package:
 
 \begin{description}
 	\item[cleanDatabase.py] Simply performs a GET to /dropALL on the DatabaseServer component to reset the database tables (see the DatabaseServer component description below).

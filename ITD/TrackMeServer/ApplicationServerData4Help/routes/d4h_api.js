@@ -4,6 +4,7 @@ var bb = require("bluebird");
 var request = bb.promisify(require('request'));
 var config = require('../../common/config.json');
 var common = require('../../common/common');
+var intoStream = require('into-stream');
 var minUsersGroupRequest = process.env.MINUSERSGROUPREQUEST || config.minUsersGroupRequest;
 
 
@@ -11,12 +12,21 @@ var minUsersGroupRequest = process.env.MINUSERSGROUPREQUEST || config.minUsersGr
 router.post('/register', function(req, res) {
     var params = {};
     Object.keys(req.body).forEach(function (k) {
+    	if (k === 'image') {
+    		params.image = req.body[k];
+    		return;
+		}
         params[k] = req.body[k].toLowerCase();
     });
     common.validateParams(params, [
         'vat',
-        'name'
-    ])
+        'name',
+		'businessSector',
+		'image'
+    ], [
+		'businessSector',
+		'image'
+	])
         .then(function() {
             return request({
                 url: `http://${config.address.databaseServer}:${config.port.databaseServer}/company`,

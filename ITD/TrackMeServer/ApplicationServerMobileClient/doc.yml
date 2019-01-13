@@ -9,6 +9,15 @@ definitions:
             apiError:
                 type: string
                 description: Error description
+    EmergencyResponse:
+        type: object
+        properties:
+            apiMsg:
+                type: string
+                description: Emergency confirmation
+            eta:
+                type: number
+                description: Estimates time of ambulance arrival (minutes)
     LoginRes:
         type: object
         properties:
@@ -444,7 +453,9 @@ paths:
                 description: 'Set to "true" is parameters indicate an emergency and an ambulance needs to be dispatched'
             responses:
                 201:
-                    description: Packet successfully registered
+                    description: Packet successfully registered; has empty body if no emergency
+                    schema:
+                        $ref: "#/definitions/EmergencyResponse"
                 400:
                     description: Packet not registered; invalid field
                     schema:

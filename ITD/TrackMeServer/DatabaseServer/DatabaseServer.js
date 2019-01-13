@@ -47,6 +47,7 @@ function createWearableDeviceTable() {
         table.string('macAddr', 17).notNullable();
         table.string('name').notNullable();
         table.string('userSsn');
+        table.boolean('active').default(true);
         // constraints
         table.unique('macAddr');
         table.unique(['macAddr', 'userSsn']);

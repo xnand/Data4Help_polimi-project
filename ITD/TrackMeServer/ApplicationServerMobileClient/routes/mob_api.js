@@ -4,6 +4,7 @@ var bb = require("bluebird");
 var request = bb.promisify(require('request'));
 var config = require('../../common/config.json');
 var common = require('../../common/common');
+var intoStream = require('into-stream');
 
 
 // register a user
@@ -587,6 +588,13 @@ router.post('/:ssn/packet', function(req, res) {
         .catch(function(err) {
             common.catchApi(err, res);
         })
+});
+
+// grab a company image
+router.get('/:ssn/companyImage/:id', function(req, res) {
+	var stream = intoStream('');
+	stream.headers = req.headers;
+	stream.pipe(request.get(`http://${config.address.databaseServer}:${config.port.databaseServer}/company/image/${req.params.id}`)).pipe(res);
 });
 
 // grab email & password from the 'authorization' header and check them against the registered users

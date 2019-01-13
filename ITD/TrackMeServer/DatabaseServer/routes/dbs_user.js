@@ -98,7 +98,9 @@ router.get('/credentials', function(req, res) {
 
 // get user wearable devices
 router.get('/wearableDevice', function(req, res) {
-    var where = {};
+    var where = {
+    	active: true
+	};
     for (var q in req.query) {
         where[q] = req.query[q];
     }
@@ -180,7 +182,9 @@ router.post('/registerWearable', function(req, res) {
 // unregister a wearable device
 router.post('/unregisterWearable', function(req, res) {
 	var params = req.body;
-	knex('wearableDevice').delete().where({
+	knex('wearableDevice').update({
+		active: false
+	}).where({
 		macAddr: params.macAddr,
 	})
 		.then(function() {
