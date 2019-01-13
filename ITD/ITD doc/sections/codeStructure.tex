@@ -51,12 +51,43 @@ The doc.yml is the source code of the documentation, read by swagger when starti
 todo
 
 \subsection{MobileApp}
+MobileApp is composed of two submodule, Flutter code and the android platform specific code.
 
-todo
+\subsubsection{Flutter code}
+as shown in Fig. 1, the structure of the code is pretty simple
+\begin{description}
+	\item[controllers] Contains the class channelController, responsible for platform specific methods invocation. In brevity, this class link Flutter code with Java code.
+	\item[models] A modelization of the database classes, made easier to manage data received trough HTTP requests.
+	\item[profileManager] As seen in the DD, this component will handle all the functionalities regarding the user, such as registration, login, registering a new Wearable device etc. This is where the main logic of the app is located
+	\item[screens] This is were Flutter shines, those are the screens of the application, a collection of statefull and stateless widgets.
+	\item[styles] files with useful font and theme that give a distinctive style to the application
+	\item[utils] a collection on useful methods and class. CountryCodePicker is a custom version of the dart plugin while validators are the function used to verify the user form inputs.
+\end{description}
 
-\subsubsection{TrackmeMobile}
 
-todo
+
+
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics{tree_flutter.png}
+		\caption{tree view for the lib folder}
+		\label{fig:lib_tree.png}
+	\end{figure}
+
+\subsubsection{Platform specific code (Java)}
+Is composed of two macro classes located in \\ "../MobileApp/TrackmeMobile/trackmemobile/android/app/src/main/java/com/trackme/trackmemobile"
+\begin{description}
+	\item[MainActivity.java] launch the application and contains a CommunicationPlugin class that handle the platform call made by Flutter.
+	\item[InfoPacketHandler.java] handle the connection with the WearOS device, receive the infoPackets on a nonBlockingQueue of fixed size and dispatch the received infoPacket to the TrackMe mobile application server (Fig2)
+\end{description}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{queue.png}
+	\caption{infoPacket "cycle of life"}
+	\label{fig:infopacketscycle.png}
+\end{figure}
 
 \subsubsection{TrackmeWear}
 

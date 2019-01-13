@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:trackmemobile/ProfileManager/network.dart';
 import 'package:trackmemobile/styles/colors.dart';
 import 'package:trackmemobile/styles/texts.dart';
-import 'package:trackmemobile/networkManager/network.dart';
-import 'package:trackmemobile/models/request.dart';
 import 'package:trackmemobile/models/apiResponse.dart';
 import 'package:trackmemobile/models/device.dart';
 

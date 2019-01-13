@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:trackmemobile/ProfileManager/network.dart';
 import 'package:trackmemobile/utils/countryCodePicker/country_code_picker.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
 import 'package:trackmemobile/styles/colors.dart';
 import 'package:trackmemobile/models/user.dart';
-import 'package:trackmemobile/networkManager/network.dart';
 import 'package:trackmemobile/models/apiResponse.dart';
 import 'package:trackmemobile/utils/validators.dart';
 

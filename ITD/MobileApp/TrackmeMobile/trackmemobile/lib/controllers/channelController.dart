@@ -1,6 +1,6 @@
 import 'dart:core';
 import 'package:flutter/services.dart';
-import 'package:trackmemobile/controllers/profileManager.dart';
+import 'package:trackmemobile/ProfileManager/profileStateManager.dart';
 
 // a singleton class to manage channel communication
 class ChannelController {
