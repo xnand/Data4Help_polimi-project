@@ -12,12 +12,16 @@ import random
 import string
 import datetime
 import json
+import threading
+from sys import argv
+from time import sleep
 
 # config options:
 config = None
 configFilePath = '../common/config.json'
 with open(configFilePath, 'r') as c:
     config = json.loads(c.read())
+threads = 4
 # backend server location(s)
 databaseServer = 'http://{}:{}/api'.format(config['address']['databaseServer'], config['port']['databaseServer'])
 appServerMobileClient = 'http://{}:{}/api'.format(config['address']['applicationServerMobileClient'], config['port']['applicationServerMobileClient'])
@@ -29,9 +33,14 @@ long = [8.884990, 8.915986]
 users = []
 companies = []
 
+# locks
+
+usersLock = threading.Lock()
+
 class User:
     def __init__(self):
         global users
+        self.wearablesLock = threading.Lock()
         self.wearables = []
         self.sentPackets = []
         self.n = len(users)
@@ -167,7 +176,55 @@ class SpecificRequest:
         self.user = user
         self.id = None
 
-# no group request for the moment since they're a little annoying to do
+def randomInserts():
+    while True:
+        r = random.randint(0, 6)
+        if r == 0:
+            with usersLock:
+                u = User()
+                if u.register().status_code != 201:
+                    continue
+                users.append(u)
+        elif r == 1:
+            u = random.choice(users)
+            with u.wearablesLock:
+                u.addWearable()
+        elif r == 2:
+            u = random.choice(users)
+            l = len(u.wearables)
+            if l == 0:
+                continue
+            w = random.choice(u.wearables)
+            w.sendPacket(u)
+        elif r == 3:
+            c = Company()
+            if c.register().status_code != 201:
+                continue
+            companies.append(c)
+        elif r == 4:
+            c = random.choice(companies)
+            c.makeSpecReq(random.choice(users))
+        elif r == 5:
+            c = random.choice(companies)
+            if len(c.specificRequests) == 0:
+                continue
+            sr = random.choice(c.specificRequests)
+            sr.user.acceptRequest(sr.id)
+        elif r == 6:
+            c = random.choice(companies)
+            if len(c.specificRequests) == 0:
+                continue
+            sr = random.choice(c.specificRequests)
+            sr.user.rejectRequest(sr.id)
+
+class ThreadMe (threading.Thread):
+    def __init__(self, threadID):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+    def run(self):
+        randomInserts()
+
+# todo group requests?
 
 def randomWord(length, alpha = string.digits + string.ascii_lowercase):
     return ''.join(random.choice(alpha) for i in range(length))
@@ -180,12 +237,10 @@ def randomDate(start, end):
 def randomTime():
     return datetime.time(random.randint(0, 23), random.randint(0, 59), random.randint(0, 59))
 
-def trueFalse(prob):
-    return True if random.randint(0,100) < prob * 100 else False
-
 # reset/clean the db
 print('cleaning database...')
 requests.get('http://{}:{}/dropALL'.format(config['address']['databaseServer'], config['port']['databaseServer']))
+sleep(1)
 print('done')
 print('setting up first data...')
 # initial set up
@@ -203,42 +258,14 @@ while len(companies) <= 5:
     companies.append(c)
     c.makeSpecReq(random.choice(users))
 
+
 print('initial data set up')
 print('randomizing data insertion indefinitely; press ctrl+c (or stop/kill process) to stop')
-# randomize from now on
-while True:
-    r = random.randint(0, 6)
-    if r == 0:
-        u = User()
-        if u.register().status_code != 201:
-            continue
-        users.append(u)
-    elif r == 1:
-        random.choice(users).addWearable()
-    elif r == 2:
-        u = random.choice(users)
-        l = len(u.wearables)
-        if l == 0:
-            continue
-        w = random.choice(u.wearables)
-        w.sendPacket(u)
-    elif r == 3:
-        c = Company()
-        if c.register().status_code != 201:
-            continue
-        companies.append(c)
-    elif r == 4:
-        c = random.choice(companies)
-        c.makeSpecReq(random.choice(users))
-    elif r == 5:
-        c = random.choice(companies)
-        if len(c.specificRequests) == 0:
-            continue
-        sr = random.choice(c.specificRequests)
-        sr.user.acceptRequest(sr.id)
-    elif r == 6:
-        c = random.choice(companies)
-        if len(c.specificRequests) == 0:
-            continue
-        sr = random.choice(c.specificRequests)
-        sr.user.rejectRequest(sr.id)
+print('be careful')
+# randomize from now on, multithreaded
+if len(argv) > 1:
+    threads = int(argv[1])
+    print(threads)
+for i in range(8):
+    ThreadMe(i).start()
+

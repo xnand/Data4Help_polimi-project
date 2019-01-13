@@ -11,6 +11,12 @@ The components of the Backend server were tested with Node js through the use of
 Depending on the functionality, a test case could include one or more endpoints/funcions, or even more than one component, thus ensuring the correct operation of all the agents involved.
 
 Mocha tests are defined in the test/test.js file, while a simple Postman collection is provided in test/postman.json. See chapter 6 for instructions on how to use them.
+\newline
+\newline
+Stress testing can be simply performed stopping one or more components in the middle of some operation. The system is very resistant to failures, by design: while many funcionalities need some other component to operate, particulary the Database Server and the DBMS, they can be running isolated by the others and simply answer with an error message when an operation can not be completed successfully; as soon as the required components come back up, all the funcionalities return fully functional. This is allowed by keeping track of every successfull operation in the database, performing atomic data transactions between components where every endpoint has only one "success" point where it modifies the state of the system, and by gracefully handling errors.
+\newline
+\newline
+The support/populateDatabase.py script can also be used for load/stress testing, being that it runs in multi-threaded mode. Even in such a running environment, the system performs well, keeping the response time of most funcionalities around 60ms on average, while the requests sending large payloads take a little longer (around 4500ms for 300MB of data). These measures were done launching the script on 4 cores (on a quad-core CPU) with all components hosted on localhost.
 
 \subsection{Mobile App}
 
