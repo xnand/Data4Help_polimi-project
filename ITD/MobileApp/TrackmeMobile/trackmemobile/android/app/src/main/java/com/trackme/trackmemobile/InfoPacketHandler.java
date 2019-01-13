@@ -29,14 +29,12 @@ public class InfoPacketHandler extends AppCompatActivity implements MessageClien
 
 
     private boolean emergencyFlag = false;
-    private double emergencyValue;
-    private final double emergencyThreshold = 2.50;
+    private final double emergencyThreshold = 30;
     private double currentThreshold = 0.00;
-    public void setMacAddr(String macAddr) {
-        this.macAddr = macAddr;
-    }
 
-
+    final int normalAreaSys = 120;
+    final int PrehypertensionAreaSys = 139;
+    final int HypertensionStage1AreaSys = 190 * 100;
 
 
     private InfoPacketHandler() {
@@ -49,10 +47,6 @@ public class InfoPacketHandler extends AppCompatActivity implements MessageClien
         }
         return instance;
     }
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +78,9 @@ public class InfoPacketHandler extends AppCompatActivity implements MessageClien
 
     }
 
+
+
+
     public JSONObject getMessage () {
 
         return messagesQueue.remove();
@@ -95,15 +92,66 @@ public class InfoPacketHandler extends AppCompatActivity implements MessageClien
         messagesQueue.offer(j);
     }
 
+    public String getMacAddr() {
+        return macAddr;
+    }
+
+    public void setMacAddr(String macAddr) {
+        this.macAddr = macAddr;
+    }
+
+    public boolean isEmergencyFlag() {
+        return emergencyFlag;
+    }
+
     public String startService(String SSN, String email, String password) {
 
 
         return "service started";
     }
 
-    public String getMacAddr() {
-        return macAddr;
+    public void checkIfEmergency(String heartbeatAsStr, String diastolicAsStr, String systolicAsStr) {
+        int heartbeat = Integer.parseInt(heartbeatAsStr);
+        int diastolic = Integer.parseInt(diastolicAsStr);
+        int systolic = Integer.parseInt(systolicAsStr);
+
+        double pointToAdd = rateReading(diastolic, systolic);
+
+        //if the packet is nominal, decrease the current threshold or do nothing
+        if(pointToAdd == 0 && currentThreshold > 0) currentThreshold-= currentThreshold;
+
+        //if the packet is not nominal, then increase current threshold
+        else if(pointToAdd > 0) currentThreshold+= pointToAdd;
+
+        if(currentThreshold >= emergencyThreshold) emergencyFlag = true;
+
     }
+
+    double rateReading(int diastolic, int systolic) {
+
+        double pointToadd = 0;
+
+        //PreHypertension
+        if(systolic > 120) pointToadd+= 0.5;
+        if(diastolic > 80) pointToadd+=0.5;
+
+        //Hypertension stage 1
+        if(systolic > 159) pointToadd+=1.0;
+        if (diastolic > 99) pointToadd+=1.0;
+
+        //Hypertension stage 2
+        if(systolic> 160) pointToadd+=1.5;
+        if(diastolic> 100) pointToadd+=1.5;
+
+        //HypertensiveCrisis
+        if(systolic>180) pointToadd += 15;
+        if(diastolic>110)pointToadd += 15;
+
+        return pointToadd;
+
+    }
+
+
 }
 
 class NetworkUtil extends AsyncTask<String, Void, Void > {
@@ -122,6 +170,7 @@ class NetworkUtil extends AsyncTask<String, Void, Void > {
         String credentials =  email + ":" + password;
         byte[] data = credentials.getBytes("UTF-8");
         String authString = "Basic " + Base64.encodeToString(data, Base64.NO_WRAP);
+        JSONObject resp;
 
         //packet specific information
         BufferedReader httpResponseReader = null;
@@ -152,19 +201,25 @@ class NetworkUtil extends AsyncTask<String, Void, Void > {
 
             httpRequestBodyWriter.write(packet);
             httpRequestBodyWriter.close();
-            System.out.println(urlConnection.getResponseCode());
+
             // Read response from web server, which will trigger HTTP Basic Authentication request to be sent.
 //            httpResponseReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
             // Reading from the HTTP response body
-            Scanner httpResponseScanner = new Scanner(urlConnection.getInputStream());
-            while(httpResponseScanner.hasNextLine()) {
-                System.out.println(httpResponseScanner.nextLine());
-            }
-            httpResponseScanner.close();
+            if(urlConnection.getResponseCode() == 201) {
+                Scanner httpResponseScanner = new Scanner(urlConnection.getInputStream());
+                while (httpResponseScanner.hasNextLine()) {
+                     resp = new JSONObject(httpResponseScanner.nextLine());
+                    sendFlag = false;
 
+                }
+
+                httpResponseScanner.close();
+            }
         } catch (IOException ioe) {
             ioe.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         } finally {
 
             if (httpResponseReader != null) {
@@ -186,7 +241,7 @@ class NetworkUtil extends AsyncTask<String, Void, Void > {
         if(InfoPacketHandler.getInstance().getMacAddr() == null) {
             InfoPacketHandler.getInstance().setMacAddr(packet.getString("macAddr"));
         }
-        System.out.println(packet.toString());
+
         //POST fields
         String ts = packet.getString("ts");
         String wearableMac = packet.getString("macAddr");
@@ -195,8 +250,15 @@ class NetworkUtil extends AsyncTask<String, Void, Void > {
         String hearbeatRate =  packet.getString("heartRate");
         String bloodPressSyst = packet.getString("systolic");
         String bloodPressDias = packet.getString("diastolic");
+        System.out.print(bloodPressDias + " / ");
+        System.out.print(bloodPressSyst);
+        InfoPacketHandler.getInstance().checkIfEmergency(hearbeatRate, bloodPressDias, bloodPressSyst);
+        String emergencyStatus = "false";
 
+        if(InfoPacketHandler.getInstance().isEmergencyFlag())
+            emergencyStatus = "true";
 
+        System.out.println("  " +emergencyStatus);
         //payload if in application/x-www-form-urlencoded format
         payload=
                 "ts=" + ts + "&" +
@@ -205,7 +267,8 @@ class NetworkUtil extends AsyncTask<String, Void, Void > {
                 "geoY=" + geoY + "&" +
                 "heartBeatRate=" + hearbeatRate + "&" +
                 "bloodPressSyst=" + bloodPressSyst + "&" +
-                "bloodPressDias=" + bloodPressDias;
+                "bloodPressDias=" + bloodPressDias + "&" +
+                "emergency="   +    emergencyStatus;
 
         return payload;
     }
@@ -230,14 +293,9 @@ class NetworkUtil extends AsyncTask<String, Void, Void > {
     }
 
 
-    private void checkIfEmergency(String heartbeatAsStr, String diastolicAsStr, String systolicAsStr) {
-        int heartbeat = Integer.parseInt(heartbeatAsStr);
-        int diastolic = Integer.parseInt(diastolicAsStr);
-        int systolic = Integer.parseInt(systolicAsStr);
 
-
-    }
 }
+
 
 
 

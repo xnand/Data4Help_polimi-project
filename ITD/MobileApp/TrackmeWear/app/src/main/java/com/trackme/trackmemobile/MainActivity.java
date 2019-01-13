@@ -30,7 +30,7 @@ public class MainActivity extends WearableActivity {
 
     final int MAX_HEART_BEAT = 180;
     final int MIN_HEART_BEAT = 30;
-    final int MAX_DIASTOLIC = 100;
+    final int MAX_DIASTOLIC = 120;
     final int MIN_DIASTOLIC = 40;
     final int MAX_SYSTOLIC = 190;
     final int MIN_SYSTOLIC = 70;
@@ -176,8 +176,8 @@ public class MainActivity extends WearableActivity {
         pressureIndicator = findViewById(R.id.pressureIndicator);
 
         heartBeatSlider.setProgress(60);
-        diastolicSlider.setProgress((MAX_DIASTOLIC - MIN_DIASTOLIC)/2);
-        systolicSlider.setProgress((MAX_SYSTOLIC - MIN_SYSTOLIC)/2);
+        diastolicSlider.setProgress(35);
+        systolicSlider.setProgress(40);
 
         heartBeatIndicator.setText(String.valueOf(heartBeatSlider.getProgress()));
         pressureIndicator.setText((diastolicSlider.getProgress() + MIN_DIASTOLIC )+ " / " + (systolicSlider.getProgress() + MIN_SYSTOLIC));
@@ -248,7 +248,7 @@ public class MainActivity extends WearableActivity {
         json.put("systolic", systolicSlider.getProgress() + MIN_SYSTOLIC);
         json.put("diastolic", diastolicSlider.getProgress() + MIN_DIASTOLIC);
         json.put("ts", ts );
-        json.put("macAddr", macAddr);
+        json.put("macAddr", "AAAAAAAAAAAA");
         json.put("geoX", geoX);
         json.put("geoY", geoY);
         return json;
