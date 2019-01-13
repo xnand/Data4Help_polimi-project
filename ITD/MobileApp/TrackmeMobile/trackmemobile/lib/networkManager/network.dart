@@ -8,11 +8,50 @@ import 'package:trackmemobile/controllers/profileManager.dart';
 import 'package:trackmemobile/models/request.dart';
 import 'package:trackmemobile/models/device.dart';
 
-class apiManager {
+abstract class MobileAppServerInterface {
+
+  ///{POST} implement a Basic http login with [email] and [password]
+  Future<ApiResponse> login(String email, String password);
+
+  ///{POST} register a [User] to TrackMe, see Api Documentation for all the required forms
+  ///fields.
+  ///returns an [ApiResponse] with the outcome of the HTTP request
+
+  Future<ApiResponse> registerUser(User user);
+
+  /// {GET} returns a [Future<RequestList>] for the current user with the [state] that can [pending] or [active],
+  /// alternatively if an error occurred, returns an [ApiResponse] with the specific error.
+  Future<dynamic> getRequests({String state});
+
+  /// {GET} return a [Future<WearableList>] for the current user,
+  /// alternatively if an error occurred, returns an [ApiResponse] with the specific error.
+  Future<dynamic> getWearableDevice({String macAddr});
+
+  /// {POST} accept a [Request] specified by [requestId] for the current user.
+  /// returns an [ApiResponse] with the outcome of the HTTP request
+  Future<ApiResponse> acceptRequest(String requestId);
+
+  /// {POST} reject a [Request] specified by [requestId] for the current user,
+  /// returns an [ApiResponse] with the outcome of the HTTP request
+  Future<ApiResponse> rejectRequest(String requestId);
+
+  /// {POST} register a [Device] for the current user with [macAddr] as the MAC address of the
+  /// device and [name] ast the device identifier.
+  /// returns an [ApiResponse] with the outcome of the HTTP request
+  Future<ApiResponse> registerWearable(String macAddr, String name);
+
+  /// {POST} delete a [Device] for the current user identified by the [macAddr] of the device.
+  /// returns an [ApiResponse] with the outcome of the HTTP request
+  Future<ApiResponse> deleteWearable(String macAddr);
+}
+
+
+
+class apiManager extends MobileAppServerInterface {
   final _url = 'http://192.168.1.86:3001/api/'; //application server url
   final String _noError = 'noError';
 
-  ///implement a Basic http login with email and password
+  @override
   Future<ApiResponse> login(String email, String password) async {
     String basicAuth = 'Basic ' + base64Encode(utf8.encode('$email:$password'));
     final response = await http.get(
@@ -30,7 +69,7 @@ class apiManager {
 
   }
 
-  ///register a user to TrackMe {POST}
+  @override
   Future<ApiResponse> registerUser(User user) async {
     final response = await http.post('$_url/register',
         headers: {HttpHeaders.contentTypeHeader: 'application/json'},
@@ -42,7 +81,7 @@ class apiManager {
       return apiResponseFromJson(response.body);
   }
 
-  //return sharingRequest for the current user {GET}
+  @override
   Future<dynamic> getRequests({String state}) async {
     String SSN = await ProfileManager().getSSN();
     String basicAuth = await _craftAuthString();
@@ -78,7 +117,7 @@ class apiManager {
     return error;
   }
 
-  //return wearable device for the user  {GET}
+  @override
   Future<dynamic> getWearableDevice({String macAddr}) async {
     String SSN = await ProfileManager().getSSN();
     String basicAuth = await _craftAuthString();
@@ -100,12 +139,13 @@ class apiManager {
       return wearableList;
     }
     ApiResponse error = apiResponseFromJson(response.body);
-    return error;
+
+    return null;
 
   }
 
 
-  //accept a request for the current user {POST}
+  @override
   Future<ApiResponse> acceptRequest(String requestId) async {
     String SSN = await ProfileManager().getSSN();
     String basicAuth = await _craftAuthString();
@@ -119,7 +159,7 @@ class apiManager {
     else return apiResponseFromJson(response.body);
   }
 
-  //reject a request for the current user {POST}
+  @override
   Future<ApiResponse> rejectRequest(String requestId) async {
     String SSN = await ProfileManager().getSSN();
     String basicAuth = await _craftAuthString();
@@ -134,7 +174,7 @@ class apiManager {
     else return apiResponseFromJson(response.body);
   }
 
-  //register a wearable for the current user {POST}
+  @override
   Future<ApiResponse> registerWearable(String macAddr, String name) async {
     String SSN = await ProfileManager().getSSN();
     String basicAuth = await _craftAuthString();
@@ -150,7 +190,7 @@ class apiManager {
     else return apiResponseFromJson(response.body);
   }
 
-  //delete a wearable for the current user {POST}
+  @override
   Future<ApiResponse> deleteWearable(String macAddr) async {
     String SSN = await ProfileManager().getSSN();
     String basicAuth = await _craftAuthString();
@@ -168,7 +208,9 @@ class apiManager {
 
 
 
-  //return a future list with a crafted authentication string
+  ///return a [Future<String>] with a crafted authentication string,
+  ///the [basicAuth] string generated is ready to be appended to the
+  ///Authentication header
   Future<String> _craftAuthString() async {
     String email = await ProfileManager().getEmail();
     String password = await ProfileManager().getPassword();
@@ -177,9 +219,61 @@ class apiManager {
     return basicAuth;
   }
 
+}
+///a class used to test the GUI behavior
+class MockUpApiManager extends MobileAppServerInterface {
+  bool didAttemtedLogin = false;
+  @override
+  Future<ApiResponse> acceptRequest(String requestId) {
+    // TODO: implement acceptRequest
+    return null;
+  }
 
-  //-----------------------------------------------------INFOPACKET HANDLING--------------------------------
+  @override
+  Future<ApiResponse> deleteWearable(String macAddr) {
+    // TODO: implement deleteWearable
+    return null;
+  }
 
+  @override
+  Future getRequests({String state}) {
+    // TODO: implement getRequests
+    return null;
+  }
 
+  @override
+  Future getWearableDevice({String macAddr}) {
+    // TODO: implement getWearableDevice
+    return null;
+  }
+
+  @override
+  Future<ApiResponse> login(String email, String password) async {
+    didAttemtedLogin = true;
+    String email_test = "email_test";
+    String password_test = "test_password";
+    if(email_test == email && password_test == password)
+    return new ApiResponse(apiError: 'noError');
+    else return new ApiResponse(apiError: 'credentials are wrong');
+
+  }
+
+  @override
+  Future<ApiResponse> registerUser(User user) async {
+    // TODO: implement registerUser
+    return null;
+  }
+
+  @override
+  Future<ApiResponse> registerWearable(String macAddr, String name) async {
+    // TODO: implement registerWearable
+    return null;
+  }
+
+  @override
+  Future<ApiResponse> rejectRequest(String requestId) async {
+    // TODO: implement rejectRequest
+    return null;
+  }
 
 }

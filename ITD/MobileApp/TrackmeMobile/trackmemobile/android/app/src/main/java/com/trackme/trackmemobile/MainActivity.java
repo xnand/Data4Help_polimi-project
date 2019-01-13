@@ -47,7 +47,8 @@ class CommunicationPlugin implements MethodCallHandler {
     @Override
     public void onMethodCall(MethodCall call, Result result) {
         switch (call.method) {
-            case "setupPacketHandler" : Wearable.getMessageClient(activity).addListener(infoPacketHandler);
+            case
+                    "setupPacketHandler" : Wearable.getMessageClient(activity).addListener(infoPacketHandler);
                 break;
 
             case "getMessage" : result.success(infoPacketHandler.getMessage());

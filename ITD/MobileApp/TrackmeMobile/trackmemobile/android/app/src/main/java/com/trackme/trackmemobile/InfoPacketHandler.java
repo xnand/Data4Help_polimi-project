@@ -26,6 +26,12 @@ public class InfoPacketHandler extends AppCompatActivity implements MessageClien
     private BlockingQueue<JSONObject> messagesQueue;
     private String macAddr = null;
 
+
+
+    private boolean emergencyFlag = false;
+    private double emergencyValue;
+    private final double emergencyThreshold = 2.50;
+    private double currentThreshold = 0.00;
     public void setMacAddr(String macAddr) {
         this.macAddr = macAddr;
     }
@@ -221,6 +227,15 @@ class NetworkUtil extends AsyncTask<String, Void, Void > {
 
 
         return null;
+    }
+
+
+    private void checkIfEmergency(String heartbeatAsStr, String diastolicAsStr, String systolicAsStr) {
+        int heartbeat = Integer.parseInt(heartbeatAsStr);
+        int diastolic = Integer.parseInt(diastolicAsStr);
+        int systolic = Integer.parseInt(systolicAsStr);
+
+
     }
 }
 

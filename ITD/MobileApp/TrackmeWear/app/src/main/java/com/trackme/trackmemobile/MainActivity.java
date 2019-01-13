@@ -252,6 +252,7 @@ public class MainActivity extends WearableActivity {
         json.put("geoX", geoX);
         json.put("geoY", geoY);
         return json;
+
     }
 
 }
