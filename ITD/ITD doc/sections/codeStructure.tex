@@ -1,0 +1,66 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+The root directory of the source code is "ITD". Inside of it there are three folders:
+
+\begin{description}
+	\item[ITD doc] Source code of this document.
+	\item[TrackMeServer] Source code of the back-end server: Application Server Mobile Client, Application Server Data4Help, Database Server and Web Server components.
+	\item[MobileApp] Source code of the mobile application and wearable module.
+\end{description}
+
+\subsection{TrackMeServer}
+
+The four modules inside this directory all share the same basic structure: inside the component's directory (eg. ApplicationServerMobileClient) there is the main javascript file to be launched with node (eg. ApplicationServerMobileClient.js), the documentation source for the component if available (doc.yml), and a routes directory that futher defines funcionalities provided by the component.
+
+The directory named "common" contains two files used by the components:
+
+\begin{description}
+	\item[config.json] Contains configuration variables that can or must be set for the components to work, and can be overridden by environment variables (see chapter 6).
+	\item[common.js] Contains functions often used by all other components; they are defined here to avoid code repetition and ease the development process.
+\end{description}
+
+One more directory named "support" contains files useful for development and evaluation. Three python scripts and a standalone node (javascript) file. The python scripts are written and tested for python 3 version 3.7.2 and require the "requests" package:
+
+\begin{description}
+	\item[cleanDatabase.py] Simply performs a GET to /dropALL on the DatabaseServer component to reset the database tables (see the DatabaseServer component description below).
+	\item[populateDatabase.py] This script uses the ApplicationServerMobileClient and ApplicationServerData4Help components to register random model data in the system.
+	\item[subscriptionHandler.py] A simple server to listen and write data to simulate a company subscription's funcionality.
+	\item[AmulanceDispatcherSimulator/dispatcher.js] Node JS server that simulates the external ambulance dispatcher simulator, required for AutomatedSOS funcionality.
+\end{description}
+
+Every main component javascript file sets up the environment and binds the service to the address provided by the config file (or environment variable).
+
+\subsubsection{DatabaseServer}
+
+This component has one more file, "knex.js", that sets up the connection with the DBMS.
+
+Inside the main file the tables of the database are created, if they don't exists, then the files in "routes" are sourced for the various funcionalities. Also, a temporary endpoint is defined (GET to /dropALL), only for development and evaluation purposes, that can be used to drop all current tables and recreate them empty.
+
+The three files in "routes" directory contain the endpoints relative to their name, for example "dbs\textunderscore user.js" contains all the endpoints to handle user informations.
+
+\subsubsection{ApplicationServerMobileClient \& ApplicationServerData4Help}
+
+As the DatabaseServer component, the main file set up the environment and binds the service to the provided address; these two components also provide an endpoint (GET to /docs) to the documentation of their API. Then they source the .js file in "routes" folder that contain the implementation of their endpoints funcionality.
+
+The doc.yml is the source code of the documentation, read by swagger when starting the component through the swagger-jsdoc node module.
+
+\subsubsection{WebServer}
+
+todo
+
+\subsection{MobileApp}
+
+todo
+
+\subsubsection{TrackmeMobile}
+
+todo
+
+\subsubsection{TrackmeWear}
+
+todo
+
+
+\end{document}
