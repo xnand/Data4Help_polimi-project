@@ -18,9 +18,9 @@ definitions:
         at the end of the field name, it is assumed to be 1"
         properties:
             ageStart:
-                type: number
+                type: string
             ageEnd:
-                type: number
+                type: string
             country:
                 type: string
             region:
@@ -37,7 +37,7 @@ definitions:
         type: object
         properties:
             id:
-                type: number
+                type: string
             state:
                 type: string
             targetSsn:
