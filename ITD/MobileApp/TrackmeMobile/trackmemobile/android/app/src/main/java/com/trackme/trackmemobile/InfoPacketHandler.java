@@ -1,5 +1,6 @@
 package com.trackme.trackmemobile;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -210,7 +211,16 @@ class NetworkUtil extends AsyncTask<String, Void, Void > {
                 Scanner httpResponseScanner = new Scanner(urlConnection.getInputStream());
                 while (httpResponseScanner.hasNextLine()) {
                      resp = new JSONObject(httpResponseScanner.nextLine());
-                    sendFlag = false;
+
+                     //launch the emergency activity
+                         if(resp.has("eta")){
+                             Intent i = new Intent(MainActivity.getContext(),FullscreenActivity.class);
+                             sendFlag = false;
+                             MainActivity.getContext().startActivity(i);
+                         }
+
+
+
 
                 }
 
@@ -277,7 +287,7 @@ class NetworkUtil extends AsyncTask<String, Void, Void > {
     //this function send periodically packet to the server
     @Override
     protected Void doInBackground(String... strings) {
-            while (sendFlag = true) {
+            while (sendFlag == true) {
                 try {
 
                     post(strings[0], strings[1], strings[2]);       ///SSN, email, password

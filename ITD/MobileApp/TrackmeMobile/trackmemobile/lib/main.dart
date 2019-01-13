@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trackmemobile/screens/devicesPage.dart';
 import 'screens/loginpage.dart';
 import 'screens/feed.dart';
 import 'screens/PageNavigator.dart';
@@ -24,7 +25,8 @@ class TrackMe extends StatelessWidget {
     '/navigator': (context) => PageNavigator(),
     '/sharing': (context) => SharingPage(),
     '/register': (context) => RegisterPage(),
-    '/addDevice' : (context) => AddDevicePage()
+    '/addDevice' : (context) => AddDevicePage(),
+    '/devicePage' : (context) => DevicesPage()
 
   };
   @override
@@ -32,7 +34,7 @@ class TrackMe extends StatelessWidget {
 
     return MaterialApp(
       title: 'TrackMe',
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: true,
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,
         fontFamily: 'Roboto'

@@ -29,7 +29,7 @@ class _AddDevicePage extends State<AddDevicePage> {
       _isLoading = true;
       ApiResponse response = await apiManager().registerWearable(_macAddr, _name);
       if(response.apiError == 'noError') {
-        Navigator.of(context).pop();
+        Navigator.of(context).pushNamed('devicePage');
       } else {
         setState(() {
           _isLoading = false;

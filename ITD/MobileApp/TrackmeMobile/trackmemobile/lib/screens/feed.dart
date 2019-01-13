@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trackmemobile/styles/texts.dart';
 
 class FeedPage extends StatefulWidget {
   static String tag = 'feed-page';
@@ -39,23 +40,36 @@ class FeedTileWearable extends FeedTile {
     assert(debugCheckHasMaterial(context));
     return Material(
       child: Padding(
-        padding: const EdgeInsets.only(top: 8.0, right: 8.0),
+        padding: const EdgeInsets.only(top: 64, right: 16.0, left: 16.0),
         child: Container(
-          height: 200,
-          width: 300,
           alignment: Alignment.center,
-          child: Card(
-            child: Column(
-              children: <Widget>[
-                Image.network(
-                  'https://raw.githubusercontent.com/flutter/website/master/src/_includes/code/layout/lakes/images/lake.jpg',
-                  width: 150,
-                  height: 150,
-                ),
-                Text("$_name is : ")
+          child: Column(
+            children: <Widget>[
 
-              ],
-            ),
+              Text("Welcome to TrackMe app", style:textStyles['title_text']),
+              SizedBox(height: 8),
+              Text("in this demo you can :", style: textStyles['title_text'],),
+              SizedBox(height: 32),
+              Text("- register a user", style: textStyles['normal_text'],),
+              SizedBox(height: 8),
+              Text("- register WearOS devices", style: textStyles['normal_text'],),
+              SizedBox(height: 8),
+              Text("- delete WearOS devices", style: textStyles['normal_text'],),
+              SizedBox(height: 8),
+              Text("- visualize company requests", style: textStyles['normal_text'],),
+              SizedBox(height: 8),
+              Text("- accept/refuse requests", style: textStyles['normal_text'],),
+              SizedBox(height: 8),
+              Text("- monitor WearOS simulator data", style: textStyles['normal_text'],),
+              SizedBox(height: 8),
+              Text("- change wearOS sended data", style: textStyles['normal_text'],),
+              SizedBox(height: 8),
+              Text("- simulate an emergency packet", style: textStyles['normal_text'],),
+              SizedBox(height: 32),
+              Text("Sharing page -->", style:textStyles['title_text']),
+              SizedBox(height: 8),
+              Text("<-- Devices page", style:textStyles['title_text']),
+            ],
           ),
         ),
       ),
