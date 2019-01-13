@@ -131,10 +131,10 @@ router.post('/:ssn/wearableDevice', function(req, res) {
             params.macAddr = params.macAddr.replace(/[ -]/g, '');
             // check that the wearable with this mac address is not already registered
             return request({
-                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/wearableDevice`,
+                url: `http://${config.address.databaseServer}:${config.port.databaseServer}/user/allWearableDevice`,
                 method: 'GET',
                 qs: {
-                    macAddr: params.macAddr
+                    macAddr: params.macAddr,
                 }
             });
         })
@@ -143,7 +143,7 @@ router.post('/:ssn/wearableDevice', function(req, res) {
                 return Promise.reject({apiError: 'invalid macAddr'});
             }
             var reqdata = JSON.parse(reqres.body)[0] || '';
-            if (reqdata.userSsn) {
+            if (reqdata.userSsn && reqdata.active === true) {
             	// there is one user with this wearable registered already
                 return Promise.reject({apiError: 'wearable already registered'});
             }
@@ -288,6 +288,8 @@ router.get('/:ssn/request', function(req, res) {
 			for (var i = 0; i < reqdata.length; i++) {
 				delete requests[i].companyId;
 				delete requests[i].targetSsn;
+				delete requests[i].subscription;
+				delete requests[i].subscriptionForwardingLink;
 				promises[i] = request({
 					url: `http://${config.address.databaseServer}:${config.port.databaseServer}/company`,
 					method: 'GET',
@@ -503,6 +505,7 @@ router.post('/:ssn/packet', function(req, res) {
 						.catch(resolve);
 				}
 				else {
+					params.emergency = false;
 					resolve();
 				}
 			})
@@ -556,7 +559,7 @@ router.post('/:ssn/packet', function(req, res) {
             // send data to subscribed companies
             delete params.userSsn;
             delete params.wearableMac;
-            var forwards = [];
+            var forwards = [], type;
             for (var i = 0; i < 2; i++) {
                 if (queryRes[i].body && queryRes[i].body.length > 0) {
                     var reqdata = JSON.parse(queryRes[i].body);
@@ -564,13 +567,23 @@ router.post('/:ssn/packet', function(req, res) {
                         if (forwards.includes(reqdata[j].subscriptionForwardingLink)) {
                             continue; // send the packet only once per subscription link
                         }
-                        forwards.push(reqdata[j].subscriptionForwardingLink);
+                        if (i === 0) {
+                        	type = 'specificRequest';
+						}
+                        else {
+                        	type = 'groupRequest';
+						}
+                        forwards.push({
+							link: reqdata[j].subscriptionForwardingLink,
+							type: type
+						});
                     }
                 }
             }
             var link;
             for (var i = 0; i < forwards.length; i++) {
-                link = forwards[i];
+                link = forwards[i].link;
+                type = forwards[i].type;
                 request({
                     url: link,
                     method: 'POST',
@@ -579,9 +592,21 @@ router.post('/:ssn/packet', function(req, res) {
                     body: params
                 })
                     .catch(function() {
-                    	// forwardingLink not reachable
-                        console.log(`${link} not reachable`);
-                        // todo disable subscription
+                    	// forwardingLink not reachable, disable the subscription
+                        console.log(`${link} is not reachable`);
+						request({
+							url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/${type}/unsubscribe`,
+							method: 'POST',
+							json: true,
+							body: {
+								forwardingLink: link
+							}
+						})
+							.then()
+							.catch(function(err) {
+								console.log(`can not unsubscribe ${link}`);
+								console.log(err);
+							})
                     })
             }
         })
@@ -591,10 +616,11 @@ router.post('/:ssn/packet', function(req, res) {
 });
 
 // grab a company image
-router.get('/:ssn/companyImage/:id', function(req, res) {
+router.get('/companyImage', function(req, res) {
+	var id = req.query.id;
 	var stream = intoStream('');
 	stream.headers = req.headers;
-	stream.pipe(request.get(`http://${config.address.databaseServer}:${config.port.databaseServer}/company/image/${req.params.id}`)).pipe(res);
+	stream.pipe(request.get(`http://${config.address.databaseServer}:${config.port.databaseServer}/company/image/${id}`)).pipe(res);
 });
 
 // grab email & password from the 'authorization' header and check them against the registered users

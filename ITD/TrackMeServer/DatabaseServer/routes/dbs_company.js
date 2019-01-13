@@ -30,7 +30,7 @@ router.post('/register', function(req, res) {
 			.then(function(res) {
 				var id;
 				if (!res[0].max) {
-					id = 0;
+					id = 1;
 				}
 				else {
 					id = res[0].max + 1;

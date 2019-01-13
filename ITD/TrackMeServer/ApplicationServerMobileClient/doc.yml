@@ -465,21 +465,19 @@ paths:
                     schema:
                         $ref: "#/definitions/ApiError"
 
-    /{ssn}/companyImage/{id}:
+    /companyImage:
         get:
             summary: "Get a company's logo"
             produces:
                 - 'image/png'
-            security:
-                -   basicAuth: [username:password]
+            parameters:
+            -   in: query
+                name: id
+                type: string
+                required: true
+                description: id of the company
             responses:
                 200:
                     description: Request successfull
-                400:
-                    description: Request unsuccessful
-                    schema:
-                        $ref: "#/definitions/ApiError"
-                401:
-                    description: Not authorized; wrong credentials
-                    schema:
-                        $ref: "#/definitions/ApiError"
+                404:
+                    description: Not found; this company has no logo

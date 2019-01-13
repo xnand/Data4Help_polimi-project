@@ -184,7 +184,10 @@ def trueFalse(prob):
     return True if random.randint(0,100) < prob * 100 else False
 
 # reset/clean the db
+print('cleaning database...')
 requests.get('http://{}:{}/dropALL'.format(config['address']['databaseServer'], config['port']['databaseServer']))
+print('done')
+print('setting up first data...')
 # initial set up
 while len(users) <= 10:
     u = User()
@@ -201,7 +204,7 @@ while len(companies) <= 5:
     c.makeSpecReq(random.choice(users))
 
 print('initial data set up')
-print('randomizing data insertion indefinitely; press ctrl+c to stop')
+print('randomizing data insertion indefinitely; press ctrl+c (or stop/kill process) to stop')
 # randomize from now on
 while True:
     r = random.randint(0, 6)

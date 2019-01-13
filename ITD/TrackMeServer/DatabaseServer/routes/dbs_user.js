@@ -106,12 +106,31 @@ router.get('/wearableDevice', function(req, res) {
     }
     knex('wearableDevice').select().where(where)
         .then(function(queryRes) {
+			for (var i = 0; i < queryRes.length; i++) {
+				delete queryRes[i].active;
+			}
             res.status(200).send(queryRes);
         })
         .catch(function(err) {
             console.log(err);
             res.status(400).end();
         });
+});
+
+// get all user wearable devices, also the deactivated ones
+router.get('/allWearableDevice', function(req, res) {
+	var where = {};
+	for (var q in req.query) {
+		where[q] = req.query[q];
+	}
+	knex('wearableDevice').select().where(where)
+		.then(function(queryRes) {
+			res.status(200).send(queryRes);
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.status(400).end();
+		});
 });
 
 // get user info packets
@@ -165,14 +184,31 @@ router.post('/register', function(req, res) {
 // record a wearable device
 router.post('/registerWearable', function(req, res) {
     var params = req.body;
-    knex('wearableDevice').insert({
-        macAddr: params.macAddr,
-		name: params.name,
-        userSsn: params.ssn
-    })
-        .then(function() {
-            res.status(200).end();
-        })
+    knex('wearableDevice').select().where({
+		macAddr: params.macAddr
+	})
+		.then(function(queryres) {
+			if (queryres.length > 0 && queryres[0].active === false) {
+				// wearable previously registered then deactivated
+				console.log('ye');
+				return knex('wearableDevice').update({
+					active: true
+				})
+					.where({
+					macAddr: params.macAddr,
+				})
+			}
+			else {
+				return knex('wearableDevice').insert({
+					macAddr: params.macAddr,
+					name: params.name,
+					userSsn: params.ssn
+				})
+			}
+		})
+		.then(function() {
+			res.status(200).end();
+		})
         .catch(function(err) {
             console.log(err);
             res.status(400).end();

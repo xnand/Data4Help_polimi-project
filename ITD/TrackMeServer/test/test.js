@@ -98,7 +98,7 @@ var testSpecificRequestToReject={
     apiKey: '',
     ssn: testUser1.ssn,
     idRequest: ''
-}
+};
 
 var testPacket={
 	ts: "09/01/2019 11:47:59",

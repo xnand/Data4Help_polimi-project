@@ -54,15 +54,24 @@ router.post('/specificRequest/subscribe', function(req, res) {
 		});
 });
 
-// unsubscribe to a specific request
-router.post('/specificRequest/disableSubscription', function(req, res) { // todo, unused
+// unsubscribe from a specific request
+router.post('/specificRequest/unsubscribe', function(req, res) {
 	var params = req.body;
+	var where = {};
+	if (params.requestId) {
+		where = {
+			id: params.requestId
+		}
+	}
+	else if (params.forwardingLink) {
+		where = {
+			subscriptionForwardingLink: params.forwardingLink
+		}
+	}
 	knex('specificRequest').update({
 		subscription: false,
 		subscriptionForwardingLink: null
-	}).where({
-		id: params.requestId,
-	})
+	}).where(where)
 		.then(function() {
 			res.status(200).end();
 		})
@@ -133,15 +142,24 @@ router.post('/groupRequest/subscribe', function(req, res) {
 		});
 });
 
-// unsubscribe to a group request
-router.post('/groupRequest/disableSubscription', function(req, res) { // todo, unused
+// unsubscribe from a group request
+router.post('/groupRequest/unsubscribe', function(req, res) {
 	var params = req.body;
+	var where = {};
+	if (params.requestId) {
+		where = {
+			id: params.requestId
+		}
+	}
+	else if (params.forwardingLink) {
+		where = {
+			subscriptionForwardingLink: params.forwardingLink
+		}
+	}
 	knex('groupRequest').update({
 		subscription: false,
 		subscriptionForwardingLink: null
-	}).where({
-		id: params.requestId
-	})
+	}).where(where)
 		.then(function() {
 			res.status(200).end();
 		})

@@ -1,0 +1,1286 @@
+{
+	"info": {
+		"_postman_id": "274b3688-0101-4285-bf67-97a4de122ef7",
+		"name": "trackme",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register user",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "ssn",
+									"value": "postmanuserssn00",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "post",
+									"type": "text"
+								},
+								{
+									"key": "surname",
+									"value": "man",
+									"type": "text"
+								},
+								{
+									"key": "sex",
+									"value": "male",
+									"type": "text"
+								},
+								{
+									"key": "birthDate",
+									"value": "01 02 2000",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "italy",
+									"type": "text"
+								},
+								{
+									"key": "region",
+									"value": "lombardia",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "milano",
+									"type": "text"
+								},
+								{
+									"key": "zipcode",
+									"value": "20129",
+									"type": "text"
+								},
+								{
+									"key": "street",
+									"value": "via risorgimento",
+									"type": "text"
+								},
+								{
+									"key": "streetNr",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "mail",
+									"value": "iammrpostman@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "superstrongpostmanpass",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login user",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "superstrongpostmanpass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "iammrpostman@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register wearable",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "iammrpostman@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "superstrongpostmanpass",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "macAddr",
+									"value": "aa bb cc dd ee ff",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/postmanuserssn00/wearableDevice",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"postmanuserssn00",
+								"wearableDevice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list wearables",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "superstrongpostmanpass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "iammrpostman@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/api/postmanuserssn00/wearableDevice",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"postmanuserssn00",
+								"wearableDevice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UNregister wearable",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "superstrongpostmanpass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "iammrpostman@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "macAddr",
+									"value": "aa bb cc dd ee ff",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/postmanuserssn00/wearableDevice/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"postmanuserssn00",
+								"wearableDevice",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send infopacket",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "superstrongpostmanpass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "iammrpostman@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic c2N1dGFyaXUuYW5kcmVpLmNAZ21haWwuY29tOkZhTmtVbE9tRXJEYSEiNjY2",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "ts",
+									"value": "10/12/2018 18:00:15",
+									"type": "text"
+								},
+								{
+									"key": "wearableMac",
+									"value": "aa bb cc dd ee ff",
+									"type": "text"
+								},
+								{
+									"key": "geoX",
+									"value": "10.2",
+									"type": "text"
+								},
+								{
+									"key": "geoY",
+									"value": "45.9",
+									"type": "text"
+								},
+								{
+									"key": "heartBeatRate",
+									"value": "80",
+									"type": "text"
+								},
+								{
+									"key": "bloodPressSyst",
+									"value": "60",
+									"type": "text"
+								},
+								{
+									"key": "bloodPressDias",
+									"value": "75",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/postmanuserssn00/packet",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"postmanuserssn00",
+								"packet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send infopacket emergency",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "superstrongpostmanpass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "iammrpostman@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic c2N1dGFyaXUuYW5kcmVpLmNAZ21haWwuY29tOkZhTmtVbE9tRXJEYSEiNjY2",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "ts",
+									"value": "10/12/2018 18:00:16",
+									"type": "text"
+								},
+								{
+									"key": "wearableMac",
+									"value": "aa bb cc dd ee ff",
+									"type": "text"
+								},
+								{
+									"key": "geoX",
+									"value": "10.2",
+									"type": "text"
+								},
+								{
+									"key": "geoY",
+									"value": "45.9",
+									"type": "text"
+								},
+								{
+									"key": "heartBeatRate",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "bloodPressSyst",
+									"value": "21.0",
+									"type": "text"
+								},
+								{
+									"key": "bloodPressDias",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "emergency",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3001/api/postmanuserssn00/packet",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"postmanuserssn00",
+								"packet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list pending request",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "superstrongpostmanpass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "iammrpostman@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/api/postmanuserssn00/request?state=pending",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"postmanuserssn00",
+								"request"
+							],
+							"query": [
+								{
+									"key": "state",
+									"value": "pending"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "accept request 1",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "superstrongpostmanpass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "iammrpostman@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/api/postmanuserssn00/acceptRequest",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"postmanuserssn00",
+								"acceptRequest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reject request 1",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "superstrongpostmanpass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "iammrpostman@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/api/postmanuserssn00/acceptRequest",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"postmanuserssn00",
+								"acceptRequest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get company 0 image",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "superstrongpostmanpass",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "iammrpostman@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/api/sctnrc94h03z129s/request?state=pending",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"sctnrc94h03z129s",
+								"request"
+							],
+							"query": [
+								{
+									"key": "state",
+									"value": "pending"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "company",
+			"item": [
+				{
+					"name": "register company",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "vat",
+									"value": "abcde1234z",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "postmancompany",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"value": "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",
+									"type": "text"
+								},
+								{
+									"key": "businessSector",
+									"value": "food",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/api/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "force register company",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "vat",
+									"value": "123456789",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "tesla",
+									"type": "text"
+								},
+								{
+									"key": "apiKey",
+									"value": "ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz",
+									"type": "text"
+								},
+								{
+									"key": "businessSector",
+									"value": "mars",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3000/company/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3000",
+							"path": [
+								"company",
+								"register"
+							]
+						},
+						"description": "use this register request to avoid copy & pasting the api key on all further company requests. this inserts the company directly into the database without passing through the D4H API"
+					},
+					"response": []
+				},
+				{
+					"name": "specific request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "targetSsn",
+									"value": "postmanuserssn00",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/api/specificRequest?apiKey=ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"specificRequest"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list specific requests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/api/specificRequest?apiKey=ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"specificRequest"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "specific request 1 data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:3002/api/specificRequest/data?apiKey=ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz&id=1",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"specificRequest",
+								"data"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz"
+								},
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "street",
+									"value": "street6",
+									"type": "text"
+								},
+								{
+									"key": "street2",
+									"value": "street7",
+									"type": "text"
+								},
+								{
+									"key": "city3",
+									"value": "milano",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3002/api/groupRequest?apiKey=ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"groupRequest"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list group requests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "127.0.0.1:3002/api/groupRequest?apiKey=ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"groupRequest"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group request 1 data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "127.0.0.1:3002/api/groupRequest/data?apiKey=ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz&id=1",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"groupRequest",
+								"data"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz"
+								},
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subscribe specReq 1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "requestId",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "forwardingLink",
+									"value": "http://127.0.0.1:1337",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3002/api/specificRequest/subscribe?apiKey=ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"specificRequest",
+								"subscribe"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UNsubscribe specReq 1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "requestId",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3002/api/specificRequest/unsubscribe?apiKey=ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"specificRequest",
+								"unsubscribe"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subscribe groupReq 1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "requestId",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "forwardingLink",
+									"value": "http://127.0.0.1:1337",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3002/api/groupRequest/subscribe?apiKey=ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"groupRequest",
+								"subscribe"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UNsubscribe groupReq 1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "requestId",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3002/api/groupRequest/unsubscribe?apiKey=ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3002",
+							"path": [
+								"api",
+								"groupRequest",
+								"unsubscribe"
+							],
+							"query": [
+								{
+									"key": "apiKey",
+									"value": "ZgybsFX3eCoCEAMvcHKaIGT879anG5JxhiNRs8uz"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "drop all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/dropALL",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"dropALL"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -50,4 +50,19 @@
 
 \textbf{*} Partial implementation
 
+\subsection{Partially or not implemented funcionalities}
+
+Being this a prototype, not all funcionalities have been fully implemented. Following are the most notable ones:
+
+\begin{itemize}
+	\item All features of Track4Run are not implemented.
+	\item The Mobile App component works and was tested only with the android Wear OS emulator. Being that on the emulator the sensors are not accessible, a simulator is provided with sliders to adjust the values sent to the mobile application.
+	\item AutomatedSOS dispatching feature only works with the provided ambulance dispatcher simulator.
+	\item The activation of the AutomatedSOS service is not implemented; instead, the service is assumed to be already activated on all the registered devices.
+	\item Notification manager components are not implemented. This is not a problem for this protype though, as each resource that was to be notified is automatically synced through components accessing the proper funcionality (for example, new requests for data can be viewed by querying the system, and that's automatically done when opening the requests page on the Mobile App).
+	\item There is no proper address or geolocation resolution and validation.
+	\item Optimizations for large amount of data transfers, such as when sending user's data for a group request that includes many users, have not yet been implemented.
+	\item Some minor funcionalities are left as todo in the source code, intended for completion on further development, and should not significantly impact the behaviour of the system, if at all.
+\end{itemize}
+
 \end{document}

@@ -62,5 +62,19 @@ todo
 
 todo
 
+\subsection{Notable algorithms}
+
+The source code is commented and should not be difficult to follow and understand; however, there are some more elaborate portions for which could be useful a little explanation:
+
+\begin{itemize}
+
+	\item Filters for group requests, passed in the POST body, are parsed in groups: each group of filters has a number associated to it that goes after the filter's name, for example:
+
+	 ageStart1=18\&ageEnd2=25\&street2=risorgimento
+
+	 are two different groups, respectively group 1 and 2. Multiple filters can be specified per group, and if no number is specified it is assumed to be number 1. Each filter inside the group is in a logical AND relation with all the other filters in the same group, while the different groups are in logical OR relation with all the other groups. So, the example above would search for users that (are at least 18 years old) OR (are at most 25 years old AND live in risorgimento street).
+	\item Subscriptions for authorized requests require that the company set a server capable of receiving data from TrackMe's server, sent as POST requests containing user's data in JSON format, and must respond to every request with status code 200 (an example of such server is provided in TrackMeServer/support/subscriptionHandler.py). It must provide a reachable link to such service when subscribing. If such server is not reachable or won't respond at the moment of subscribing, the operation will fail. If the subscription is succesfully activated, and the company's server then stops satisfying the above requirements, the subscription will be automatically deactivated.
+	
+\end{itemize}
 
 \end{document}
