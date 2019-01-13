@@ -6,7 +6,7 @@ class AutomatedSOSPage extends StatefulWidget {
 
   _AutomatedSOSPage createState() => new _AutomatedSOSPage();
   Widget build(BuildContext context) {
-
+    
 
 
   }

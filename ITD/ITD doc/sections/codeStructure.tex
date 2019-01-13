@@ -121,7 +121,11 @@ The source code is commented and should not be difficult to follow and understan
 	\subsubsection{Blood pressure}
 	Although the specific of the project states that "an ambulance must be dispatched in t<5 seconds from the start of an emergency",
 	we thought it was mandatory to implement a system capable of discerning between an emergency and a casual fluctuation in the readings.\\
-	A simple yet effective solution would be a Threshold system where //TODO
+	A simple yet effective solution was to assign a "weight" to systolic and diastolic values and increment a variable counter if the data received is offscale.
+	We can then confront the counter with a threshold variable and send an infopacket if and when the "THR < counter". To make the system resistent to casual fluctuation,
+	when a perfectly normal readings is received we decrement the counter of an appropriate amount
+
+
 \end{itemize}
 
 \end{document}
