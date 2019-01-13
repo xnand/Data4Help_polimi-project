@@ -136,7 +136,6 @@ router.post('/specificRequest', function(req, res) {
 
 // retrieve all the specific requests the company has made, optionally filter with query parameters
 router.get('/specificRequest', function(req, res) {
-	// todo solve error when no requests are registered
     var companyId;
     var allowed = ['id', 'state', 'targetSsn'];
     verifyApiKey(req.query.apiKey)
@@ -163,8 +162,12 @@ router.get('/specificRequest', function(req, res) {
             if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
                 return Promise.reject();
             }
-            var reqdata = JSON.parse(reqres.body)[0];
-            delete reqdata.companyId;
+            var reqdata = JSON.parse(reqres.body);
+            for (var i = 0; i < reqdata.length; i++) {
+            	if (reqdata[i] && reqdata[i].companyId) {
+            		delete reqdata[i].companyId;
+				}
+			}
             return res.status(200).send(reqdata);
         })
         .catch(function(err) {
@@ -375,6 +378,7 @@ router.get('/groupRequest', function(req, res) {
 			var promises = [];
 			for (var i = 0; i < requests.length; i++) {
 				delete requests[i].companyId;
+				delete requests[i].targets;
 				promises.push(request({
 					url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/filter`,
 					method: 'GET',
@@ -562,6 +566,59 @@ router.post('/specificRequest/subscribe', function(req, res) {
 		})
 });
 
+// unsubscribe to a specific request
+router.post('/specificRequest/unsubscribe', function(req, res) {
+	var params = {};
+	verifyApiKey(req.query.apiKey)
+		.then(function(companyId) {
+			params.companyId = companyId;
+			Object.keys(req.body).forEach(function (k) {
+				params[k] = req.body[k].toLowerCase();
+			});
+			return common.validateParams(params, [
+				'requestId'
+			]);
+		})
+		.then(function() {
+			// verify the request
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest`,
+				method: 'GET',
+				qs: {
+					id: params.requestId,
+					companyId: params.companyId
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject({apiError: `you have not made the request with id ${params.requestId}`});
+			}
+			var reqdata = JSON.parse(reqres.body)[0] || '';
+			if (!reqdata || !reqdata.state) {
+				return Promise.reject({apiError: `you have not made the request with id ${params.requestId}`});
+			}
+			// unsubscribe
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/specificRequest/unsubscribe`,
+				method: 'POST',
+				json: true,
+				body: {
+					requestId: params.requestId
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200) {
+				return Promise.reject();
+			}
+			return res.status(201).end();
+		})
+		.catch(function(err) {
+			common.catchApi(err, res);
+		})
+});
+
 // subscribe to a group request
 router.post('/groupRequest/subscribe', function(req, res) {
 	var params = {};
@@ -643,6 +700,59 @@ router.post('/groupRequest/subscribe', function(req, res) {
 		})
 });
 
+// unsubscribe to a group request
+router.post('/groupRequest/unsubscribe', function(req, res) {
+	var params = {};
+	verifyApiKey(req.query.apiKey)
+		.then(function(companyId) {
+			params.companyId = companyId;
+			Object.keys(req.body).forEach(function (k) {
+				params[k] = req.body[k].toLowerCase();
+			});
+			return common.validateParams(params, [
+				'requestId'
+			]);
+		})
+		.then(function() {
+			// verify the request
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/groupRequest`,
+				method: 'GET',
+				qs: {
+					id: params.requestId,
+					companyId: params.companyId
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200 || !reqres.body) {
+				return Promise.reject({apiError: `you have not made the request with id ${params.requestId}`});
+			}
+			var reqdata = JSON.parse(reqres.body)[0] || '';
+			if (!reqdata || !reqdata.state) {
+				return Promise.reject({apiError: `you have not made the request with id ${params.requestId}`});
+			}
+			// unsubscribe
+			return request({
+				url: `http://${config.address.databaseServer}:${config.port.databaseServer}/request/groupRequest/unsubscribe`,
+				method: 'POST',
+				json: true,
+				body: {
+					requestId: params.requestId
+				}
+			})
+		})
+		.then(function(reqres) {
+			if (!reqres || reqres.statusCode !== 200) {
+				return Promise.reject();
+			}
+			return res.status(201).end();
+		})
+		.catch(function(err) {
+			common.catchApi(err, res);
+		})
+});
+
 // generate an API key = 40 random characters
 function generateAPIkey() {
     // todo check duplicate
@@ -675,7 +785,7 @@ function verifyApiKey(key) {
                 }
                 resolve(reqdata.id);
             })
-            .catch(function(err) {
+            .catch(function() {
                 reject({apiError: 'API key not authorized'});
             })
     });
