@@ -13,7 +13,7 @@ class _Track4RunPage extends State<Track4RunPage> {
       backgroundColor: Colors.blue,
       body: Center(
         child: Text(
-          'Track4Run page, not implement in the prototype',
+          'Track4Run page, not implemented in the prototype',
           style: TextStyle(
             color: Colors.white,
             fontSize: 24
