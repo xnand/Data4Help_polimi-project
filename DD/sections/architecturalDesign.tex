@@ -55,16 +55,22 @@
 
 \begin{description}
 
-	\item{\bf Request manager} This component will handle the data requests received from companies: through the help of the Data access manager component, will determine if the company can have access to such user's data, in case of a group request, or will register the request in case it's a specific one, and then eventually will send the data to the company as a response.
+	\item{\bf Request manager} This component will handle the data requests received from companies: it will determine if the company can have access to such user's data, in case of a group request, or will register the request in case it's a specific one, and then eventually will send the data to the company as a response.
 
-	\item{\bf Subscription manager} This component will handle the subscriptions a company may have, sending the data from the users to the company as soon as it's received.
-
-	\item{\bf Data access manager} This component will determine if a company can have access to some data, after it has made a request for it. In particular, will count how many users satisfy a group request and authorize or reject it based on this number, and will also regulate the access to users data every request grants.
+	\item{\bf Subscription manager} This component will handle the subscriptions a company may have, allowing it to view them, create new ones or delete them.
 
 \end{description}
 
-\subsubsection{Database server} This is server is the only component that have access to the DBMS. Every other component will interact with the API this component makes available to read and write on the database. This allows the other components to be independent from the specific implementation of the database controller that will directly interact with the database, providing the ability to change how the system interfaces to the DBMS without altering all the components mentioned above.
-                                Moreover this design gives a further layer of security making the system resilient to a possible \textit{CIA} security violation 
+\subsubsection{Database server} This is server is the only component that have access to the DBMS. Every other component will interact with the API this component makes available to read from and write on the database. This allows the other components to be independent from the specific implementation of the database controller that will directly interact with the database, providing the ability to change how the system interfaces to the DBMS without altering all the components mentioned above. No part of this API is exposed to the external network.
+This design gives a further layer of security making the system resilient to a possible \textit{CIA} security violation.
+
+Each of its submodule will handle the relative read/write function:
+
+\begin{itemize}
+	\item Request manager will handle new requests coming from companies and the acceptal/refusal from users.
+	\item User manager will handle all user specific functions, such as registering, registering a wearable device, querying the registered devices, etc.
+	\item Company manager will handle all company specific functions, such as registering, and getting company's data.
+\end{itemize}
 
 \subsubsection{Web server} This component will be a static server offering information about TrackMe and documentation on our APIs for third party companies. Also, as stated in the RASD, it will offer a form for companies to register on our service and request an API key.
 

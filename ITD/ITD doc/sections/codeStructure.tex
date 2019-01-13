@@ -12,7 +12,7 @@ The root directory of the source code is "ITD". Inside of it there are three fol
 
 \subsection{TrackMeServer}
 
-The four modules inside this directory all share the same basic structure: inside the component's directory (eg. ApplicationServerMobileClient) there is the main javascript file to be launched with node (eg. ApplicationServerMobileClient.js), the documentation source for the component if available (doc.yml), and a routes directory that futher defines funcionalities provided by the component.
+The macro components presented in the Design Document, except for the Mobile App, are the four different modules found in this directory, while the inner components take the form of functions and REST endpoints. All the four modules share the same basic structure: inside the component's directory (eg. ApplicationServerMobileClient) there is the main javascript file to be launched with node (eg. ApplicationServerMobileClient.js), the documentation source for the component if available (doc.yml), and a routes directory that futher defines funcionalities provided by the component.
 
 The directory named "common" contains two files used by the components:
 
@@ -48,7 +48,9 @@ The doc.yml is the source code of the documentation, read by swagger when starti
 
 \subsubsection{WebServer}
 
-todo
+The web server has a main file, WebServer.js, that set up the environments and configures an object useful to send emails named "trasporter" and the relative logic realized thanks to a Node.js module called "nodemailer".
+In the folder "public" there are the html pages that the third party comapany will use, in particular "register.html", to register to the service with a form. The contents of the fields are checked with the javascript file "javascripts/validationForm.js" before sending the email.
+The style of web pages is defined by a css file "stylesheets/style.css".
 
 \subsection{MobileApp & WearOS app}
 MobileApp is composed of two submodule, Flutter code and the android platform specific code.
