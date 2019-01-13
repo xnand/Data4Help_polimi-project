@@ -464,3 +464,22 @@ paths:
                     description: Not authorized; wrong credentials
                     schema:
                         $ref: "#/definitions/ApiError"
+
+    /{ssn}/companyImage/{id}:
+        get:
+            summary: "Get a company's logo"
+            produces:
+                - 'image/png'
+            security:
+                -   basicAuth: [username:password]
+            responses:
+                200:
+                    description: Request successfull
+                400:
+                    description: Request unsuccessful
+                    schema:
+                        $ref: "#/definitions/ApiError"
+                401:
+                    description: Not authorized; wrong credentials
+                    schema:
+                        $ref: "#/definitions/ApiError"

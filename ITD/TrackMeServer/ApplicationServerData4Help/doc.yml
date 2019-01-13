@@ -126,6 +126,11 @@ paths:
                     type: string
                     required: false
                     description: Business sector of the company
+                -   in: formData
+                    name: image
+                    type: string
+                    required: fasle
+                    description: Logo of the company, png image BASE64 encoded
             responses:
                 201:
                     description: User successfully registered
