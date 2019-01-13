@@ -31,7 +31,7 @@ fontsize=16
       <x>720</x>
       <y>540</y>
       <w>285</w>
-      <h>165</h>
+      <h>315</h>
     </coordinates>
     <panel_attributes>User
 --
@@ -39,6 +39,11 @@ fontsize=16
 +Name
 +Surname
 +BirthDate
++Sex
++Heigth
++Weigth
++Mail
++Password
 --
 </panel_attributes>
     <additional_attributes/>
@@ -250,29 +255,29 @@ m2=1
     <id>Relation</id>
     <coordinates>
       <x>720</x>
-      <y>690</y>
+      <y>840</y>
       <w>270</w>
-      <h>735</h>
+      <h>585</h>
     </coordinates>
     <panel_attributes>lt=-
 m2=1
 m1=0..n
 create &gt;</panel_attributes>
-    <additional_attributes>160.0;460.0;10.0;460.0;10.0;10.0</additional_attributes>
+    <additional_attributes>160.0;360.0;10.0;360.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>780</x>
-      <y>690</y>
+      <y>840</y>
       <w>210</w>
-      <h>675</h>
+      <h>525</h>
     </coordinates>
     <panel_attributes>lt=-
 m2=0..n
 m1=0..n
 enroll &gt;</panel_attributes>
-    <additional_attributes>120.0;420.0;10.0;420.0;10.0;10.0</additional_attributes>
+    <additional_attributes>120.0;320.0;10.0;320.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>

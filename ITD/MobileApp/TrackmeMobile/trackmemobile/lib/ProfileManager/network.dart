@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:trackmemobile/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:trackmemobile/models/apiResponse.dart';
 import 'package:trackmemobile/ProfileManager/profileStateManager.dart';
 import 'package:trackmemobile/models/request.dart';
 import 'package:trackmemobile/models/device.dart';
+
+final _url = 'http://192.168.1.86:3001/api/'; //application server url
 
 abstract class MobileAppServerInterface {
 
@@ -48,7 +51,6 @@ abstract class MobileAppServerInterface {
 
 
 class apiManager extends MobileAppServerInterface {
-  final _url = 'http://192.168.1.86:3001/api/'; //application server url
   final String _noError = 'noError';
 
   @override

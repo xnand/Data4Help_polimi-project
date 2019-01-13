@@ -1,5 +1,5 @@
 
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:trackmemobile/models/user.dart';
 
 void main() {
@@ -56,7 +56,6 @@ void main() {
         street: street,
         streetNr: streetNr
     );
-    ;
 
     Map<String, dynamic> jsonUser =
     { 'ssn' : ssn,
