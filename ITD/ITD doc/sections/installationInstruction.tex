@@ -54,6 +54,7 @@ The mail box where registration requests are sent can be checked using the follo
 
 \begin{itemize}
 	\item Eventually import the project ITD/MobileApp/TrackmeMobile/trackmemobile into Android Studio / Intellij Idea (not required).
+	\item Edit the file trackmemobile/lib/ProfileManager/network.dart and set the \textunderscore url variable with the ip address on which the Application Server Mobile Client component will be reachable (this won't be 127.0.0.1!). At the same way edit the variable basicUrl in trackmemobile/android/app/src/main/java/com/trackme/trackmemobile/InfoPacketHandler.java.
 	\item Assuming Flutter SDK, Android SDK and Dart are installed, and Flutter's bin directory is in PATH environment variable, navigate to ITD/MobileApp/TrackmeMobile/trackmemobile.
 	\item Run "flutter build apk --debug"; this will generate the apk in build/app/outputs/apk/debug/app-debug.apk
 	\item Install the apk on the device (eg. with "adb install \textit{path-to-apk}") and run it.
@@ -65,7 +66,6 @@ Alternatively one can build and install the apk from the IDE.
 
 \begin{itemize}
 	\item Import the project ITD/MobileApp/TrackmeWear into the IDE (required!).
-	\item Edit the file trackmemobile/lib/ProfileManager/network.dart and set the \textunderscore url variable with the ip address on which the Application Server Mobile Client component will be reachable (this won't be 127.0.0.1!).
 	\item Create an Android App run configuration setting the Module field to "app", if does not exist.
 	\item Launch an Android Wear virtual device.
 	\item Run the app on the virtual device.
