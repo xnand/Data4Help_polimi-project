@@ -29,28 +29,32 @@ class _AddDevicePage extends State<AddDevicePage> {
       _isLoading = true;
       ApiResponse response = await apiManager().registerWearable(_macAddr, _name);
       if(response.apiError == 'noError') {
-        Navigator.of(context).pushNamed('devicePage');
+        Navigator.of(context).pushNamed('/devicePage');
       } else {
-        setState(() {
-          _isLoading = false;
-        });
+
         final scaffold = scaffoldKey.currentState;
         scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));
       }
     } else {
 
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
   void initState() {
+
     chCtrll.getMacAddr().then((macAddres) => setState(() {
       _macAddr = macAddres;
+
     }));
   }
 
     @override
     Widget build(BuildContext context) {
+
       var page = Scaffold(
         key: scaffoldKey,
         backgroundColor: colorStyles['primary_pink'],

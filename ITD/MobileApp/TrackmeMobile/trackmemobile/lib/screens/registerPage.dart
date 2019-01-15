@@ -45,12 +45,13 @@ class _RegisterPageState extends State<RegisterPage> {
     List<String> dateFiltered =
         date.toString().split(' ').elementAt(0).split(new RegExp(r"-"));
     if (dateFiltered.length == 3) {
-      _parsedDate = dateFiltered.elementAt(2) +
+      _parsedDate = dateFiltered.elementAt(1) +
           ' ' +
-          dateFiltered.elementAt(1) +
+          dateFiltered.elementAt(2) +
           ' ' +
           dateFiltered.elementAt(0);
     }
+    print(_parsedDate);
   }
 
   void _handleRadioValueChange(int value) {
@@ -107,15 +108,17 @@ class _RegisterPageState extends State<RegisterPage> {
           final scaffold = scaffoldKey.currentState;
           scaffold.showSnackBar(SnackBar(content: Text(response.apiError)));
       }
-      setState(() {
-        _isLoading = false;
-      });
+
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat("MM/d/yyyy");
+    final dateFormat = DateFormat("dd/MM/yyyy");
 
     final email = TextFormField(
       keyboardType: TextInputType.emailAddress,

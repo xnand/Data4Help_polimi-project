@@ -188,7 +188,7 @@ class apiManager extends MobileAppServerInterface {
              "name" : name
       },
     );
-    if(response.statusCode == 200)return new ApiResponse(apiError: _noError);
+    if(response.statusCode == 201)return new ApiResponse(apiError: _noError);
     else return apiResponseFromJson(response.body);
   }
 
