@@ -286,7 +286,6 @@ router.get('/:ssn/request', function(req, res) {
 			var promises = [];
 			requests = reqdata;
 			for (var i = 0; i < reqdata.length; i++) {
-				delete requests[i].companyId;
 				delete requests[i].targetSsn;
 				delete requests[i].subscription;
 				delete requests[i].subscriptionForwardingLink;
